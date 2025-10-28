@@ -1,19 +1,10 @@
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { CadastroForm } from "@/components/CadastroForm";
 import { Truck, Plus } from "lucide-react";
-import { toast } from "sonner";
 
 export const CadastroVRTSection = () => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  const handleSubmit = (data: any) => {
-    console.log("Cadastro salvo:", data);
-    toast.success("Cadastro salvo com sucesso!");
-    setIsDialogOpen(false);
-  };
+  const navigate = useNavigate();
 
   return (
     <>
@@ -28,7 +19,7 @@ export const CadastroVRTSection = () => {
           <Button 
             size="sm" 
             className="gap-2 bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity"
-            onClick={() => setIsDialogOpen(true)}
+            onClick={() => navigate("/cadastro")}
           >
             <Plus className="h-4 w-4" />
             Novo
@@ -60,18 +51,6 @@ export const CadastroVRTSection = () => {
         </p>
       </div>
     </Card>
-
-    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Novo Cadastro de Equipamento</DialogTitle>
-        </DialogHeader>
-        <CadastroForm 
-          onSubmit={handleSubmit}
-          onCancel={() => setIsDialogOpen(false)}
-        />
-      </DialogContent>
-    </Dialog>
     </>
   );
 };
