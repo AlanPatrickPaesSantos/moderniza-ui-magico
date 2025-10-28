@@ -1,22 +1,39 @@
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { CadastroForm } from "@/components/CadastroForm";
 import { Truck, Plus } from "lucide-react";
+import { toast } from "sonner";
 
 export const CadastroVRTSection = () => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleSubmit = (data: any) => {
+    console.log("Cadastro salvo:", data);
+    toast.success("Cadastro salvo com sucesso!");
+    setIsDialogOpen(false);
+  };
+
   return (
-    <Card className="p-6 shadow-[var(--shadow-card)] border-border">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10">
-            <Truck className="h-5 w-5 text-accent" />
+    <>
+      <Card className="p-6 shadow-[var(--shadow-card)] border-border">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10">
+              <Truck className="h-5 w-5 text-accent" />
+            </div>
+            <h2 className="text-xl font-semibold text-foreground">Cadastro VRT</h2>
           </div>
-          <h2 className="text-xl font-semibold text-foreground">Cadastro VRT</h2>
+          <Button 
+            size="sm" 
+            className="gap-2 bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity"
+            onClick={() => setIsDialogOpen(true)}
+          >
+            <Plus className="h-4 w-4" />
+            Novo
+          </Button>
         </div>
-        <Button size="sm" className="gap-2 bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity">
-          <Plus className="h-4 w-4" />
-          Novo
-        </Button>
-      </div>
 
       <div className="space-y-4">
         <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer">
@@ -43,5 +60,18 @@ export const CadastroVRTSection = () => {
         </p>
       </div>
     </Card>
+
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Novo Cadastro de Equipamento</DialogTitle>
+        </DialogHeader>
+        <CadastroForm 
+          onSubmit={handleSubmit}
+          onCancel={() => setIsDialogOpen(false)}
+        />
+      </DialogContent>
+    </Dialog>
+    </>
   );
 };
