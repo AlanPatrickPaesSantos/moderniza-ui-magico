@@ -20,7 +20,7 @@ const Index = () => {
           <NavigationCard icon={Headphones} title="Suporte" />
           <NavigationCard icon={Phone} title="Telecom" />
           <NavigationCard icon={Building} title="Unidade" />
-          <NavigationCard icon={Server} title="Serv_Int_Ext" />
+          <NavigationCard icon={Server} title="Serv_Int_Ext" onClick={() => navigate("/servico-interno-externo")} />
         </div>
 
         {/* Main Content Grid */}
