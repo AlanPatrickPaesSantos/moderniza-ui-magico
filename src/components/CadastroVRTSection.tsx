@@ -1,8 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Truck, Plus } from "lucide-react";
 
 export const CadastroVRTSection = () => {
+  const navigate = useNavigate();
 
   return (
     <>
@@ -17,6 +19,7 @@ export const CadastroVRTSection = () => {
           <Button 
             size="sm" 
             className="gap-2 bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity"
+            onClick={() => navigate("/cadastro-vrt")}
           >
             <Plus className="h-4 w-4" />
             Novo
