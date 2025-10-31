@@ -6,11 +6,13 @@ import { ConsultasSection } from "@/components/ConsultasSection";
 import { CadastroVRTSection } from "@/components/CadastroVRTSection";
 import { RelatoriosSection } from "@/components/RelatoriosSection";
 import { EqSuporteDialog } from "@/components/EqSuporteDialog";
+import { EqTelecomDialog } from "@/components/EqTelecomDialog";
 import { Database, Headphones, Phone, Building, Server } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
   const [eqSuporteOpen, setEqSuporteOpen] = useState(false);
+  const [eqTelecomOpen, setEqTelecomOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
@@ -21,7 +23,7 @@ const Index = () => {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
           <NavigationCard icon={Database} title="Cadastro" onClick={() => navigate("/cadastro")} />
           <NavigationCard icon={Headphones} title="Suporte" onClick={() => setEqSuporteOpen(true)} />
-          <NavigationCard icon={Phone} title="Telecom" />
+          <NavigationCard icon={Phone} title="Telecom" onClick={() => setEqTelecomOpen(true)} />
           <NavigationCard icon={Building} title="Unidade" />
           <NavigationCard icon={Server} title="Serv_Int_Ext" onClick={() => navigate("/servico-interno-externo")} />
         </div>
@@ -55,6 +57,7 @@ const Index = () => {
       </main>
 
       <EqSuporteDialog open={eqSuporteOpen} onOpenChange={setEqSuporteOpen} />
+      <EqTelecomDialog open={eqTelecomOpen} onOpenChange={setEqTelecomOpen} />
     </div>
   );
 };
