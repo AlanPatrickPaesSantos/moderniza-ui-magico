@@ -1,5 +1,4 @@
 import { LucideIcon } from "lucide-react";
-import { Card } from "@/components/ui/card";
 
 interface NavigationCardProps {
   icon: LucideIcon;
@@ -9,17 +8,19 @@ interface NavigationCardProps {
 
 export const NavigationCard = ({ icon: Icon, title, onClick }: NavigationCardProps) => {
   return (
-    <Card 
-      className="group relative overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-[var(--shadow-elegant)] bg-card border-border"
+    <button
       onClick={onClick}
+      className="group relative overflow-hidden rounded-xl border border-border/60 bg-card p-5 shadow-[var(--shadow-card)] transition-all duration-300 hover:shadow-[var(--shadow-card-hover)] hover:-translate-y-1 hover:border-primary/20 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      <div className="relative p-6 flex flex-col items-center gap-3">
-        <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-accent transition-transform duration-300 group-hover:scale-110">
-          <Icon className="h-7 w-7 text-primary-foreground" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.03] to-gold/[0.03] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-gold to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      
+      <div className="relative flex flex-col items-center gap-3">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-primary/20">
+          <Icon className="h-6 w-6" />
         </div>
-        <h3 className="text-sm font-semibold text-foreground text-center">{title}</h3>
+        <span className="text-sm font-semibold text-foreground">{title}</span>
       </div>
-    </Card>
+    </button>
   );
 };
