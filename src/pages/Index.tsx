@@ -21,12 +21,12 @@ const Index = () => {
       {/* Hero Banner */}
       <div className="relative overflow-hidden" style={{ background: 'var(--gradient-hero)' }}>
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-gold/20 blur-3xl -translate-y-1/2 translate-x-1/3" />
+          <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-primary-foreground/5 blur-3xl -translate-y-1/2 translate-x-1/3" />
           <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-primary-foreground/10 blur-3xl translate-y-1/2 -translate-x-1/3" />
         </div>
         <div className="container px-6 py-6 relative">
           <div className="flex items-center gap-3">
-            <Shield className="h-5 w-5 text-gold-light" />
+            <Shield className="h-5 w-5 text-primary-foreground/80" />
             <p className="text-primary-foreground/90 text-sm font-medium">
               Sistema de Gestão de Equipamentos
             </p>
@@ -53,7 +53,7 @@ const Index = () => {
 
         {/* Footer */}
         <div className="mt-8 relative overflow-hidden rounded-xl border border-border/50 bg-card shadow-[var(--shadow-card)]">
-          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-gold to-primary" />
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-primary" />
           <div className="p-6 text-center">
             <p className="text-sm font-bold text-foreground tracking-wide">
               PROGRAMA DE CADASTRO DE EQUIPAMENTOS DA PMPA
