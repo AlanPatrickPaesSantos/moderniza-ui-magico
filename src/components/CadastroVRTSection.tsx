@@ -8,7 +8,7 @@ export const CadastroVRTSection = () => {
 
   return (
     <Card className="overflow-hidden shadow-[var(--shadow-card)] border-border/60 hover:shadow-[var(--shadow-card-hover)] transition-shadow duration-300">
-      <div className="h-1 bg-gradient-to-r from-gold to-gold-light" />
+      <div className="h-1 bg-gold" />
       <div className="p-6">
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-3">
