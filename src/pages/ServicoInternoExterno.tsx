@@ -15,7 +15,7 @@ const ServicoInternoExterno = () => {
 
   // Busca e carrega a missão pela Lupa
   const handleSearch = async () => {
-    if (!query.trim()) return;
+    if (!query.trim() || isLoading) return;
     setIsLoading(true);
     try {
       const res = await fetch(`${API_BASE}/missoes/${query.trim()}`);
@@ -57,13 +57,14 @@ const ServicoInternoExterno = () => {
       }
       
       const result = await res.json();
-      if (result.success) {
+      if (res.ok && result.success && result.missao) {
         toast.success(selectedRecord ? `✅ Missão OS ${result.missao.os} atualizada!` : `✅ Missão OS ${result.missao.os} criada com sucesso!`);
         setSelectedRecord(null);
       } else {
-        toast.error("Erro ao salvar missão.");
+        toast.error("Erro ao salvar missão: " + (result.error || "Tente novamente."));
       }
     } catch (err) {
+      console.error("Erro ao salvar:", err);
       toast.error("Erro de conexão com o servidor.");
     }
   };

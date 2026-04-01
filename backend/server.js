@@ -33,21 +33,28 @@ app.get('/api/status', (req, res) => {
 app.post('/api/auth/login', async (req, res) => {
   try {
     const { username, password } = req.body;
-    if (!username || !password) return res.status(400).json({ error: 'Informe usuário e senha.' });
+    if (!username || !password) {
+      return res.status(400).json({ success: false, error: 'Informe usuário e senha.' });
+    }
 
     const user = await Usuario.findOne({ username: username.toLowerCase() });
-    if (!user) return res.status(401).json({ error: 'Acesso Negado: Usuário incorreto ou inexistente.' });
+    if (!user) {
+      return res.status(401).json({ success: false, error: 'Acesso Negado: Usuário incorreto ou inexistente.' });
+    }
     
     const senhaValida = await bcrypt.compare(password, user.password);
-    if (!senhaValida) return res.status(401).json({ error: 'Acesso Negado: Senha inválida.' });
+    if (!senhaValida) {
+      return res.status(401).json({ success: false, error: 'Acesso Negado: Senha inválida.' });
+    }
     
-    // Gera emissão de chave para 24 horas
-    const SECRET = process.env.JWT_SECRET || 'DitelPMPA!2026@Segredo';
+    // Gera emissão de chave para 24 horas usando variável de ambiente
+    const SECRET = process.env.JWT_SECRET || 'DitelPMPA-Seguranca-2026';
     const token = jwt.sign({ id: user._id, username: user.username, papel: user.papel }, SECRET, { expiresIn: '24h' });
     
-    res.json({ token, username: user.username, papel: user.papel });
+    res.json({ success: true, token, username: user.username, papel: user.papel });
   } catch (err) {
-    res.status(500).json({ error: 'Erro de Autenticação no Servidor: ' + err.message });
+    console.error('Erro no login:', err);
+    res.status(500).json({ success: false, error: 'Erro de Autenticação no Servidor.' });
   }
 });
 

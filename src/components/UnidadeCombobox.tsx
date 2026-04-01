@@ -33,7 +33,7 @@ export function UnidadeCombobox({ value, onChange }: UnidadeComboboxProps) {
       try {
         const response = await fetch(`${API_BASE}/unidades`);
         const data = await response.json();
-        setUnidades(data);
+        setUnidades(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error("Erro ao carregar unidades:", err);
       } finally {

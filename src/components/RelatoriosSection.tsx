@@ -41,11 +41,11 @@ export const RelatoriosSection = () => {
 
       // Usa contagens EXATAS do banco (não calcula pelo array que pode estar limitado)
       setStats({
-        total: exactStats.total,
-        interno: exactStats.interno,
-        externo: exactStats.externo,
-        remoto: exactStats.remoto,
-        pendente: exactStats.pendente,
+        total: exactStats?.total || 0,
+        interno: exactStats?.interno || 0,
+        externo: exactStats?.externo || 0,
+        remoto: exactStats?.remoto || 0,
+        pendente: exactStats?.pendente || 0,
       });
     } catch (error) {
       console.error("Erro ao gerar relatório:", error);
@@ -197,9 +197,9 @@ export const RelatoriosSection = () => {
               </tr>
             </thead>
             <tbody>
-              <tr><td class="label">Total de Missões (Int + Ext + Remoto)</td><td class="value">${stats.interno + stats.externo + stats.remoto}</td></tr>
-              <tr><td class="label">Total de Manutenções Concluídas</td><td class="value">${manutencaoStats.prontas}</td></tr>
-              <tr class="total-row"><td class="label">TOTAL GERAL DE ATENDIMENTOS</td><td class="value">${stats.interno + stats.externo + stats.remoto + manutencaoStats.prontas}</td></tr>
+              <tr><td class="label">Total de Missões (Int + Ext + Remoto)</td><td class="value">${(stats.interno || 0) + (stats.externo || 0) + (stats.remoto || 0)}</td></tr>
+              <tr><td class="label">Total de Manutenções Concluídas</td><td class="value">${manutencaoStats.prontas || 0}</td></tr>
+              <tr class="total-row"><td class="label">TOTAL GERAL DE ATENDIMENTOS</td><td class="value">${(stats.interno || 0) + (stats.externo || 0) + (stats.remoto || 0) + (manutencaoStats.prontas || 0)}</td></tr>
             </tbody>
           </table>
           <p class="obs">* Relatório gerado automaticamente pelo sistema DITEL/PMPA. Dados referentes ao período informado acima.</p>
