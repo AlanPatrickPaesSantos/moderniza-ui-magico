@@ -378,7 +378,9 @@ if (process.env.NODE_ENV === 'production' || process.env.RENDER) {
   const distPath = path.join(__dirname, '..', 'dist');
   app.use(express.static(distPath));
 
-  app.get('(.*)', (req, res) => {
+  // Middleware de captura final para o React (SPA)
+  // Se não caiu em nenhuma rota /api, entrega o index.html
+  app.use((req, res) => {
     res.sendFile(path.join(distPath, 'index.html'));
   });
 }
