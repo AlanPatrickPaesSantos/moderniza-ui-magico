@@ -66,21 +66,26 @@ const Cadastro = () => {
 
   // Navega para OS anterior ou próxima
   const navigateTo = async (direction: "prev" | "next") => {
-    if (!selectedRecord) return;
+    if (!selectedRecord || isNavLoading) return;
     setIsNavLoading(true);
     try {
       const res = await fetch(`${API_BASE}/servicos/${selectedRecord.Id_cod}/${direction}`);
-      if (!res.ok) return;
+      if (!res.ok) throw new Error("Registro não encontrado");
+      
       const record = await res.json();
+      if (!record || !record.Id_cod) throw new Error("Dados inválidos");
+
       const [prevRes, nextRes] = await Promise.all([
         fetch(`${API_BASE}/servicos/${record.Id_cod}/prev`),
         fetch(`${API_BASE}/servicos/${record.Id_cod}/next`),
       ]);
+
       setSelectedRecord(record);
       setHasPrev(prevRes.ok);
       setHasNext(nextRes.ok);
     } catch (err) {
       console.error("Erro ao navegar:", err);
+      toast.error("Não há mais registros nesta direção.");
     } finally {
       setIsNavLoading(false);
     }
