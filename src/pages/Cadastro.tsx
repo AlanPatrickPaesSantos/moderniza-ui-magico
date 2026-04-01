@@ -169,15 +169,15 @@ const Cadastro = () => {
               onCancel={() => navigate("/")}
             />
           </div>
-          
+
           {/* Botão de Salvar para Novo Cadastro (Fixo na Base do Card) */}
           <div className="mt-2 p-3 border-t bg-muted/5 flex justify-end gap-3 shrink-0">
             <Button variant="outline" onClick={() => navigate("/")} className="h-11 px-6 font-bold">
               Cancelar
             </Button>
-            <Button 
-              type="submit" 
-              form="novo-form" 
+            <Button
+              type="submit"
+              form="novo-form"
               className="bg-pmpa-navy hover:bg-pmpa-navy/90 text-white h-11 px-12 font-bold shadow-lg uppercase"
             >
               Finalizar Novo Cadastro
@@ -187,7 +187,7 @@ const Cadastro = () => {
       </div>
 
       {/* Modal de Detalhes do Registro Buscado */}
-      <Dialog open={isDetailsOpen} onOpenChange={(open) => { 
+      <Dialog open={isDetailsOpen} onOpenChange={(open) => {
         setIsDetailsOpen(open);
         if (!open) setTimeout(() => setSelectedRecord(null), 300);
       }}>
