@@ -58,14 +58,17 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
         gold: {
-          DEFAULT: "hsl(var(--gold))",
-          light: "hsl(var(--gold-light))",
-          dark: "hsl(var(--gold-dark))",
+          DEFAULT: "hsl(var(--pmpa-gold))",
+          light: "hsl(var(--pmpa-gold))",
+          dark: "hsl(var(--pmpa-gold))",
         },
         navy: {
-          DEFAULT: "hsl(var(--navy))",
-          light: "hsl(var(--navy-light))",
+          DEFAULT: "hsl(var(--pmpa-navy))",
+          light: "hsl(var(--pmpa-navy))",
         },
+        "pmpa-red": "hsl(var(--pmpa-red))",
+        "pmpa-navy": "hsl(var(--pmpa-navy))",
+        "pmpa-gold": "hsl(var(--pmpa-gold))",
       },
       borderRadius: {
         lg: "var(--radius)",

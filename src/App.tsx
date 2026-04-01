@@ -1,3 +1,4 @@
+import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -8,25 +9,38 @@ import Cadastro from "./pages/Cadastro";
 import CadastroVRT from "./pages/CadastroVRT";
 import ServicoInternoExterno from "./pages/ServicoInternoExterno";
 import NotFound from "./pages/NotFound";
+import Login from "./pages/Login";
+import { ThemeProvider } from "next-themes";
+import { AuthProvider } from "./contexts/AuthContext";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/cadastro" element={<Cadastro />} />
-          <Route path="/cadastro-vrt" element={<CadastroVRT />} />
-          <Route path="/servico-interno-externo" element={<ServicoInternoExterno />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <AuthProvider>
+            <Routes>
+              {/* Rota Privada: O Login do sistema */}
+              <Route path="/login" element={<Login />} />
+
+              {/* Rotas Protegidas e Secretas */}
+              <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+              <Route path="/cadastro" element={<ProtectedRoute><Cadastro /></ProtectedRoute>} />
+              <Route path="/cadastro-vrt" element={<ProtectedRoute><CadastroVRT /></ProtectedRoute>} />
+              <Route path="/servico-interno-externo" element={<ProtectedRoute><ServicoInternoExterno /></ProtectedRoute>} />
+              
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<ProtectedRoute><NotFound /></ProtectedRoute>} />
+            </Routes>
+          </AuthProvider>
+        </BrowserRouter>
+      </TooltipProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 

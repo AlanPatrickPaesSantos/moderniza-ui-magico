@@ -40,7 +40,7 @@ export const CadastroVRTSection = () => {
           </button>
 
           <div className="rounded-xl border border-border/40 overflow-hidden">
-            <div className="aspect-video bg-gradient-to-br from-muted/50 to-muted/20 flex items-center justify-center">
+            <div className="aspect-video bg-muted/30 flex items-center justify-center">
               <div className="text-center p-8">
                 <div className="mx-auto mb-3 h-14 w-14 rounded-full bg-primary/5 flex items-center justify-center">
                   <Truck className="h-7 w-7 text-muted-foreground/50" />

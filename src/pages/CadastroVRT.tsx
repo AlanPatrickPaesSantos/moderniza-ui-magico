@@ -55,7 +55,7 @@ const CadastroVRT = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <Button
@@ -241,7 +241,7 @@ const CadastroVRT = () => {
                   </div>
                   
                   <div className="flex justify-center py-4">
-                    <div className="bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg p-8 border border-primary/20">
+                    <div className="bg-primary/10 rounded-lg p-8 border border-primary/20">
                       <Wifi className="h-20 w-20 text-primary" />
                     </div>
                   </div>
