@@ -14,11 +14,11 @@ export const ConsultasSection = () => {
   const [results, setResults] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [hasPrev, setHasPrev] = useState(false);
   const [hasNext, setHasNext] = useState(false);
   const [isNavLoading, setIsNavLoading] = useState(false);
   const [printType, setPrintType] = useState<'laudo' | 'saida'>('laudo');
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -58,9 +58,10 @@ export const ConsultasSection = () => {
     } catch {
       setSelectedRecord(record);
       setHasPrev(false);
+      setHasPrev(false);
       setHasNext(false);
     }
-    setIsModalOpen(true);
+    setIsDetailsOpen(true);
   };
 
   const navigateTo = async (direction: 'prev' | 'next') => {
@@ -141,7 +142,10 @@ export const ConsultasSection = () => {
       </Card>
 
       {/* Modal de Detalhes Preenchido */}
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+      <Dialog open={isDetailsOpen} onOpenChange={(open) => {
+        setIsDetailsOpen(open);
+        if (!open) setTimeout(() => setSelectedRecord(null), 300);
+      }}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col p-0 border-pmpa-navy/20">
           <DialogHeader className="p-6 pb-2 border-b border-border/50 bg-pmpa-navy/5">
             <div className="flex items-center gap-2 mb-1">
@@ -159,7 +163,10 @@ export const ConsultasSection = () => {
             <CadastroForm
               id="editar-consulta-form"
               initialData={selectedRecord}
-              onCancel={() => setIsModalOpen(false)}
+              onCancel={() => {
+                setIsDetailsOpen(false);
+                setTimeout(() => setSelectedRecord(null), 300);
+              }}
               onSubmit={async (data) => {
                 try {
                   const res = await fetch(
@@ -175,9 +182,10 @@ export const ConsultasSection = () => {
                     toast.success(`✅ OS nº ${selectedRecord?.Id_cod} atualizada com sucesso!`);
                     setSelectedRecord(result.record);
                     setResults(prev =>
-                      prev.map(r => r.Id_cod === result.record.Id_cod ? result.record : r)
+                      Array.isArray(prev) ? prev.map(r => r.Id_cod === result.record.Id_cod ? result.record : r) : []
                     );
-                    setIsModalOpen(false);
+                    setIsDetailsOpen(false);
+                    setTimeout(() => setSelectedRecord(null), 300);
                   } else {
                     toast.error("Erro ao salvar: " + (result.error || "Tente novamente."));
                   }

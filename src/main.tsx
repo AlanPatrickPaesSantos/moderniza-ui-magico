@@ -41,4 +41,10 @@ window.fetch = async (...args) => {
 };
 // ----------------------------------------------------
 
-ReactDOM.createRoot(document.getElementById("root")!).render(<App />);
+import ErrorBoundary from "./components/ErrorBoundary";
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <ErrorBoundary>
+    <App />
+  </ErrorBoundary>
+);

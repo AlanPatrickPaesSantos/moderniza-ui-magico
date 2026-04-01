@@ -12,13 +12,14 @@ import { toast } from "sonner";
 const Cadastro = () => {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
   const [hasPrev, setHasPrev] = useState(false);
+  const [results, setResults] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [hasNext, setHasNext] = useState(false);
   const [printType, setPrintType] = useState<'laudo' | 'saida'>('laudo');
   const [isNavLoading, setIsNavLoading] = useState(false);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -58,6 +59,7 @@ const Cadastro = () => {
       setHasPrev(false);
       setHasNext(false);
     }
+    setIsDetailsOpen(true);
     setQuery("");
     setResults([]);
   };
@@ -185,7 +187,10 @@ const Cadastro = () => {
       </div>
 
       {/* Modal de Detalhes do Registro Buscado */}
-      <Dialog open={!!selectedRecord} onOpenChange={() => setSelectedRecord(null)}>
+      <Dialog open={isDetailsOpen} onOpenChange={(open) => { 
+        setIsDetailsOpen(open);
+        if (!open) setTimeout(() => setSelectedRecord(null), 300);
+      }}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col p-0 border-pmpa-navy/20">
           <DialogHeader className="p-6 pb-2 border-b border-border/50 bg-pmpa-navy/5">
             <div className="flex items-center gap-2 mb-1">
@@ -202,9 +207,12 @@ const Cadastro = () => {
           </DialogHeader>
           <div className="p-6 flex-1 overflow-hidden">
             <CadastroForm
-              id="editar-form"
+              id="editar-consulta-form"
               initialData={selectedRecord}
-              onCancel={() => setSelectedRecord(null)}
+              onCancel={() => {
+                setIsDetailsOpen(false);
+                setTimeout(() => setSelectedRecord(null), 300);
+              }}
               onSubmit={async (data) => {
                 try {
                   const res = await fetch(
