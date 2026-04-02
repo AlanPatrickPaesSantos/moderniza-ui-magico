@@ -102,7 +102,7 @@ const Cadastro = () => {
       const result = await res.json();
       if (result.success) {
         toast.success(`✅ Equipamento cadastrado! OS nº ${result.os}`);
-        navigate("/");
+        // Removido redirecionamento para permanecer na página conforme pedido pelo usuário
       } else {
         toast.error("Erro ao salvar: " + (result.error || "Tente novamente."));
       }
