@@ -199,21 +199,15 @@ export const ServicoInternoExternoForm = ({
           </div>
         </div>
 
-        {/* Areas: Analise, Observação, Solução */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-1.5">
-            <Label htmlFor="analise" className="text-sm font-bold uppercase text-pmpa-navy">Análise Técnica</Label>
-            <Textarea id="analise" {...register("analise")} placeholder="Análise" className="min-h-[80px] text-sm resize-none" />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="observacao" className="text-sm font-bold uppercase text-pmpa-navy">Observação</Label>
-            <Textarea id="observacao" {...register("observacao")} placeholder="Obs." className="min-h-[80px] text-sm resize-none" />
-          </div>
-        </div>
-
+        {/* Areas: Solução Aplicada (Único campo de detalhamento agora) */}
         <div className="space-y-1.5 pb-2">
           <Label htmlFor="solucao" className="text-sm font-bold uppercase text-pmpa-navy">Solução Aplicada</Label>
-          <Textarea id="solucao" {...register("solucao")} placeholder="Solução" className="min-h-[80px] text-sm resize-none" />
+          <Textarea 
+            id="solucao" 
+            {...register("solucao")} 
+            placeholder="Descreva a solução aplicada na missão..." 
+            className="min-h-[150px] text-base resize-none border-pmpa-navy/20 focus-visible:ring-pmpa-navy shadow-inner bg-card" 
+          />
         </div>
       </div>
     </form>
