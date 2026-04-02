@@ -199,7 +199,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
           @page { margin: 0mm; size: A4; }
           body { font-family: Arial, sans-serif; padding: 0.8cm 1.2cm; color: black; line-height: 1.2; background: white; font-size: 9pt; }
           .header { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid black; padding-bottom: 6px; margin-bottom: 8px; }
-          .logo { width: 60px; height: 60px; object-fit: contain; }
+          .logo { height: 65px; width: auto; object-fit: contain; image-rendering: -webkit-optimize-contrast; }
           .header-text { text-align: center; flex: 1; font-weight: bold; text-transform: uppercase; font-size: 8.5pt; line-height: 1.4; }
           .header-text .ditel { font-size: 11pt; }
           .doc-title { text-align: center; font-weight: 900; text-transform: uppercase; font-size: 11pt; margin: 8px 0; }
@@ -229,7 +229,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
             <div>DEPARTAMENTO GERAL DE ADMINISTRAÇÃO</div>
             <div class="ditel">DIRETORIA DE TELEMÁTICA</div>
           </div>
-          <img src="${logoBase}/Logo Ditel.jpeg" class="logo" onerror="this.style.display='none'" />
+          <img src="${logoBase}/Logo Ditel.jpeg" class="logo" onerror="this.style.display='none'" style="height: 75px; width: auto;" />
         </div>
 
         <div class="doc-title">RELATÓRIO CONSOLIDADO DE ATIVIDADES - DITEL</div>
