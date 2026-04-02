@@ -4,7 +4,7 @@ const MissaoSchema = new mongoose.Schema({
   os: { type: Number, unique: true },
   secao: String,
   unidade: { type: String, index: true },
-  data: String,
+  data: { type: String, index: true },
   horario: String,
   tecnicos: String,
   def_recla: String,
