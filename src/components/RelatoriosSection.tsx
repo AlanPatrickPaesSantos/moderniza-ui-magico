@@ -229,7 +229,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
             <div>DEPARTAMENTO GERAL DE ADMINISTRAÇÃO</div>
             <div class="ditel">DIRETORIA DE TELEMÁTICA</div>
           </div>
-          <img src="${logoBase}/Logo Ditel.jpeg" class="logo" onerror="this.style.display='none'" style="height: 75px; width: auto;" />
+          <img src="${logoBase}/Logo Ditel.jpeg" class="logo" onerror="this.style.display='none'" style="height: 75px; width: auto; transform: translateX(15px); image-rendering: -webkit-optimize-contrast;" />
         </div>
 
         <div class="doc-title">RELATÓRIO CONSOLIDADO DE ATIVIDADES - DITEL</div>
