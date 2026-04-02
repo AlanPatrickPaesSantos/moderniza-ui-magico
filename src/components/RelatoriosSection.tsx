@@ -45,65 +45,26 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
     }
   }, [externalTrigger]);
 
-  const handleGenerateReportFromParams = async (start: string, end: string) => {
+  // Função unificada para busca de dados (Estatísticas + Lista)
+  const fetchReportData = async (start: string, end: string, reportId: string) => {
     setIsLoading(true);
     try {
-      const isMissions = activeReport === "Rel_Missao_Consolidado";
+      const isMissions = reportId === "Rel_Missao_Consolidado";
       const endpoint = isMissions ? "missoes" : "servicos";
       const statusParam = isMissions ? "" : "&status=PENDENTE";
 
+      // 1. Busca Contagens Exatas
       const countUrl = `${API_BASE}/${endpoint}/count?startDate=${start}&endDate=${end}${statusParam}`;
       const countResp = await fetch(countUrl);
       const exactStats = await countResp.json();
 
+      // 2. Busca Registros para a Lista
       const listUrl = `${API_BASE}/${endpoint}?startDate=${start}&endDate=${end}${statusParam}`;
       const listResp = await fetch(listUrl);
       const data = await listResp.json();
       
       setResults(Array.isArray(data) ? data : []);
       
-      if (isMissions) {
-        setStats({
-          total: exactStats?.total || 0,
-          interno: exactStats?.interno || 0,
-          externo: exactStats?.externo || 0,
-          remoto: exactStats?.remoto || 0,
-          pendente: exactStats?.pendente || 0,
-        });
-      } else {
-        // Para manutenção, mapeamos o count simples para o total
-        setStats({
-          total: exactStats?.count || 0,
-          interno: 0, externo: 0, remoto: 0, pendente: exactStats?.count || 0
-        });
-      }
-    } catch (error) {
-      console.error("Erro no gatilho automático:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  
-  const handleGenerateReport = async () => {
-    setIsLoading(true);
-    try {
-      const isMissions = activeReport === "Rel_Missao_Consolidado";
-      const endpoint = isMissions ? "missoes" : "servicos";
-      const statusParam = isMissions ? "" : "&status=PENDENTE";
-
-      // Usa rota de contagem EXATA
-      const countUrl = `${API_BASE}/${endpoint}/count?startDate=${filters.startDate}&endDate=${filters.endDate}${statusParam}`;
-      const countResp = await fetch(countUrl);
-      if (!countResp.ok) throw new Error("Erro na resposta do servidor");
-      const exactStats = await countResp.json();
-
-      // Também busca os registros para exibir na lista
-      const listUrl = `${API_BASE}/${endpoint}?startDate=${filters.startDate}&endDate=${filters.endDate}${statusParam}`;
-      const listResp = await fetch(listUrl);
-      if (!listResp.ok) throw new Error("Erro ao buscar registros");
-      const data = await listResp.json();
-      setResults(Array.isArray(data) ? data : []);
-
       if (isMissions) {
         setStats({
           total: exactStats?.total || 0,
@@ -120,17 +81,27 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
       }
     } catch (error) {
       console.error("Erro ao gerar relatório:", error);
-      alert("Houve um erro ao conectar com o servidor. Por favor, tente novamente.");
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleGenerateReportFromParams = async (start: string, end: string) => {
+    if (!activeReport) return;
+    await fetchReportData(start, end, activeReport);
+  };
+  
+  const handleGenerateReport = async () => {
+    if (!activeReport) return;
+    await fetchReportData(filters.startDate, filters.endDate, activeReport);
+  };
+
   const loadDetail = async (item: any) => {
     setIsLoading(true);
     try {
-      const endpoint = activeReport === "Rel_Missao_Consolidado" ? "missoes" : "servicos";
-      const id = activeReport === "Rel_Missao_Consolidado" ? item.os : item.Id_cod;
+      const isMissions = activeReport === "Rel_Missao_Consolidado";
+      const endpoint = isMissions ? "missoes" : "servicos";
+      const id = isMissions ? item.os : item.Id_cod;
       const res = await fetch(`${API_BASE}/${endpoint}/${id}`);
       if (res.ok) {
         const fullData = await res.json();
@@ -364,7 +335,14 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
         </div>
       </Card>
 
-      <Dialog open={!!activeReport} onOpenChange={() => setActiveReport(null)}>
+      <Dialog open={!!activeReport} onOpenChange={(open) => {
+        if (!open) {
+          setActiveReport(null);
+          setResults([]);
+          setStats({ total: 0, interno: 0, externo: 0, remoto: 0, pendente: 0 });
+          setFilters({ startDate: "", endDate: "" });
+        }
+      }}>
         <DialogContent className="max-w-5xl w-[95vw] sm:w-full max-h-[92vh] overflow-hidden flex flex-col p-4 md:p-6 border-border/50 shadow-2xl">
           <DialogHeader className="p-2 md:p-4 border-b border-border/50 bg-muted/20 rounded-t-lg">
             <DialogTitle className="text-xl md:text-2xl font-black text-pmpa-navy uppercase">Gerador de Relatórios</DialogTitle>
