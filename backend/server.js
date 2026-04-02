@@ -13,20 +13,7 @@ app.use(express.json());
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI)
-  .then(async () => {
-    console.log(`✅ Conectado ao MongoDB [${process.env.NODE_ENV === 'production' ? 'CLOUD' : 'LOCAL'}]`);
-    
-    // [AUTO-FAXINA] Limpeza de registros de teste superiores a 2692 (Roda uma vez no startup)
-    try {
-      const resServico = await Servico.deleteMany({ Id_cod: { $gt: 2692 } });
-      const resMissao = await Missao.deleteMany({ os: { $gt: 2692 } });
-      if (resServico.deletedCount > 0 || resMissao.deletedCount > 0) {
-        console.log(`🧹 FAXINA CONCLUÍDA: Removidos ${resServico.deletedCount} Serviços e ${resMissao.deletedCount} Missões acima de 2692.`);
-      }
-    } catch (err) {
-      console.error('⚠️ Erro na auto-faxina:', err.message);
-    }
-  })
+  .then(() => console.log(`✅ Conectado ao MongoDB [${process.env.NODE_ENV === 'production' ? 'CLOUD' : 'LOCAL'}]`))
   .catch(err => console.error('❌ Erro ao conectar ao MongoDB:', err));
 
 const Servico = require('./models/Servico');
@@ -40,23 +27,6 @@ const verificarToken = require('./middleware/authMiddleware');
 // Status
 app.get('/api/status', (req, res) => {
   res.json({ status: 'Rodando', database: mongoose.connection.readyState === 1 ? 'Conectado' : 'Desconectado' });
-});
-
-// [ADMIN TEMPORÁRIO] Rota para limpeza de registros de teste superiores a 2692
-app.get('/api/admin/cleanup-tests', async (req, res) => {
-  try {
-    const resServico = await Servico.deleteMany({ Id_cod: { $gt: 2692 } });
-    const resMissao = await Missao.deleteMany({ os: { $gt: 2692 } });
-    res.json({
-      success: true,
-      message: 'Faxina DITEL concluída com sucesso!',
-      removidosServicos: resServico.deletedCount,
-      removidosMissoes: resMissao.deletedCount,
-      novaUltimaOS: 2692
-    });
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
-  }
 });
 
 // ====== ROTA DE AUTENTICAÇÃO ======
