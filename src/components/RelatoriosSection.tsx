@@ -276,9 +276,10 @@ export const RelatoriosSection = () => {
 
       <Dialog open={!!activeReport} onOpenChange={() => setActiveReport(null)}>
         <DialogContent className="max-w-5xl max-h-[92vh] overflow-hidden flex flex-col p-6 border-border/50 shadow-2xl">
-          <div className="mb-6 print:hidden">
-            <h2 className="text-xl font-black text-foreground uppercase tracking-tight">Filtros de Relatório</h2>
-          </div>
+          <DialogHeader className="sr-only">
+            <DialogTitle>Gerador de Relatórios</DialogTitle>
+            <DialogDescription>Visualize e imprima relatórios consolidados.</DialogDescription>
+          </DialogHeader>
 
           <div className="flex-1 overflow-hidden flex flex-col gap-4">
             {/* Filtros */}
@@ -339,9 +340,9 @@ export const RelatoriosSection = () => {
                   <p className="font-bold text-sm uppercase tracking-widest">Nenhum dado carregado para este período.</p>
                 </div>
               )}
-              {Array.isArray(results) && results.map((item) => (
+              {Array.isArray(results) && results.filter(Boolean).map((item, index) => (
                 <button 
-                  key={item._id}
+                  key={item._id || `report-item-${index}`}
                   onClick={() => setSelectedRecord(item)}
                   className="w-full text-left p-4 hover:bg-primary/5 transition-colors group flex items-center justify-between"
                 >
@@ -351,7 +352,7 @@ export const RelatoriosSection = () => {
                         {activeReport === "Rel_Missao_Consolidado" ? "OS #" : "ID / Código"}
                       </p>
                       <p className="font-bold text-foreground">
-                        #{activeReport === "Rel_Missao_Consolidado" ? item.os : item.Id_cod}
+                        #{activeReport === "Rel_Missao_Consolidado" ? String(item.os || "---") : String(item.Id_cod || "---")}
                       </p>
                     </div>
                     <div className="md:col-span-2 space-y-0.5">
@@ -360,8 +361,8 @@ export const RelatoriosSection = () => {
                       </p>
                       <p className="font-semibold text-foreground truncate">
                         {activeReport === "Rel_Missao_Consolidado" 
-                          ? `${item.unidade} - ${item.solicitante || 'N/A'}`
-                          : `${item.T_EquipSuporte || item.T_EquipTelecom || "N/A"} - ${item.Unidade}`}
+                          ? `${String(item.unidade || "N/A")} - ${String(item.solicitante || 'N/A')}`
+                          : `${String(item.T_EquipSuporte || item.T_EquipTelecom || "N/A")} - ${String(item.Unidade || "N/A")}`}
                       </p>
                     </div>
                     <div className="space-y-0.5">
@@ -369,9 +370,9 @@ export const RelatoriosSection = () => {
                         {activeReport === "Rel_Missao_Consolidado" ? "Tipo" : "Status"}
                       </p>
                       <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                        (item.servico === 'externo' || item.Serviço === 'PRONTO') ? 'bg-green-500/10 text-green-600 dark:text-green-400' : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                        (String(item.servico) === 'externo' || String(item.Serviço) === 'PRONTO') ? 'bg-green-500/10 text-green-600 dark:text-green-400' : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
                       }`}>
-                        {activeReport === "Rel_Missao_Consolidado" ? item.servico : (item.Serviço || "PENDENTE")}
+                        {activeReport === "Rel_Missao_Consolidado" ? String(item.servico || "N/A") : String(item.Serviço || "PENDENTE")}
                       </span>
                     </div>
                   </div>

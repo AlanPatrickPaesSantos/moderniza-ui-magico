@@ -157,7 +157,7 @@ export const ConsultasSection = () => {
               <span className="px-2 py-0.5 rounded-full bg-pmpa-navy/10 text-pmpa-navy text-[10px] font-bold uppercase tracking-wider">Detalhamento de Registro</span>
             </div>
             <DialogTitle className="text-2xl font-bold text-pmpa-navy leading-tight">
-              Equipamento #{selectedRecord?.Id_cod}
+              Equipamento #{selectedRecord ? String(selectedRecord.Id_cod) : ""}
             </DialogTitle>
             <DialogDescription>
               Visualizando dados do sistema PMPA / DITEL.
@@ -184,7 +184,7 @@ export const ConsultasSection = () => {
                   );
                   const result = await res.json();
                   if (result.success) {
-                    toast.success(`✅ OS nº ${selectedRecord?.Id_cod} atualizada com sucesso!`);
+                    toast.success(`✅ OS nº ${selectedRecord ? String(selectedRecord.Id_cod) : ""} atualizada com sucesso!`);
                     setSelectedRecord(result.record);
                     setResults(prev =>
                       Array.isArray(prev) ? prev.map(r => r.Id_cod === result.record.Id_cod ? result.record : r) : []
