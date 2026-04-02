@@ -56,7 +56,7 @@ export const LaudoPrint = ({ data, type = 'laudo' }: { data: LaudoData, type?: '
           <p>Polícia Militar do Pará</p>
           <p>Departamento Geral de Administração</p>
           <p className="text-[10px] mt-1">Diretoria de Telemática</p>
-          <h2 className="text-sm mt-[7cm] font-black tracking-wide">
+          <h2 className="text-sm mt-[10cm] font-black tracking-wide">
             {type === 'saida' ? 'RELATÓRIO DE SAÍDA DE EQUIPAMENTO' : 'RELATÓRIO DE LAUDO TÉCNICO'}
           </h2>
         </div>
