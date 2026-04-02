@@ -54,7 +54,7 @@ export const LaudoPrint = ({ data, type = 'laudo' }: { data: LaudoData, type?: '
   const renderHalf = () => (
     <div className="laudo-half px-6 py-4 flex flex-col justify-between h-full font-sans text-[11px] leading-tight text-black bg-white">
       {/* Logos and Header */}
-      <div className="flex justify-between items-start mb-4 relative">
+      <div className="flex justify-between items-start mb-[55px] relative">
         <div className="w-32 flex justify-start">
           <img src="/logo-pmpa.png" alt="Logo PMPA" style={{ height: '85px', width: 'auto', objectFit: 'contain' }} />
         </div>
@@ -64,7 +64,7 @@ export const LaudoPrint = ({ data, type = 'laudo' }: { data: LaudoData, type?: '
           <p>Polícia Militar do Pará</p>
           <p>Departamento Geral de Administração</p>
           <p className="text-[10px] mt-1">Diretoria de Telemática</p>
-          <h2 className="text-sm mt-10 font-black tracking-wide">
+          <h2 className="text-sm mt-[55px] font-black tracking-wide">
             {type === 'saida' ? 'RELATÓRIO DE SAÍDA DE EQUIPAMENTO' : 'RELATÓRIO DE LAUDO TÉCNICO'}
           </h2>
         </div>
