@@ -32,7 +32,8 @@ const Cadastro = () => {
       const autoFetch = async () => {
         setIsLoading(true);
         try {
-          const url = new URL(`${API_BASE}/servicos`);
+          // Usando window.location.origin para garantir que a URL seja absoluta e funcione no Render
+          const url = new URL(`${API_BASE}/servicos`, window.location.origin);
           if (statusParam) url.searchParams.append("status", statusParam);
           if (startDateParam) url.searchParams.append("startDate", startDateParam);
           
@@ -55,7 +56,10 @@ const Cadastro = () => {
   useEffect(() => {
     const fetchResults = async () => {
       if (query.trim().length === 0) {
-        setResults([]);
+        // Só limpa se não houver filtro automático do Dashboard ativo
+        if (!searchParams.get("status") && !searchParams.get("startDate")) {
+          setResults([]);
+        }
         return;
       }
       setIsLoading(true);
