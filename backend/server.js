@@ -13,7 +13,20 @@ app.use(express.json());
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log(`✅ Conectado ao MongoDB [${process.env.NODE_ENV === 'production' ? 'CLOUD' : 'LOCAL'}]`))
+  .then(async () => {
+    console.log(`✅ Conectado ao MongoDB [${process.env.NODE_ENV === 'production' ? 'CLOUD' : 'LOCAL'}]`);
+    
+    // [AUTO-FAXINA] Limpeza de registros de teste superiores a 2692 (Roda uma vez no startup)
+    try {
+      const resServico = await Servico.deleteMany({ Id_cod: { $gt: 2692 } });
+      const resMissao = await Missao.deleteMany({ os: { $gt: 2692 } });
+      if (resServico.deletedCount > 0 || resMissao.deletedCount > 0) {
+        console.log(`🧹 FAXINA CONCLUÍDA: Removidos ${resServico.deletedCount} Serviços e ${resMissao.deletedCount} Missões acima de 2692.`);
+      }
+    } catch (err) {
+      console.error('⚠️ Erro na auto-faxina:', err.message);
+    }
+  })
   .catch(err => console.error('❌ Erro ao conectar ao MongoDB:', err));
 
 const Servico = require('./models/Servico');
@@ -34,8 +47,8 @@ app.get('/api/admin/cleanup-tests', async (req, res) => {
   try {
     const resServico = await Servico.deleteMany({ Id_cod: { $gt: 2692 } });
     const resMissao = await Missao.deleteMany({ os: { $gt: 2692 } });
-    res.json({ 
-      success: true, 
+    res.json({
+      success: true,
       message: 'Faxina DITEL concluída com sucesso!',
       removidosServicos: resServico.deletedCount,
       removidosMissoes: resMissao.deletedCount,
@@ -58,16 +71,16 @@ app.post('/api/auth/login', async (req, res) => {
     if (!user) {
       return res.status(401).json({ success: false, error: 'Acesso Negado: Usuário incorreto ou inexistente.' });
     }
-    
+
     const senhaValida = await bcrypt.compare(password, user.password);
     if (!senhaValida) {
       return res.status(401).json({ success: false, error: 'Acesso Negado: Senha inválida.' });
     }
-    
+
     // Gera emissão de chave para 24 horas usando variável de ambiente
     const SECRET = process.env.JWT_SECRET || 'DitelPMPA-Seguranca-2026';
     const token = jwt.sign({ id: user._id, username: user.username, papel: user.papel }, SECRET, { expiresIn: '24h' });
-    
+
     res.json({ success: true, token, username: user.username, papel: user.papel });
   } catch (err) {
     console.error('Erro no login:', err);
@@ -334,7 +347,7 @@ app.get('/api/missoes', verificarToken, async (req, res) => {
       Missao.find(query).limit(500).sort({ os: -1 }),
       Missao.countDocuments(query)
     ]);
-    
+
     res.set('X-Total-Count', total);
     res.json(missoes);
   } catch (err) {
@@ -413,7 +426,7 @@ app.put('/api/missoes/:id', async (req, res) => {
   try {
     const os = parseInt(req.params.id);
     const data = req.body;
-    
+
     // Proteger IDs
     delete data._id;
     delete data.os;
