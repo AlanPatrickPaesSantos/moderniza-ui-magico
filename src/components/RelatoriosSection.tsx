@@ -9,6 +9,7 @@ import { CadastroForm } from "./CadastroForm";
 import { ServicoInternoExternoForm } from "./ServicoInternoExternoForm";
 import { API_BASE } from "../lib/api-config";
 import { LaudoPrint } from "./LaudoPrint";
+import { toast } from "sonner";
 // Removido import de RelatorioMissaoPrint para usar janela isolada
 
 
@@ -21,7 +22,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
   const [activeReport, setActiveReport] = useState<string | null>(null);
   const [results, setResults] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [filters, setFilters] = useState({ startDate: "", endDate: "" });
+  const [filters, setFilters] = useState({ startDate: "", endDate: "", q: "" });
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
   const [stats, setStats] = useState({ total: 0, interno: 0, externo: 0, remoto: 0, pendente: 0 });
 
@@ -33,7 +34,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
       const start = externalTrigger.dateRange?.start || "";
       const end = externalTrigger.dateRange?.end || "";
       
-      setFilters({ startDate: start, endDate: end });
+      setFilters({ startDate: start, endDate: end, q: "" });
       setActiveReport(externalTrigger.id);
       
       // Pequeno delay para garantir que os estados foram aplicados antes da busca
@@ -52,14 +53,15 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
       const isMissions = reportId === "Rel_Missao_Consolidado";
       const endpoint = isMissions ? "missoes" : "servicos";
       const statusParam = isMissions ? "" : "&status=PENDENTE";
+      const searchQuery = filters.q ? `&q=${encodeURIComponent(filters.q)}` : "";
 
       // 1. Busca Contagens Exatas
-      const countUrl = `${API_BASE}/${endpoint}/count?startDate=${start}&endDate=${end}${statusParam}`;
+      const countUrl = `${API_BASE}/${endpoint}/count?startDate=${start}&endDate=${end}${statusParam}${searchQuery}`;
       const countResp = await fetch(countUrl);
       const exactStats = await countResp.json();
 
       // 2. Busca Registros para a Lista
-      const listUrl = `${API_BASE}/${endpoint}?startDate=${start}&endDate=${end}${statusParam}`;
+      const listUrl = `${API_BASE}/${endpoint}?startDate=${start}&endDate=${end}${statusParam}${searchQuery}`;
       const listResp = await fetch(listUrl);
       const data = await listResp.json();
       
@@ -94,6 +96,33 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
   const handleGenerateReport = async () => {
     if (!activeReport) return;
     await fetchReportData(filters.startDate, filters.endDate, activeReport);
+  };
+
+  const handleSave = async (data: any) => {
+    if (!selectedRecord) return;
+    try {
+      const isMissions = activeReport === "Rel_Missao_Consolidado";
+      const endpoint = isMissions ? "missoes" : "servicos";
+      const id = isMissions ? selectedRecord.os : selectedRecord.Id_cod;
+
+      const res = await fetch(`${API_BASE}/${endpoint}/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+      if (result.success) {
+        toast.success(`✅ Registro #${id} atualizado com sucesso!`);
+        setSelectedRecord(result.record || result.missao || data);
+        // Atualiza a lista de resultados para refletir a mudança
+        handleGenerateReport();
+      } else {
+        toast.error("Erro ao salvar: " + (result.error || "Tente novamente."));
+      }
+    } catch (err) {
+      toast.error("Erro de conexão com o servidor.");
+    }
   };
 
   const loadDetail = async (item: any) => {
@@ -340,7 +369,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
           setActiveReport(null);
           setResults([]);
           setStats({ total: 0, interno: 0, externo: 0, remoto: 0, pendente: 0 });
-          setFilters({ startDate: "", endDate: "" });
+          setFilters({ startDate: "", endDate: "", q: "" });
         }
       }}>
         <DialogContent className="max-w-5xl w-[95vw] sm:w-full max-h-[92vh] overflow-hidden flex flex-col p-4 md:p-6 border-border/50 shadow-2xl">
@@ -360,10 +389,19 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
                 <label className="text-xs font-bold text-foreground uppercase tracking-wider">Fim</label>
                 <Input type="date" value={filters.endDate} onChange={(e) => setFilters({...filters, endDate: e.target.value})} />
               </div>
+              <div className="space-y-1.5 flex-1 min-w-[200px]">
+                <label className="text-xs font-bold text-foreground uppercase tracking-wider">Busca Rápida (OS, Unidade, Nome)</label>
+                <Input 
+                  placeholder="Pesquisar..." 
+                  value={filters.q} 
+                  onChange={(e) => setFilters({...filters, q: e.target.value})} 
+                  onKeyDown={(e) => e.key === "Enter" && handleGenerateReport()}
+                />
+              </div>
               
-              <Button onClick={handleGenerateReport} className="bg-pmpa-navy hover:bg-pmpa-navy/90 gap-2 h-10">
+              <Button onClick={handleGenerateReport} className="bg-pmpa-navy hover:bg-pmpa-navy/90 gap-2 h-10 px-6">
                 {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
-                Gerar Relatório
+                GERAR
               </Button>
 
               {results.length > 0 && activeReport === "Rel_Missao_Consolidado" && (
@@ -465,9 +503,9 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
           </DialogHeader>
           <div className="p-4 md:p-6 flex-1 overflow-y-auto">
             {activeReport === "Rel_Missao_Consolidado" ? (
-              <ServicoInternoExternoForm id="report-detail-form" initialData={selectedRecord} onCancel={() => setSelectedRecord(null)} onSubmit={() => setSelectedRecord(null)} />
+              <ServicoInternoExternoForm id="report-detail-form" initialData={selectedRecord} onCancel={() => setSelectedRecord(null)} onSubmit={handleSave} />
             ) : (
-              <CadastroForm id="report-detail-form" initialData={selectedRecord} onCancel={() => setSelectedRecord(null)} onSubmit={() => setSelectedRecord(null)} />
+              <CadastroForm id="report-detail-form" initialData={selectedRecord} onCancel={() => setSelectedRecord(null)} onSubmit={handleSave} />
             )}
             {selectedRecord && <LaudoPrint data={selectedRecord} type={printType} />}
           </div>

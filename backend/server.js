@@ -250,6 +250,7 @@ app.put('/api/servicos/:id', async (req, res) => {
           Bateria: data.bateria || '',
           telefone: data.telefone || '',
           Seção_Ditel: data.secaoDitel || '',
+          T_EquipTelecom: '', // Limpa campo legado ao atualizar pela nova UI
           fonteCabo: data.fonteCabo || false,
         }
       },
@@ -268,8 +269,19 @@ app.put('/api/servicos/:id', async (req, res) => {
 // Busca e filtros de Missões (Relatórios) - listagem
 app.get('/api/missoes', verificarToken, async (req, res) => {
   try {
-    const { startDate, endDate, servico } = req.query;
+    const { q, startDate, endDate, servico } = req.query;
     let query = {};
+
+    if (q) {
+      const isNum = !isNaN(q);
+      query.$or = [
+        ...(isNum ? [{ os: parseInt(q) }] : []),
+        { solicitante: { $regex: q, $options: 'i' } },
+        { unidade: { $regex: q, $options: 'i' } },
+        { tecnicos: { $regex: q, $options: 'i' } },
+        { def_recla: { $regex: q, $options: 'i' } }
+      ];
+    }
 
     if (startDate || endDate) {
       query.data = {};

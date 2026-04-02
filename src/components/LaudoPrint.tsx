@@ -23,14 +23,22 @@ export const LaudoPrint = ({ data, type = 'laudo' }: { data: LaudoData, type?: '
 
   const formatDateBR = (dateStr?: string) => {
     if (!dateStr) return '';
-    // Formats ISO format like YYYY-MM-DD or YYYY-MM-DDT... to DD/MM/YYYY
-    if (dateStr.includes('-')) {
-      const parts = dateStr.split('T')[0].split('-');
-      if (parts.length === 3 && parts[0].length === 4) {
-        return `${parts[2]}/${parts[1]}/${parts[0]}`;
-      }
+    try {
+      // Se já estiver no formato brasileiro DD/MM/AAAA, retorna direto
+      if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) return dateStr;
+      
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime())) return dateStr;
+
+      // Usamos UTC para evitar que o fuso horário mude a data em 1 dia para trás
+      const day = String(date.getUTCDate()).padStart(2, '0');
+      const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+      const year = date.getUTCFullYear();
+      
+      return `${day}/${month}/${year}`;
+    } catch {
+      return dateStr;
     }
-    return dateStr;
   };
 
   useEffect(() => {
