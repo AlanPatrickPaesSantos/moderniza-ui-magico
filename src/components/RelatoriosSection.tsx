@@ -340,7 +340,6 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
           <div className="space-y-3">
             {[
               { icon: Activity, id: "Rel_Missao_Consolidado", title: "Consolidado Missões", desc: "Relatório de serviços Int/Ext" },
-              { icon: Wrench, id: "Rel_Manutencao_Pendente", title: "Manutenções Pendentes", desc: "Lista de equipamentos em manutenção" },
             ].map((item) => (
               <Button 
                 key={item.id}
