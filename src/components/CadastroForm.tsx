@@ -112,6 +112,29 @@ export const CadastroForm = ({ onSubmit, initialData, id = "cadastro-form" }: Ca
         saidaEquip: initialData.Data_Saida || initialData.saidaEquip || "",
         fonteCabo: initialData.fonteCabo === true || initialData.fonteCabo === 'true' || false,
       });
+    } else {
+      // Quando não há dados iniciais (Novo Cadastro), reseta para o estado vazio
+      form.reset({
+        tecnico: "",
+        secaoDitel: "",
+        tEquipSuporte: "",
+        solicitante: "",
+        unidade: "",
+        dataEnt: "",
+        nPae: "",
+        rp: "",
+        nSerie: "",
+        defeitoRecl: "",
+        analiseTecnica: "",
+        servico: "",
+        garantia: "",
+        dataEnvio: "",
+        dataRetorno: "",
+        laudoTecnico: "",
+        telefone: "",
+        saidaEquip: "",
+        fonteCabo: false,
+      });
     }
   }, [initialData, form]);
 
