@@ -73,55 +73,37 @@ const ServicoInternoExterno = () => {
     <div className="min-h-screen flex flex-col bg-background">
       <div className="flex-1 flex flex-col container mx-auto px-4 py-4 relative">
         
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-6 shrink-0">
+        <div className="flex flex-col md:flex-row items-center gap-4 mb-4 shrink-0">
+          <Button variant="ghost" onClick={() => navigate("/")} className="gap-2 -ml-2">
+            <ArrowLeft className="h-4 w-4" /> Voltar
+          </Button>
+          
           <div className="flex items-center gap-3">
-            <Button variant="ghost" onClick={() => navigate("/")} className="h-10 w-10 p-0 rounded-full md:h-auto md:w-auto md:p-2 md:rounded-md">
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
+            <div className="bg-emerald-100 p-2 rounded-full hidden sm:block">
+              <Target className="h-5 w-5 text-emerald-700" />
+            </div>
             <div>
               <h1 className="text-2xl md:text-3xl font-black text-pmpa-navy tracking-tight uppercase leading-tight">Gestão de Missões</h1>
               <p className="text-[10px] md:text-sm text-slate-500 font-bold uppercase tracking-widest leading-none">Serviços Internos e Externos</p>
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-2">
-            <Button
-              variant="outline"
-              onClick={() => {
-                if (selectedRecord) setSelectedRecord(null);
-                else navigate("/");
-              }}
-              className="h-11 sm:h-12 border-2 border-slate-200 text-slate-600 font-bold uppercase tracking-tight hover:bg-slate-50 flex-1 sm:w-32"
-            >
-              VOLTAR
-            </Button>
-
-            <Button
-              type="submit"
-              form="missao-form"
-              className="h-11 sm:h-12 bg-pmpa-navy hover:bg-pmpa-navy/90 text-white font-black shadow-md border-2 border-white/10 uppercase tracking-tight flex-1 sm:w-64"
-            >
-              {selectedRecord ? "ATUALIZAR MISSÃO" : "SALVAR MISSÃO"}
-            </Button>
-          </div>
-        </div>
-
-        {/* Search Bar Row */}
-        <div className="w-full mb-6">
-          <div className="relative w-full md:max-w-xl flex items-center shadow-sm">
-            <div className="absolute left-3 text-pmpa-navy">
-              {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
+          <div className="w-full md:flex-1 md:min-w-[300px] md:ml-auto">
+            <div className="relative w-full md:max-w-md md:ml-auto flex items-center shadow-sm">
+              <div className="absolute left-3 text-pmpa-navy">
+                {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
+              </div>
+              <Input
+                placeholder="Nº da O.S..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={handleKeyDown}
+                className="pl-9 h-11 border-pmpa-navy/20 focus-visible:ring-pmpa-navy text-lg font-bold w-full"
+              />
+              <Button onClick={handleSearch} disabled={isLoading} className="absolute right-1 h-9 rounded bg-pmpa-navy hover:bg-pmpa-navy/90 px-4 font-bold tracking-wider text-white">
+                BUSCAR
+              </Button>
             </div>
-            <Input
-              placeholder="Pesquisar por Nº de O.S..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={handleKeyDown}
-              className="pl-9 h-12 border-pmpa-navy/20 focus-visible:ring-pmpa-navy text-lg font-bold w-full"
-            />
-            <Button onClick={handleSearch} disabled={isLoading} className="absolute right-1.5 h-9 rounded bg-pmpa-navy hover:bg-pmpa-navy/90 px-4 font-bold tracking-wider text-white">
-              BUSCAR
-            </Button>
           </div>
         </div>
 
@@ -148,7 +130,26 @@ const ServicoInternoExterno = () => {
           />
         </div>
 
-        <div className="mb-10" />
+        <div className="mt-4 flex flex-col sm:flex-row gap-3 justify-end w-full mb-8">
+          <Button
+            variant="outline"
+            onClick={() => {
+              if (selectedRecord) setSelectedRecord(null);
+              else navigate("/");
+            }}
+            className="w-full sm:w-48 h-12 border-2 border-slate-200 text-slate-600 font-bold text-lg uppercase tracking-tight hover:bg-slate-50 order-last sm:order-first"
+          >
+            VOLTAR
+          </Button>
+
+          <Button
+            type="submit"
+            form="missao-form"
+            className="flex-1 md:max-w-[400px] h-12 bg-pmpa-navy hover:bg-pmpa-navy/90 text-white font-black text-lg shadow-lg border-2 border-white/10 uppercase tracking-tight"
+          >
+            {selectedRecord ? "ATUALIZAR MISSÃO" : "SALVAR MISSÃO"}
+          </Button>
+        </div>
 
       </div>
     </div>
