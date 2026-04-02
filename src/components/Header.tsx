@@ -6,9 +6,9 @@ export const Header = () => {
       {/* Linha fina azul marinho no topo para dar um acabamento PMPA */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-pmpa-navy" />
 
-      <div className="w-full flex h-[70px] md:h-[90px] items-center justify-between px-4 md:px-6">
+      <div className="w-full flex h-[70px] md:h-[90px] items-center justify-between px-2 md:px-4">
         <div className="flex items-center gap-2 md:gap-3">
-          <div className="translate-y-[2px] md:translate-y-[4px] flex items-center justify-center transition-all hover:scale-105">
+          <div className="translate-y-[2px] md:translate-y-[4px] -translate-x-1 md:-translate-x-2 flex items-center justify-center transition-all hover:scale-105">
             <img src="/logo-pmpa.png" alt="Brasão PMPA" className="h-[50px] md:h-[80px] w-auto object-contain" />
           </div>
           <div className="flex flex-col justify-center -translate-y-[2px] md:-translate-y-[5px]">
