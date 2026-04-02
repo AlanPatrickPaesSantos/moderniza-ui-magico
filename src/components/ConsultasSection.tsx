@@ -204,7 +204,18 @@ export const ConsultasSection = () => {
 
           {/* Navegação e Ações no Rodapé do Modal */}
           <div className="p-3 md:p-4 border-t bg-muted/20 shrink-0 shadow-inner">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-4">
+              <Button
+                variant="outline"
+                onClick={() => navigateTo('prev')}
+                disabled={!hasPrev || isNavLoading}
+                className="h-12 md:h-14 gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold"
+                title="OS Anterior"
+              >
+                <ChevronLeft className="h-5 w-5 md:h-7 md:w-7" />
+                <span className="text-xs md:text-lg">Anterior</span>
+              </Button>
+
               <Button
                 type="submit"
                 form="editar-consulta-form"
