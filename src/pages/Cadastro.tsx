@@ -112,8 +112,8 @@ const Cadastro = () => {
   };
 
   return (
-    <div className="h-screen overflow-hidden flex flex-col bg-background">
-      <div className="flex-1 flex flex-col container mx-auto px-1 py-4 min-h-0">
+    <div className="min-h-screen flex flex-col bg-background">
+      <div className="flex-1 flex flex-col container mx-auto px-4 py-4">
         {/* Cabeçalho com botão Voltar */}
         <div className="flex items-center gap-4 mb-3 shrink-0">
           <Button variant="ghost" onClick={() => navigate("/")} className="gap-2">
@@ -166,8 +166,8 @@ const Cadastro = () => {
         </div>
 
         {/* Formulário de Novo Cadastro */}
-        <div className="bg-card rounded-lg shadow-[var(--shadow-card)] border border-border p-3 flex-1 min-h-0 flex flex-col relative">
-          <div className="flex-1 overflow-hidden">
+        <div className="bg-card rounded-lg shadow-[var(--shadow-card)] border border-border p-4 mb-4">
+          <div className="mb-4">
             <CadastroForm
               id="novo-form"
               onSubmit={handleSubmit}
@@ -175,15 +175,14 @@ const Cadastro = () => {
             />
           </div>
 
-          {/* Botão de Salvar para Novo Cadastro (Fixo na Base do Card) */}
-          <div className="mt-2 p-3 border-t bg-muted/5 flex justify-end gap-3 shrink-0">
-            <Button variant="outline" onClick={() => navigate("/")} className="h-11 px-6 font-bold">
+          <div className="pt-4 border-t bg-muted/5 flex flex-col sm:flex-row justify-end gap-3">
+            <Button variant="outline" onClick={() => navigate("/")} className="h-12 sm:h-11 px-6 font-bold w-full sm:w-auto">
               Cancelar
             </Button>
             <Button
               type="submit"
               form="novo-form"
-              className="bg-pmpa-navy hover:bg-pmpa-navy/90 text-white h-11 px-12 font-bold shadow-lg uppercase"
+              className="bg-pmpa-navy hover:bg-pmpa-navy/90 text-white h-12 sm:h-11 px-12 font-bold shadow-lg uppercase w-full sm:w-auto"
             >
               Finalizar Novo Cadastro
             </Button>
@@ -196,21 +195,21 @@ const Cadastro = () => {
         setIsDetailsOpen(open);
         if (!open) setTimeout(() => setSelectedRecord(null), 300);
       }}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col p-0 border-pmpa-navy/20">
-          <DialogHeader className="p-6 pb-2 border-b border-border/50 bg-pmpa-navy/5">
+        <DialogContent className="max-w-4xl w-[95vw] sm:w-full max-h-[92vh] overflow-hidden flex flex-col p-0 border-pmpa-navy/20">
+          <DialogHeader className="p-4 md:p-6 pb-2 border-b border-border/50 bg-pmpa-navy/5">
             <div className="flex items-center gap-2 mb-1">
               <span className="px-2 py-0.5 rounded-full bg-pmpa-navy/10 text-pmpa-navy text-[10px] font-bold uppercase tracking-wider">
                 Detalhamento de Registro
               </span>
             </div>
-            <DialogTitle className="text-2xl font-bold text-pmpa-navy leading-tight">
-              Equipamento #{selectedRecord?.Id_cod}
+            <DialogTitle className="text-xl md:text-2xl font-bold text-pmpa-navy leading-tight">
+              Equipamento #{selectedRecord ? String(selectedRecord.Id_cod) : ""}
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-xs md:text-sm">
               Visualizando dados do sistema PMPA / DITEL.
             </DialogDescription>
           </DialogHeader>
-          <div className="p-6 flex-1 overflow-hidden">
+          <div className="p-4 md:p-6 flex-1 overflow-y-auto">
             <CadastroForm
               id="editar-consulta-form"
               initialData={selectedRecord}
@@ -230,7 +229,7 @@ const Cadastro = () => {
                   );
                   const result = await res.json();
                   if (result.success) {
-                    toast.success(`✅ OS nº ${selectedRecord?.Id_cod} atualizada com sucesso!`);
+                    toast.success(`✅ OS nº ${selectedRecord ? String(selectedRecord.Id_cod) : ""} atualizada com sucesso!`);
                     setSelectedRecord(result.record);
                   } else {
                     toast.error("Erro ao salvar: " + (result.error || "Tente novamente."));
@@ -244,54 +243,56 @@ const Cadastro = () => {
           </div>
 
           {/* Navegação e Ações no Rodapé do Modal */}
-          <div className="p-4 border-t bg-muted/20 flex items-center justify-between gap-4 shrink-0 shadow-inner">
-            <Button
-              variant="outline"
-              onClick={() => navigateTo('prev')}
-              disabled={!hasPrev || isNavLoading}
-              className="flex-1 h-14 gap-3 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold text-lg"
-            >
-              <ChevronLeft className="h-7 w-7" />
-              <span className="hidden sm:inline">Anterior</span>
-            </Button>
+          <div className="p-3 md:p-4 border-t bg-muted/20 shrink-0 shadow-inner">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-4">
+              <Button
+                variant="outline"
+                onClick={() => navigateTo('prev')}
+                disabled={!hasPrev || isNavLoading}
+                className="h-12 md:h-14 gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold"
+              >
+                <ChevronLeft className="h-5 w-5 md:h-7 md:w-7" />
+                <span className="text-xs md:text-lg">Anterior</span>
+              </Button>
 
-            <Button
-              type="submit"
-              form="editar-form"
-              className="flex-1 h-14 bg-pmpa-navy hover:bg-pmpa-navy/90 text-white font-black text-xl shadow-lg border-2 border-white/10 uppercase tracking-tight"
-            >
-              SALVAR OS
-            </Button>
+              <Button
+                type="submit"
+                form="editar-consulta-form"
+                className="col-span-2 md:col-span-1 h-12 md:h-14 bg-pmpa-navy hover:bg-pmpa-navy/90 text-white font-black text-lg md:text-xl shadow-lg border-2 border-white/10 uppercase tracking-tight order-first md:order-none"
+              >
+                SALVAR
+              </Button>
 
-            <Button
-              variant="outline"
-              onClick={() => { setPrintType('laudo'); setTimeout(() => window.print(), 100); }}
-              className="flex-1 h-14 gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold text-[13px]"
-              title="Gerar Laudo Técnico para Impressão"
-            >
-              <Printer className="h-6 w-6" />
-              <span className="hidden xl:inline">LAUDO TÉCNICO</span>
-            </Button>
+              <Button
+                variant="outline"
+                onClick={() => { setPrintType('laudo'); setTimeout(() => window.print(), 100); }}
+                className="h-12 md:h-14 gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold text-[10px] md:text-[13px]"
+                title="Gerar Laudo Técnico para Impressão"
+              >
+                <Printer className="h-4 w-4 md:h-6 md:w-6" />
+                <span className="hidden sm:inline">LAUDO</span>
+              </Button>
 
-            <Button
-              variant="outline"
-              onClick={() => { setPrintType('saida'); setTimeout(() => window.print(), 100); }}
-              className="flex-1 h-14 gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold text-[13px]"
-              title="Gerar Relatório de Saída"
-            >
-              <Printer className="h-6 w-6" />
-              <span className="hidden xl:inline">SAÍDA EQUIPAM.</span>
-            </Button>
+              <Button
+                variant="outline"
+                onClick={() => { setPrintType('saida'); setTimeout(() => window.print(), 100); }}
+                className="h-12 md:h-14 gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold text-[10px] md:text-[13px]"
+                title="Gerar Relatório de Saída"
+              >
+                <Printer className="h-4 w-4 md:h-6 md:w-6" />
+                <span className="hidden sm:inline">SAÍDA</span>
+              </Button>
 
-            <Button
-              variant="outline"
-              onClick={() => navigateTo('next')}
-              disabled={!hasNext || isNavLoading}
-              className="flex-1 h-14 gap-3 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold text-lg"
-            >
-              <span className="hidden sm:inline">Próximo</span>
-              <ChevronRight className="h-7 w-7" />
-            </Button>
+              <Button
+                variant="outline"
+                onClick={() => navigateTo('next')}
+                disabled={!hasNext || isNavLoading}
+                className="h-12 md:h-14 gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold"
+              >
+                <span className="text-xs md:text-lg">Próximo</span>
+                <ChevronRight className="h-5 w-5 md:h-7 md:w-7" />
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
