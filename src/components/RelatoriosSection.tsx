@@ -29,7 +29,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
 
   // Gatilho Externo (vido do Dashboard)
   useEffect(() => {
-    if (externalTrigger && externalTrigger.id === "Rel_Missao_Consolidado") {
+    if (externalTrigger && externalTrigger.id) {
       const start = externalTrigger.dateRange?.start || "";
       const end = externalTrigger.dateRange?.end || "";
       
