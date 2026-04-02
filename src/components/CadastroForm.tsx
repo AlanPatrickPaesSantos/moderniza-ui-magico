@@ -91,44 +91,44 @@ export const CadastroForm = ({ onSubmit, initialData, id = "cadastro-form" }: Ca
       };
 
       form.reset({
-        os: initialData.Id_cod?.toString() || "",
-        tecnico: initialData.Tecnico || "",
-        secaoDitel: initialData.Seção_Ditel || "",
-        tEquipSuporte: initialData.T_EquipSuporte || initialData.T_EquipTelecom || "",
-        solicitante: initialData.Solicitante || "",
-        unidade: initialData.Unidade || "",
-        dataEnt: fmtDate(initialData.Data_Ent),
-        nPae: initialData.Nº_PAE || "",
-        rp: initialData.RP || "",
-        nSerie: initialData.Nº_Serie || "",
-        defeitoRecl: initialData.Defeito_Recl || "",
-        analiseTecnica: initialData.Analise_Tecnica || "",
-        servico: initialData.Serviço || "",
-        garantia: initialData.Garantia || "",
-        dataEnvio: fmtDate(initialData.Data_Envio),
-        dataRetorno: fmtDate(initialData.Data_Retorno),
-        laudoTecnico: initialData.Laudo_Tecnico || "",
-        telefone: initialData.telefone || "",
+        os: String(initialData.Id_cod || initialData.os || ""),
+        tecnico: initialData.Tecnico || initialData.tecnico || initialData.Técnico || "",
+        secaoDitel: initialData.Seção_Ditel || initialData.secaoDitel || "",
+        tEquipSuporte: initialData.T_EquipSuporte || initialData.T_EquipTelecom || initialData.tEquipSuporte || "",
+        solicitante: initialData.Solicitante || initialData.solicitante || "",
+        unidade: initialData.Unidade || initialData.unidade || "",
+        dataEnt: fmtDate(initialData.Data_Ent || initialData.dataEnt),
+        nPae: initialData.Nº_PAE || initialData.nPae || "",
+        rp: initialData.RP || initialData.rp || "",
+        nSerie: initialData.Nº_Serie || initialData.nSerie || "",
+        defeitoRecl: initialData.Defeito_Recl || initialData.defeitoRecl || "",
+        analiseTecnica: initialData.Analise_Tecnica || initialData.analiseTecnica || "",
+        servico: initialData.Serviço || initialData.servico || "",
+        garantia: initialData.Garantia || initialData.garantia || "",
+        dataEnvio: fmtDate(initialData.Data_Envio || initialData.dataEnvio),
+        dataRetorno: fmtDate(initialData.Data_Retorno || initialData.dataRetorno),
+        laudoTecnico: initialData.Laudo_Tecnico || initialData.laudoTecnico || "",
+        telefone: initialData.telefone || initialData.Telefone || "",
         saidaEquip: initialData.Data_Saida || initialData.saidaEquip || "",
-        fonteCabo: initialData.fonteCabo || false,
+        fonteCabo: initialData.fonteCabo === true || initialData.fonteCabo === 'true' || false,
       });
     }
   }, [initialData, form]);
 
   return (
     <Form {...form}>
-      <form id={id} onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col h-full">
+      <form id={id} onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col h-full overflow-hidden">
         <Tabs defaultValue="identificacao" className="flex-1 flex flex-col min-h-0">
-          <TabsList className="w-full justify-start border-b rounded-none px-0 mb-3 bg-transparent border-border/50 gap-4 shrink-0 h-auto">
-            <TabsTrigger value="identificacao" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-pmpa-navy rounded-none px-2 py-3 font-bold uppercase tracking-wider text-sm transition-all">
-              Identificação & Equipamento
+          <TabsList className="w-full flex flex-wrap justify-start border-b rounded-none px-0 mb-2 bg-transparent border-border/50 gap-1 md:gap-4 shrink-0 h-auto overflow-x-auto overflow-y-hidden no-scrollbar">
+            <TabsTrigger value="identificacao" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-pmpa-navy rounded-none px-2 md:px-4 py-2 md:py-3 font-bold uppercase tracking-wider text-[11px] md:text-sm transition-all whitespace-nowrap">
+              Identificação
             </TabsTrigger>
-            <TabsTrigger value="analise" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-pmpa-navy rounded-none px-2 py-3 font-bold uppercase tracking-wider text-sm transition-all">
+            <TabsTrigger value="analise" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-pmpa-navy rounded-none px-2 md:px-4 py-2 md:py-3 font-bold uppercase tracking-wider text-[11px] md:text-sm transition-all whitespace-nowrap">
               Análise & Serviço
             </TabsTrigger>
           </TabsList>
 
-          <div className="flex-1 overflow-y-auto pl-4 pr-2 pb-8 custom-scrollbar">
+          <div className="flex-1 overflow-y-auto px-1 md:px-4 pb-8 custom-scrollbar">
             
             {/* ABA 1: IDENTIFICAÇÃO */}
             <TabsContent value="identificacao" className="m-0 space-y-5">
