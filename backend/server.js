@@ -85,8 +85,8 @@ app.get('/api/servicos', async (req, res) => {
 
     if (startDate || endDate) {
       query.Data_Ent = {};
-      if (startDate) query.Data_Ent.$gte = new Date(startDate).toISOString();
-      if (endDate) query.Data_Ent.$lte = new Date(endDate + 'T23:59:59').toISOString();
+      if (startDate) query.Data_Ent.$gte = new Date(startDate + 'T00:00:00.000Z');
+      if (endDate) query.Data_Ent.$lte = new Date(endDate + 'T23:59:59.999Z');
     }
 
     if (status) {
@@ -109,8 +109,8 @@ app.get('/api/servicos/count', async (req, res) => {
 
     if (startDate || endDate) {
       query.Data_Ent = {};
-      if (startDate) query.Data_Ent.$gte = new Date(startDate).toISOString();
-      if (endDate) query.Data_Ent.$lte = new Date(endDate + 'T23:59:59').toISOString();
+      if (startDate) query.Data_Ent.$gte = new Date(startDate + 'T00:00:00.000Z');
+      if (endDate) query.Data_Ent.$lte = new Date(endDate + 'T23:59:59.999Z');
     }
 
     if (status) {
@@ -304,8 +304,8 @@ app.get('/api/missoes', verificarToken, async (req, res) => {
 
     if (startDate || endDate) {
       query.data = {};
-      if (startDate) query.data.$gte = new Date(startDate).toISOString();
-      if (endDate) query.data.$lte = new Date(endDate + 'T23:59:59').toISOString();
+      if (startDate) query.data.$gte = new Date(startDate + 'T00:00:00.000Z');
+      if (endDate) query.data.$lte = new Date(endDate + 'T23:59:59.999Z');
     }
 
     if (servico) {
@@ -331,8 +331,8 @@ app.get('/api/missoes/count', async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
     let dateQuery = {};
-    if (startDate) dateQuery.$gte = new Date(startDate).toISOString();
-    if (endDate) dateQuery.$lte = new Date(endDate + 'T23:59:59').toISOString();
+    if (startDate) dateQuery.$gte = new Date(startDate + 'T00:00:00.000Z');
+    if (endDate) dateQuery.$lte = new Date(endDate + 'T23:59:59.999Z');
     const baseQuery = (startDate || endDate) ? { data: dateQuery } : {};
 
     const [total, interno, externo, remoto, pendente] = await Promise.all([

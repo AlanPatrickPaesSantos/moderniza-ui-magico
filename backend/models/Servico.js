@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const ServicoSchema = new mongoose.Schema({
   Id_cod: { type: Number, unique: true },
-  Data_Ent: { type: String, index: true },
+  Data_Ent: { type: Date, index: true },
   Tecnico: String,
   Seção_Ditel: String,
   T_EquipTelecom: String,
@@ -18,7 +18,7 @@ const ServicoSchema = new mongoose.Schema({
   Garantia: String,
   Data_Envio: Date,
   Data_Retorno: Date,
-  Data_Saida: String,
+  Data_Saida: Date,
   Bateria: String,
   telefone: String,
   Laudo_Tecnico: String,
