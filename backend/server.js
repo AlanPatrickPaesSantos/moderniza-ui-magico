@@ -24,9 +24,22 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const verificarToken = require('./middleware/authMiddleware');
 
-// Status
-app.get('/api/status', (req, res) => {
-  res.json({ status: 'Rodando', database: mongoose.connection.readyState === 1 ? 'Conectado' : 'Desconectado' });
+// [DEBUG TEMPORÁRIO] Verificar data da última OS real
+app.get('/api/admin/debug-os-date', async (req, res) => {
+  try {
+    const lastReal = await Servico.findOne({ Id_cod: 2692 });
+    const lastMission = await Missao.findOne().sort({ os: -1 });
+    const countApril = await Servico.countDocuments({ Data_Ent: { $gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1) } });
+    
+    res.json({ 
+      success: true, 
+      os_2692_date: lastReal ? lastReal.Data_Ent : "Não encontrada",
+      last_mission_os: lastMission ? lastMission.os : "Nenhuma",
+      count_servicos_april: countApril
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
 // ====== ROTA DE AUTENTICAÇÃO ======
