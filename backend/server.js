@@ -91,7 +91,7 @@ app.get('/api/servicos', async (req, res) => {
 
     if (status) {
       // Busca insensível a maiúsculas/minúsculas para manter consistência com a rota de contagem
-      query.Serviço = { $regex: new RegExp(`^${status}$`, 'i') };
+      query.Serviço = { $regex: new RegExp(`^\\s*${status}\\s*$`, 'i') };
     }
 
     const servicos = await Servico.find(query).limit(50).sort({ Id_cod: -1 });
@@ -115,7 +115,7 @@ app.get('/api/servicos/count', async (req, res) => {
 
     if (status) {
       // Busca insensível a maiúsculas/minúsculas (ex: PRONTO, Pronto, pronto)
-      query.Serviço = { $regex: new RegExp(`^${status}$`, 'i') };
+      query.Serviço = { $regex: new RegExp(`^\\s*${status}\\s*$`, 'i') };
     }
 
     const total = await Servico.countDocuments(query);
@@ -309,7 +309,7 @@ app.get('/api/missoes', verificarToken, async (req, res) => {
     }
 
     if (servico) {
-      query.servico = { $regex: new RegExp(`^${servico}$`, 'i') };
+      query.servico = { $regex: new RegExp(`^\\s*${servico}\\s*$`, 'i') };
     }
 
     // Usa countDocuments para contagem exata sem limite
