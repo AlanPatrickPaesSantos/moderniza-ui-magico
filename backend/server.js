@@ -13,7 +13,35 @@ app.use(express.json());
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log(`✅ Conectado ao MongoDB [${process.env.NODE_ENV === 'production' ? 'CLOUD' : 'LOCAL'}]`))
+  .then(async () => {
+    console.log(`✅ Conectado ao MongoDB [${process.env.NODE_ENV === 'production' ? 'CLOUD' : 'LOCAL'}]`);
+    
+    // Auto-Sincronização Cronológica (Garante que relatórios vejam datas brasileiras antigas)
+    try {
+      const Servico = mongoose.model('Servico');
+      const Missao = mongoose.model('Missao');
+      const toISO = (d) => (d && typeof d === 'string' && d.includes('/')) ? d.split('/').reverse().join('-') : null;
+
+      // 1. Sincronizar Serviços
+      const servs = await Servico.find({ $or: [{ Data_Ent: /\// }, { Data_Envio: /\// }, { Data_Retorno: /\// }, { Data_Saida: /\// }] });
+      for (const s of servs) {
+        const upd = {};
+        const de = toISO(s.Data_Ent); if(de) upd.Data_Ent = de;
+        const dv = toISO(s.Data_Envio); if(dv) upd.Data_Envio = dv;
+        const dr = toISO(s.Data_Retorno); if(dr) upd.Data_Retorno = dr;
+        const ds = toISO(s.Data_Saida); if(ds) upd.Data_Saida = ds;
+        if (Object.keys(upd).length > 0) await Servico.updateOne({ _id: s._id }, { $set: upd });
+      }
+
+      // 2. Sincronizar Missões
+      const mis = await Missao.find({ data: /\// });
+      for (const m of mis) {
+        const dt = toISO(m.data);
+        if (dt) await Missao.updateOne({ _id: m._id }, { $set: { data: dt } });
+      }
+      if (servs.length > 0 || mis.length > 0) console.log(`🌪️ Faxina Cronológica: ${servs.length + mis.length} registros sincronizados.`);
+    } catch (e) { console.log("⚠️ Sincronização de datas aguardando carregamento de modelos..."); }
+  })
   .catch(err => console.error('❌ Erro ao conectar ao MongoDB:', err));
 
 const Servico = require('./models/Servico');
