@@ -38,7 +38,7 @@ function parseDate(dateStr) {
 async function importTable(filePath, Model, mapper, collectionName) {
   console.log(`\n>>> Iniciando importação de: ${filePath} para ${Model.modelName}...`);
   
-  const fileStream = fs.createReadStream(filePath);
+  const fileStream = fs.createReadStream(filePath, 'latin1');
   const rl = readline.createInterface({
     input: fileStream,
     crlfDelay: Infinity
@@ -93,14 +93,17 @@ async function importTable(filePath, Model, mapper, collectionName) {
 
 async function upsertRecord(Model, data) {
   try {
-    // Para Missão, a chave é 'os'. Para Servico, a chave é 'os' (vinda de Id_cod)
+    const isServico = Model.modelName === 'Servico';
+    const query = isServico ? { Id_cod: data.Id_cod } : { os: data.os };
+    
     await Model.findOneAndUpdate(
-      { os: data.os },
+      query,
       data,
       { upsert: true, new: true }
     );
   } catch (err) {
-    console.error(`Erro ao salvar OS ${data.os}:`, err.message);
+    const id = data.os || data.Id_cod;
+    console.error(`Erro ao salvar ID ${id}:`, err.message);
   }
 }
 
@@ -141,25 +144,24 @@ const missaoMapper = (p) => ({
 });
 
 const servicoMapper = (p) => ({
-  os: parseInt(p[1], 10), // Id_cod mapeia para 'os' no Schema Mongoose (seguindo padrão do server.js)
+  Id_cod: parseInt(p[1], 10),
   Data_Ent: parseDate(p[2]),
   Tecnico: clean(p[3]),
-  Secao_Ditel: clean(p[4]),
-  Equip_Telecom: clean(p[5]),
-  Equip_Suporte: clean(p[6]),
+  Seção_Ditel: clean(p[4]),
+  T_EquipTelecom: clean(p[5]),
+  T_EquipSuporte: clean(p[6]),
   Solicitante: clean(p[7]),
   Unidade: clean(p[8]),
-  PAE: clean(p[9]),
+  Nº_PAE: clean(p[9]),
   RP: clean(p[10]),
-  Serie: clean(p[11]),
-  Defeito: clean(p[12]),
+  Nº_Serie: clean(p[11]),
+  Defeito_Recl: clean(p[12]),
   Analise_Tecnica: clean(p[13]),
-  Servico: clean(p[14]),
+  Serviço: clean(p[14]),
   Garantia: clean(p[15]),
   Data_Envio: parseDate(p[16]),
   Data_Saida: parseDate(p[17]),
   Laudo_Tecnico: clean(p[18]),
-  // ... outros campos podem ser adicionados conforme a necessidade do schema
 });
 
 async function main() {
