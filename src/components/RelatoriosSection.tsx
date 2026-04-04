@@ -373,14 +373,14 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
         }
       }}>
         <DialogContent className="max-w-5xl w-[95vw] sm:w-full max-h-[92vh] overflow-hidden flex flex-col p-4 md:p-6 border-border/50 shadow-2xl">
-          <DialogHeader className="p-2 md:p-4 border-b border-border/50 bg-muted/20 rounded-t-lg">
-            <DialogTitle className="text-xl md:text-2xl font-black text-pmpa-navy uppercase">Gerador de Relatórios</DialogTitle>
-            <DialogDescription className="text-xs md:text-sm">Visualize e imprima relatórios consolidados do sistema DITEL.</DialogDescription>
+          <DialogHeader className="p-1 md:p-4 border-b border-border/50 bg-muted/20 rounded-t-lg">
+            <DialogTitle className="text-lg md:text-2xl font-black text-pmpa-navy uppercase">Gerador de Relatórios</DialogTitle>
+            <DialogDescription className="text-[10px] md:text-sm">Visualize e imprima relatórios consolidados do sistema DITEL.</DialogDescription>
           </DialogHeader>
 
-          <div className="flex-1 overflow-hidden flex flex-col gap-4">
+          <div className="flex-1 overflow-hidden flex flex-col gap-2 md:gap-4 p-1 md:p-0">
             {/* Filtros */}
-            <div className="flex flex-wrap gap-3 items-end bg-muted/20 p-4 rounded-xl border border-border/40 print:hidden">
+            <div className="flex flex-wrap gap-2 md:gap-3 items-end bg-muted/20 p-2 md:p-4 rounded-xl border border-border/40 print:hidden">
               <div className="space-y-1.5 flex-1 min-w-[150px]">
                 <label className="text-xs font-bold text-foreground uppercase tracking-wider">Início</label>
                 <Input type="date" value={filters.startDate} onChange={(e) => setFilters({...filters, startDate: e.target.value})} />
@@ -412,34 +412,34 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
               )}
             </div>
 
-            {/* Resumo Estatístico (Visível em Missões) */}
+            {/* Resumo Estatístico (Visível em Missões) - Compacto no Mobile */}
             {activeReport === "Rel_Missao_Consolidado" && results.length > 0 && (
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-3 print:hidden">
-                <div className="bg-muted/40 p-3 rounded-lg border border-border/50">
-                  <p className="text-[10px] font-black uppercase text-muted-foreground">Total</p>
-                  <p className="text-2xl font-black text-foreground">{String(stats.total || 0)}</p>
+              <div className="flex md:grid md:grid-cols-5 gap-2 overflow-x-auto md:overflow-x-visible pb-2 md:pb-0 print:hidden custom-scrollbar">
+                <div className="bg-muted/40 p-2 md:p-3 rounded-lg border border-border/50 min-w-[80px] flex-shrink-0">
+                  <p className="text-[8px] md:text-[10px] font-black uppercase text-muted-foreground">Total</p>
+                  <p className="text-lg md:text-2xl font-black text-foreground">{String(stats.total || 0)}</p>
                 </div>
-                <div className="bg-blue-500/10 p-3 rounded-lg border border-blue-500/20">
-                  <p className="text-[10px] font-black uppercase text-blue-500">Internas</p>
-                  <p className="text-2xl font-black text-blue-600 dark:text-blue-400">{String(stats.interno || 0)}</p>
+                <div className="bg-blue-500/10 p-2 md:p-3 rounded-lg border border-blue-500/20 min-w-[80px] flex-shrink-0">
+                  <p className="text-[8px] md:text-[10px] font-black uppercase text-blue-500">Internas</p>
+                  <p className="text-lg md:text-2xl font-black text-blue-600 dark:text-blue-400">{String(stats.interno || 0)}</p>
                 </div>
-                <div className="bg-emerald-500/10 p-3 rounded-lg border border-emerald-500/20">
-                  <p className="text-[10px] font-black uppercase text-emerald-500">Externas</p>
-                  <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400">{String(stats.externo || 0)}</p>
+                <div className="bg-emerald-500/10 p-2 md:p-3 rounded-lg border border-emerald-500/20 min-w-[80px] flex-shrink-0">
+                  <p className="text-[8px] md:text-[10px] font-black uppercase text-emerald-500">Externas</p>
+                  <p className="text-lg md:text-2xl font-black text-emerald-600 dark:text-emerald-400">{String(stats.externo || 0)}</p>
                 </div>
-                <div className="bg-purple-500/10 p-3 rounded-lg border border-purple-500/20">
-                  <p className="text-[10px] font-black uppercase text-purple-500">Remotas</p>
-                  <p className="text-2xl font-black text-purple-600 dark:text-purple-400">{String(stats.remoto || 0)}</p>
+                <div className="bg-purple-500/10 p-2 md:p-3 rounded-lg border border-purple-500/20 min-w-[80px] flex-shrink-0">
+                  <p className="text-[8px] md:text-[10px] font-black uppercase text-purple-500">Remotas</p>
+                  <p className="text-lg md:text-2xl font-black text-purple-600 dark:text-purple-400">{String(stats.remoto || 0)}</p>
                 </div>
-                <div className="bg-orange-500/10 p-3 rounded-lg border border-orange-500/20">
-                  <p className="text-[10px] font-black uppercase text-orange-500">Pendentes</p>
-                  <p className="text-2xl font-black text-orange-600 dark:text-orange-400">{String(stats.pendente || 0)}</p>
+                <div className="bg-orange-500/10 p-2 md:p-3 rounded-lg border border-orange-500/20 min-w-[80px] flex-shrink-0">
+                  <p className="text-[8px] md:text-[10px] font-black uppercase text-orange-500">Pendentes</p>
+                  <p className="text-lg md:text-2xl font-black text-orange-600 dark:text-orange-400">{String(stats.pendente || 0)}</p>
                 </div>
               </div>
             )}
 
             {/* Lista de Resultados */}
-            <div className="flex-1 overflow-y-auto border border-border/40 rounded-lg divide-y divide-border/40 custom-scrollbar print:hidden shadow-inner bg-card">
+            <div className="flex-1 min-h-[250px] overflow-y-auto border border-border/40 rounded-lg divide-y divide-border/40 custom-scrollbar print:hidden shadow-inner bg-card">
               {results.length === 0 && !isLoading && (
                 <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-3">
                   <FileText className="h-12 w-12 opacity-10" />
