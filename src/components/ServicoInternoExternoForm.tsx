@@ -105,8 +105,6 @@ export const ServicoInternoExternoForm = ({
         solicitante: "",
         n_pae: "",
         servico: "",
-        analise: "",
-        observacao: "",
         solucao: "",
       });
       
@@ -222,27 +220,6 @@ export const ServicoInternoExternoForm = ({
           </div>
         </div>
 
-        {/* Areas: Detalhamento */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-1.5">
-            <Label htmlFor="analise" className="text-sm font-bold uppercase text-pmpa-navy">Análise Técnica</Label>
-            <Textarea 
-              id="analise" 
-              {...register("analise")} 
-              placeholder="Descreva a análise técnica..." 
-              className="min-h-[100px] text-base border-pmpa-navy/20 focus-visible:ring-pmpa-navy shadow-inner bg-card" 
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="observacao" className="text-sm font-bold uppercase text-pmpa-navy">Observações</Label>
-            <Textarea 
-              id="observacao" 
-              {...register("observacao")} 
-              placeholder="Observações adicionais..." 
-              className="min-h-[100px] text-base border-pmpa-navy/20 focus-visible:ring-pmpa-navy shadow-inner bg-card" 
-            />
-          </div>
-        </div>
 
         <div className="space-y-1.5 pb-2">
           <Label htmlFor="solucao" className="text-sm font-bold uppercase text-pmpa-navy">Solução Aplicada</Label>
