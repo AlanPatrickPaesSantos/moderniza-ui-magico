@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
+const https = require('https');
 require('dotenv').config();
 
 const app = express();
@@ -430,3 +431,20 @@ if (process.env.NODE_ENV === 'production' || process.env.RENDER) {
 const server = app.listen(PORT, () => {
   console.log(`🚀 Servidor rodando na porta ${PORT} [MODO: ${process.env.NODE_ENV || 'development'}]`);
 });
+
+// ====== CRON: AUTO-PING RENDER ======
+// Mantém o servidor acordado no Render Free Tier (evita o sleep de 15 min de inatividade)
+// NOTA: Tenta buscar a URL do Render, mas usa a sua URL real como fallback
+const RENDER_URL = process.env.RENDER_EXTERNAL_URL || 'https://moderniza-ui-magico-1.onrender.com';
+if (process.env.NODE_ENV === 'production' || process.env.RENDER) {
+  setInterval(() => {
+    https.get(`${RENDER_URL}/api/status`, (res) => {
+      console.log(`[Auto-Ping] OK: ${res.statusCode} para ${RENDER_URL}`);
+    }).on('error', (err) => {
+      console.error('[Auto-Ping] ERRO:', err.message);
+    });
+  }, 14 * 60 * 1000); // 14 minutos
+  console.log(`⏰ Cron-job Ativado: Ping a cada 14 min em ${RENDER_URL}`);
+} else {
+  console.log('⏰ Cron-job Ignorado: Ambiente não é de Produção/Render.');
+}
