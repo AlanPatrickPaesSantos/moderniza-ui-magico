@@ -589,7 +589,26 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
                       </span>
                     </div>
                   </div>
-                  <ChevronRight className="h-4 w-4 text-pmpa-navy/30 group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                  
+                  {/* Prévia de Defeito/Análise - VISIBILIDADE TOTAL */}
+                  <div className="mt-4 pt-3 border-t border-border/20 grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                    <div className="space-y-1">
+                      <p className="text-[10px] uppercase font-bold text-muted-foreground opacity-70">Defeito Reclamado</p>
+                      <p className="text-xs text-foreground/80 leading-relaxed break-words whitespace-pre-wrap">
+                        {String(item.Defeito_Recl || item.def_recla || "---").substring(0, 300)}
+                        {String(item.Defeito_Recl || item.def_recla || "").length > 300 ? "..." : ""}
+                      </p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-[10px] uppercase font-bold text-muted-foreground opacity-70">Análise Técnica</p>
+                      <p className="text-xs text-foreground/80 leading-relaxed break-words whitespace-pre-wrap">
+                        {String(item.Analise_Tecnica || item.analise || "---").substring(0, 300)}
+                        {String(item.Analise_Tecnica || item.analise || "").length > 300 ? "..." : ""}
+                      </p>
+                    </div>
+                  </div>
+
+                  <ChevronRight className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-pmpa-navy/20 group-hover:text-primary group-hover:translate-x-1 transition-all" />
                 </button>
               ))}
             </div>

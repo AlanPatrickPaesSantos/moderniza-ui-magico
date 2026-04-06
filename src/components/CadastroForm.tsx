@@ -246,10 +246,14 @@ export const CadastroForm = ({ onSubmit, initialData, id = "cadastro-form" }: Ca
                 <h3 className="text-sm font-bold text-pmpa-navy uppercase tracking-widest border-b border-border/50 pb-1">Diagnóstico</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField control={form.control} name="defeitoRecl" render={({ field }) => (
-                    <FormItem><FormLabel className="text-sm font-semibold">Defeito Reclamado</FormLabel><FormControl><Textarea className="h-32" {...field} /></FormControl></FormItem>
+                    <FormItem><FormLabel className="text-sm font-bold uppercase text-pmpa-navy">Defeito Reclamado</FormLabel>
+                      <FormControl><Textarea {...field} className="min-h-[160px] text-base leading-relaxed p-4 border-pmpa-navy/20 focus:ring-pmpa-navy shadow-inner bg-card transition-all" /></FormControl>
+                    </FormItem>
                   )} />
                   <FormField control={form.control} name="analiseTecnica" render={({ field }) => (
-                    <FormItem><FormLabel className="text-sm font-semibold">Análise Técnica Preliminar</FormLabel><FormControl><Textarea className="h-32" {...field} /></FormControl></FormItem>
+                    <FormItem><FormLabel className="text-sm font-bold uppercase text-pmpa-navy">Análise Técnica Preliminar</FormLabel>
+                      <FormControl><Textarea {...field} className="min-h-[160px] text-base leading-relaxed p-4 border-pmpa-navy/20 focus:ring-pmpa-navy shadow-inner bg-card transition-all" /></FormControl>
+                    </FormItem>
                   )} />
                 </div>
               </div>

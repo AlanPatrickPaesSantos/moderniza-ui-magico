@@ -130,6 +130,9 @@ export const ConsultasSection = () => {
                       <p className="text-[11px] text-muted-foreground uppercase tracking-wider">
                         {item.Unidade} | Série: {item.Nº_Serie}
                       </p>
+                      <p className="text-[10px] text-foreground/60 line-clamp-1 italic mt-1">
+                        Defeito: {item.Defeito_Recl || "---"}
+                      </p>
                     </div>
                     <FileText className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors opacity-0 group-hover:opacity-100" />
                   </button>
