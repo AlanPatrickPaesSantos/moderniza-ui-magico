@@ -100,9 +100,9 @@ const Index = () => {
               onClick={() => {
                 const now = new Date();
                 const yearStart = `${now.getFullYear()}-01-01`;
-                const yearEnd = `${now.getFullYear()}-12-31`; // Até o fim do ano
+                const yearEnd = `${now.getFullYear()}-12-31`;
                 setExternalReportTrigger({ 
-                  id: "Rel_Manutencao_Pendente", 
+                  id: "Rel_Equipamentos", 
                   dateRange: { start: yearStart, end: yearEnd } 
                 });
               }}
@@ -118,52 +118,11 @@ const Index = () => {
                   </div>
                   <span className="text-xs font-semibold text-pmpa-red bg-pmpa-red/10 px-3 py-1 rounded-full">Atual</span>
                 </div>
-                <div className="flex items-end justify-between">
-                  {/* Bloco Pendente (Em Conserto) */}
-                  <div 
-                    onClick={(e) => {
-                      e.stopPropagation(); // Evita o clique do card pai
-                      const now = new Date();
-                      const yearStart = `${now.getFullYear()}-01-01`;
-                      const yearEnd = `${now.getFullYear()}-12-31`;
-                      setExternalReportTrigger({ 
-                        id: "Rel_Equipamentos", 
-                        dateRange: { start: yearStart, end: yearEnd },
-                        q: "PENDENTE"
-                      });
-                    }}
-                    className="cursor-pointer hover:bg-pmpa-navy/5 p-1 rounded-lg transition-colors"
-                  >
-                    <div className="flex items-baseline gap-2">
-                      <p className="text-4xl font-black text-pmpa-navy dark:text-white">
-                        {isLoading ? <Loader2 className="h-8 w-8 animate-spin text-pmpa-red/30" /> : stats.maintenance}
-                      </p>
-                      <span className="text-[10px] font-bold text-pmpa-red uppercase tracking-tighter bg-pmpa-red/5 px-1.5 py-0.5 rounded">Em Conserto</span>
-                    </div>
-                  </div>
-
-                  {/* Bloco Pronto */}
-                  <div 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      const now = new Date();
-                      const yearStart = `${now.getFullYear()}-01-01`;
-                      const yearEnd = `${now.getFullYear()}-12-31`;
-                      setExternalReportTrigger({ 
-                        id: "Rel_Equipamentos", 
-                        dateRange: { start: yearStart, end: yearEnd },
-                        q: "PRONTO"
-                      });
-                    }}
-                    className="cursor-pointer hover:bg-emerald-500/5 p-1 rounded-lg transition-colors text-right"
-                  >
-                    <div className="flex items-baseline gap-2">
-                      <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
-                        {isLoading ? <Loader2 className="h-5 w-5 animate-spin text-emerald-500/30" /> : stats.ready}
-                      </p>
-                      <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-tighter bg-emerald-500/5 px-1.5 py-0.5 rounded">PRONTO</span>
-                    </div>
-                  </div>
+                <div>
+                  <p className="text-4xl font-black text-pmpa-navy dark:text-white mb-2 flex items-center gap-2">
+                    {isLoading ? <Loader2 className="h-8 w-8 animate-spin text-pmpa-red/30" /> : stats.maintenance}
+                  </p>
+                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Equipamentos em Manutenção</p>
                 </div>
               </div>
             </div>
