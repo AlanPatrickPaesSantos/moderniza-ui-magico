@@ -437,8 +437,9 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
                   {filters.status && (
                     <button 
                       onClick={() => {
-                        setFilters(f => ({...f, status: ""}));
-                        setTimeout(handleGenerateReport, 50);
+                        const newFilters = { ...filters, status: "" };
+                        setFilters(newFilters);
+                        fetchReportData(newFilters.startDate, newFilters.endDate, activeReport!, newFilters.q, "");
                       }}
                       className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-muted rounded-md transition-colors"
                     >
@@ -500,8 +501,9 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
                   </div>
                   <div 
                     onClick={() => {
-                        setFilters(f => ({...f, q: "", status: "PENDENTE"}));
-                        setTimeout(handleGenerateReport, 50);
+                        const newFilters = { ...filters, q: "", status: "PENDENTE" };
+                        setFilters(newFilters);
+                        fetchReportData(newFilters.startDate, newFilters.endDate, activeReport!, "", "PENDENTE");
                     }}
                     className={`bg-orange-500/10 p-2 md:p-3 rounded-lg border min-w-[100px] flex-shrink-0 cursor-pointer hover:bg-orange-500/20 active:scale-[0.97] transition-all ${filters.status === "PENDENTE" ? "ring-2 ring-orange-500 border-orange-500 bg-orange-500/20" : "border-orange-500/20"}`}
                   >
@@ -510,8 +512,9 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
                   </div>
                   <div 
                     onClick={() => {
-                        setFilters(f => ({...f, q: "", status: "PRONTO"}));
-                        setTimeout(handleGenerateReport, 50);
+                        const newFilters = { ...filters, q: "", status: "PRONTO" };
+                        setFilters(newFilters);
+                        fetchReportData(newFilters.startDate, newFilters.endDate, activeReport!, "", "PRONTO");
                     }}
                     className={`bg-emerald-500/10 p-2 md:p-3 rounded-lg border min-w-[100px] flex-shrink-0 cursor-pointer hover:bg-emerald-500/20 active:scale-[0.97] transition-all ${filters.status === "PRONTO" ? "ring-2 ring-emerald-500 border-emerald-500 bg-emerald-500/20" : "border-emerald-500/20"}`}
                   >
