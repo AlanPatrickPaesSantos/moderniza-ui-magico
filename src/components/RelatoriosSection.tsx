@@ -24,7 +24,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
   const [isLoading, setIsLoading] = useState(false);
   const [filters, setFilters] = useState({ startDate: "", endDate: "", q: "" });
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
-  const [stats, setStats] = useState({ total: 0, interno: 0, externo: 0, remoto: 0, pendente: 0 });
+  const [stats, setStats] = useState({ total: 0, interno: 0, externo: 0, remoto: 0, pendente: 0, pronto: 0 });
 
   const [printType, setPrintType] = useState<'laudo' | 'saida'>('laudo');
 
@@ -74,11 +74,27 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
           externo: exactStats?.externo || 0,
           remoto: exactStats?.remoto || 0,
           pendente: exactStats?.pendente || 0,
+          pronto: 0
         });
       } else {
+        // Para Equipamentos, buscamos Total, Pendente e Pronto separadamente se necessário
+        // Mas por padrão a busca principal já traz o que está no statusParam
+        // Para uma visão consolidada, faremos buscas paralelas
+        const [pentoResp, prontoResp, totalResp] = await Promise.all([
+          fetch(`${API_BASE}/servicos/count?startDate=${start}&endDate=${end}&status=PENDENTE${searchQuery}`),
+          fetch(`${API_BASE}/servicos/count?startDate=${start}&endDate=${end}&status=PRONTO${searchQuery}`),
+          fetch(`${API_BASE}/servicos/count?startDate=${start}&endDate=${end}${searchQuery}`)
+        ]);
+        
+        const pentoData = await pentoResp.json();
+        const prontoData = await prontoResp.json();
+        const totalData = await totalResp.json();
+
         setStats({
-          total: exactStats?.count || 0,
-          interno: 0, externo: 0, remoto: 0, pendente: exactStats?.count || 0
+          total: totalData.count || 0,
+          interno: 0, externo: 0, remoto: 0, 
+          pendente: pentoData.count || 0,
+          pronto: prontoData.count || 0
         });
       }
     } catch (error) {
@@ -342,6 +358,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
           <div className="space-y-3">
             {[
               { icon: Activity, id: "Rel_Missao_Consolidado", title: "Consolidado Missões", desc: "Relatório de serviços Int/Ext" },
+              { icon: Wrench, id: "Rel_Equipamentos", title: "Consolidado Equipamentos", desc: "Relatório de Manutenção e Reparos" },
             ].map((item) => (
               <Button 
                 key={item.id}
@@ -370,7 +387,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
         if (!open) {
           setActiveReport(null);
           setResults([]);
-          setStats({ total: 0, interno: 0, externo: 0, remoto: 0, pendente: 0 });
+          setStats({ total: 0, interno: 0, externo: 0, remoto: 0, pendente: 0, pronto: 0 });
           setFilters({ startDate: "", endDate: "", q: "" });
         }
       }}>
@@ -414,7 +431,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
               )}
             </div>
 
-            {/* Resumo Estatístico (Visível em Missões) - Compacto no Mobile com Indicador de Scroll */}
+            {/* Resumo Estatístico Missões */}
             {activeReport === "Rel_Missao_Consolidado" && results.length > 0 && (
               <div className="relative group/scroll print:hidden">
                 <div className="flex md:grid md:grid-cols-5 gap-2 overflow-x-auto md:overflow-x-visible pb-2 md:pb-0 custom-scrollbar scroll-smooth">
@@ -439,7 +456,27 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
                     <p className="text-lg md:text-2xl font-black text-orange-600 dark:text-orange-400">{String(stats.pendente || 0)}</p>
                   </div>
                 </div>
-                {/* Indica que há scroll para o lado no mobile */}
+                <div className="absolute right-0 top-0 bottom-2 w-8 bg-gradient-to-l from-background/50 to-transparent pointer-events-none md:hidden" />
+              </div>
+            )}
+
+            {/* Resumo Estatístico Equipamentos */}
+            {activeReport === "Rel_Equipamentos" && results.length > 0 && (
+              <div className="relative group/scroll print:hidden">
+                <div className="flex md:grid md:grid-cols-3 gap-2 overflow-x-auto md:overflow-x-visible pb-2 md:pb-0 custom-scrollbar scroll-smooth">
+                  <div className="bg-muted/40 p-2 md:p-3 rounded-lg border border-border/50 min-w-[100px] flex-shrink-0">
+                    <p className="text-[8px] md:text-[10px] font-black uppercase text-muted-foreground">Total O.S.</p>
+                    <p className="text-lg md:text-2xl font-black text-foreground">{String(stats.total || 0)}</p>
+                  </div>
+                  <div className="bg-orange-500/10 p-2 md:p-3 rounded-lg border border-orange-500/20 min-w-[100px] flex-shrink-0">
+                    <p className="text-[8px] md:text-[10px] font-black uppercase text-orange-500">Em Manutenção</p>
+                    <p className="text-lg md:text-2xl font-black text-orange-600 dark:text-orange-400">{String(stats.pendente || 0)}</p>
+                  </div>
+                  <div className="bg-emerald-500/10 p-2 md:p-3 rounded-lg border border-emerald-500/20 min-w-[100px] flex-shrink-0">
+                    <p className="text-[8px] md:text-[10px] font-black uppercase text-emerald-500">Pronto para Entrega</p>
+                    <p className="text-lg md:text-2xl font-black text-emerald-600 dark:text-emerald-400">{String(stats.pronto || 0)}</p>
+                  </div>
+                </div>
                 <div className="absolute right-0 top-0 bottom-2 w-8 bg-gradient-to-l from-background/50 to-transparent pointer-events-none md:hidden" />
               </div>
             )}

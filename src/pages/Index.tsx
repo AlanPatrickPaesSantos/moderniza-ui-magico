@@ -18,7 +18,7 @@ const Index = () => {
   const [eqSuporteOpen, setEqSuporteOpen] = useState(false);
   const [eqTelecomOpen, setEqTelecomOpen] = useState(false);
   const [eqUnidadeOpen, setEqUnidadeOpen] = useState(false);
-  const [stats, setStats] = useState({ maintenance: 0, missions: 0 });
+  const [stats, setStats] = useState({ maintenance: 0, ready: 0, missions: 0 });
   const [isLoading, setIsLoading] = useState(true);
   const [externalReportTrigger, setExternalReportTrigger] = useState<{ id: string; dateRange?: { start: string; end: string } } | null>(null);
 
@@ -31,16 +31,19 @@ const Index = () => {
         const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
 
         // Busca Manutenções (Pendentes desde o início do ano)
-        const [servResp, missResp] = await Promise.all([
+        const [servPentoResp, servProntoResp, missResp] = await Promise.all([
           fetch(`${API_BASE}/servicos/count?status=PENDENTE&startDate=${yearStart}`),
+          fetch(`${API_BASE}/servicos/count?status=PRONTO&startDate=${yearStart}`),
           fetch(`${API_BASE}/missoes/count?startDate=${firstDay}&endDate=${lastDay}`)
         ]);
 
-        if (servResp.ok && missResp.ok) {
-          const servData = await servResp.json();
+        if (servPentoResp.ok && servProntoResp.ok && missResp.ok) {
+          const pentoData = await servPentoResp.json();
+          const prontoData = await servProntoResp.json();
           const missData = await missResp.json();
           setStats({
-            maintenance: servData.count || 0,
+            maintenance: pentoData.count || 0,
+            ready: prontoData.count || 0,
             missions: missData.total || 0
           });
         }
@@ -115,11 +118,21 @@ const Index = () => {
                   </div>
                   <span className="text-xs font-semibold text-pmpa-red bg-pmpa-red/10 px-3 py-1 rounded-full">Atual</span>
                 </div>
-                <div>
-                  <p className="text-4xl font-black text-pmpa-navy dark:text-white mb-2 flex items-center gap-2">
-                    {isLoading ? <Loader2 className="h-8 w-8 animate-spin text-pmpa-red/30" /> : stats.maintenance}
-                  </p>
-                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Equipamentos em Manutenção</p>
+                <div className="flex items-end justify-between">
+                  <div>
+                    <div className="flex items-baseline gap-2">
+                      <p className="text-4xl font-black text-pmpa-navy dark:text-white">
+                        {isLoading ? <Loader2 className="h-8 w-8 animate-spin text-pmpa-red/30" /> : stats.maintenance}
+                      </p>
+                      <span className="text-[10px] font-bold text-pmpa-red uppercase tracking-tighter bg-pmpa-red/5 px-1.5 py-0.5 rounded">Em Conserto</span>
+                    </div>
+                    <div className="flex items-baseline gap-2 mt-2">
+                      <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
+                        {isLoading ? <Loader2 className="h-5 w-5 animate-spin text-emerald-500/30" /> : stats.ready}
+                      </p>
+                      <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-tighter bg-emerald-500/5 px-1.5 py-0.5 rounded">Pronto p/ Entrega</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
