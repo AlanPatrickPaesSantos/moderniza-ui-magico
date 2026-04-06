@@ -118,21 +118,11 @@ const Index = () => {
                   </div>
                   <span className="text-xs font-semibold text-pmpa-red bg-pmpa-red/10 px-3 py-1 rounded-full">Atual</span>
                 </div>
-                <div className="flex items-end justify-between">
-                  <div>
-                    <div className="flex items-baseline gap-2">
-                      <p className="text-4xl font-black text-pmpa-navy dark:text-white">
-                        {isLoading ? <Loader2 className="h-8 w-8 animate-spin text-pmpa-red/30" /> : stats.maintenance}
-                      </p>
-                      <span className="text-[10px] font-bold text-pmpa-red uppercase tracking-tighter bg-pmpa-red/5 px-1.5 py-0.5 rounded">Em Conserto</span>
-                    </div>
-                    <div className="flex items-baseline gap-2 mt-2">
-                      <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
-                        {isLoading ? <Loader2 className="h-5 w-5 animate-spin text-emerald-500/30" /> : stats.ready}
-                      </p>
-                      <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-tighter bg-emerald-500/5 px-1.5 py-0.5 rounded">Pronto p/ Entrega</span>
-                    </div>
-                  </div>
+                <div>
+                  <p className="text-4xl font-black text-pmpa-navy dark:text-white mb-2 flex items-center gap-2">
+                    {isLoading ? <Loader2 className="h-8 w-8 animate-spin text-pmpa-red/30" /> : stats.maintenance}
+                  </p>
+                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Equipamentos em Manutenção</p>
                 </div>
               </div>
             </div>

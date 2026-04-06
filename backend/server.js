@@ -79,7 +79,8 @@ app.get('/api/servicos', async (req, res) => {
           { Nº_Serie: { $regex: q, $options: 'i' } },
           { RP: { $regex: q, $options: 'i' } },
           { Solicitante: { $regex: q, $options: 'i' } },
-          { Unidade: { $regex: q, $options: 'i' } }
+          { Unidade: { $regex: q, $options: 'i' } },
+          { Serviço: { $regex: q, $options: 'i' } }
         ]
       };
     }
