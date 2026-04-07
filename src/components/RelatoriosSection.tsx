@@ -422,7 +422,9 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
       }}>
         <DialogContent className="max-w-5xl w-[95vw] sm:w-full max-h-[92vh] overflow-hidden flex flex-col p-4 md:p-6 border-border/50 shadow-2xl">
           <DialogHeader className="p-1 md:p-4 border-b border-border/50 bg-muted/20 rounded-t-lg">
-            <DialogTitle className="text-lg md:text-2xl font-black text-pmpa-navy uppercase">Gerador de Relatórios</DialogTitle>
+            <DialogTitle className="text-lg md:text-2xl font-black text-pmpa-navy uppercase">
+              {activeReport === "Rel_Missao_Consolidado" ? "Relatório de Missões" : "Relatório de Equipamentos"}
+            </DialogTitle>
             <DialogDescription className="text-[10px] md:text-sm">Visualize e imprima relatórios consolidados do sistema DITEL.</DialogDescription>
           </DialogHeader>
 
