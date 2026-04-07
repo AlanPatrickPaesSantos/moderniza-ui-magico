@@ -226,25 +226,14 @@ export const ServicoInternoExternoForm = ({
             </Select>
           </div>
 
-          <div className="space-y-4 md:col-span-2">
-            <div className="space-y-1.5">
-              <Label htmlFor="def_recla" className="text-sm font-bold uppercase text-pmpa-navy">Defeito/Reclamação</Label>
-              <Textarea 
-                id="def_recla" 
-                {...register("def_recla")} 
-                placeholder="Descreva o defeito" 
-                className="min-h-[140px] text-base leading-relaxed p-4 border-pmpa-navy/20 focus:ring-pmpa-navy shadow-inner bg-card" 
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="analise" className="text-sm font-bold uppercase text-pmpa-navy">Análise Técnica / Constatado</Label>
-              <Textarea 
-                id="analise" 
-                {...register("analise")} 
-                placeholder="Descreva a análise técnica realizada..." 
-                className="min-h-[140px] text-base leading-relaxed p-4 border-pmpa-navy/20 focus:ring-pmpa-navy shadow-inner bg-card" 
-              />
-            </div>
+          <div className="space-y-1.5 md:col-span-2">
+            <Label htmlFor="def_recla" className="text-sm font-bold uppercase text-pmpa-navy">Defeito/Reclamação</Label>
+            <Textarea 
+              id="def_recla" 
+              {...register("def_recla")} 
+              placeholder="Descreva o defeito" 
+              className="min-h-[140px] text-base leading-relaxed p-4 border-pmpa-navy/20 focus:ring-pmpa-navy shadow-inner bg-card" 
+            />
           </div>
         </div>
 
