@@ -56,11 +56,17 @@ type CadastroFormValues = z.infer<typeof cadastroSchema>;
 interface CadastroFormProps {
   onSubmit: (data: CadastroFormValues) => void | Promise<void>;
   onCancel: () => void;
+  onPrint?: (type: 'laudo' | 'saida') => void;
   initialData?: any;
   id?: string;
+  isEditMode?: boolean;
 }
 
-export const CadastroForm = ({ onSubmit, initialData, id = "cadastro-form" }: CadastroFormProps) => {
+import { Printer, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+
+export const CadastroForm = ({ onSubmit, onCancel, onPrint, initialData, id = "cadastro-form", isEditMode }: CadastroFormProps) => {
   const form = useForm<CadastroFormValues>({
     resolver: zodResolver(cadastroSchema),
     defaultValues: {
@@ -69,6 +75,11 @@ export const CadastroForm = ({ onSubmit, initialData, id = "cadastro-form" }: Ca
       dataSaida: "",
     },
   });
+
+  const handleError = (errors: any) => {
+    console.error("Erro de validação:", errors);
+    toast.error("⚠️ Existem campos inválidos ou obrigatórios não preenchidos.");
+  };
 
   const [nextOs, setNextOs] = useState<string>("");
 
@@ -156,7 +167,7 @@ export const CadastroForm = ({ onSubmit, initialData, id = "cadastro-form" }: Ca
 
   return (
     <Form {...form}>
-      <form id={id} onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col h-full overflow-hidden">
+      <form id={id} onSubmit={form.handleSubmit(onSubmit, handleError)} className="flex flex-col h-full">
         <Tabs defaultValue="identificacao" className="flex-1 flex flex-col min-h-0">
           <TabsList className="w-full flex flex-wrap justify-start border-b rounded-none px-0 mb-2 bg-transparent border-border/50 gap-1 md:gap-4 shrink-0 h-auto overflow-x-auto overflow-y-hidden no-scrollbar">
             <TabsTrigger value="identificacao" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-pmpa-navy rounded-none px-2 md:px-4 py-2 md:py-3 font-bold uppercase tracking-wider text-[11px] md:text-sm transition-all whitespace-nowrap">
@@ -334,6 +345,42 @@ export const CadastroForm = ({ onSubmit, initialData, id = "cadastro-form" }: Ca
             </TabsContent>
           </div>
         </Tabs>
+
+        {/* Barra de Ações Interna ao Formulário */}
+        <div className="mt-6 pt-4 border-t bg-muted/5 flex flex-col sm:flex-row justify-end gap-3 sticky bottom-0 bg-card z-10 p-2 -mx-2">
+          <div className="flex flex-1 gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onPrint?.('laudo')}
+              className="h-10 md:h-11 gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold flex-1 sm:flex-none"
+              disabled={!initialData}
+            >
+              <Printer className="h-4 w-4" />
+              <span className="hidden xs:inline">Laudo</span>
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onPrint?.('saida')}
+              className="h-10 md:h-11 gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold flex-1 sm:flex-none"
+              disabled={!initialData}
+            >
+              <Printer className="h-4 w-4" />
+              <span className="hidden xs:inline">Saída</span>
+            </Button>
+          </div>
+          
+          <Button type="button" variant="outline" onClick={onCancel} className="h-10 md:h-11 px-6 font-bold w-full sm:w-auto">
+            Sair
+          </Button>
+          <Button
+            type="submit"
+            className="bg-pmpa-navy hover:bg-pmpa-navy/90 text-white h-10 md:h-11 px-10 font-bold shadow-lg uppercase w-full sm:w-auto min-w-[180px]"
+          >
+            {isEditMode || initialData ? "Atualizar Registro" : "Finalizar Novo Cadastro"}
+          </Button>
+        </div>
       </form>
     </Form>
   );

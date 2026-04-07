@@ -220,41 +220,9 @@ const Cadastro = () => {
               initialData={selectedRecord}
               onSubmit={handleSubmit}
               onCancel={() => navigate("/")}
+              onPrint={(type) => { setPrintType(type); setTimeout(() => window.print(), 100); }}
+              isEditMode={!!selectedRecord}
             />
-          </div>
-
-          <div className="pt-4 border-t bg-muted/5 flex flex-col sm:flex-row justify-end gap-3">
-            <div className="flex flex-1 gap-2">
-              <Button
-                variant="outline"
-                onClick={() => { setPrintType('laudo'); setTimeout(() => window.print(), 100); }}
-                className="h-12 sm:h-11 gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold flex-1 sm:flex-none"
-                disabled={!selectedRecord}
-              >
-                <Printer className="h-4 w-4" />
-                Laudo
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => { setPrintType('saida'); setTimeout(() => window.print(), 100); }}
-                className="h-12 sm:h-11 gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold flex-1 sm:flex-none"
-                disabled={!selectedRecord}
-              >
-                <Printer className="h-4 w-4" />
-                Saída
-              </Button>
-            </div>
-            
-            <Button variant="outline" onClick={() => navigate("/")} className="h-12 sm:h-11 px-6 font-bold w-full sm:w-auto">
-              Sair
-            </Button>
-            <Button
-              type="submit"
-              form="novo-form"
-              className="bg-pmpa-navy hover:bg-pmpa-navy/90 text-white h-12 sm:h-11 px-12 font-bold shadow-lg uppercase w-full sm:w-auto"
-            >
-              {selectedRecord ? "Atualizar Registro" : "Finalizar Novo Cadastro"}
-            </Button>
           </div>
         </div>
 
