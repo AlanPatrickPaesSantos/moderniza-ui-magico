@@ -428,7 +428,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
 
           <div className="flex-1 overflow-hidden flex flex-col gap-2 md:gap-4 p-1 md:p-0">
             {/* Filtros */}
-            <div className="flex flex-wrap gap-2 md:gap-3 items-end bg-muted/20 p-2 md:p-4 rounded-xl border border-border/40 print:hidden">
+            <div className="flex flex-wrap gap-2 md:gap-3 items-end bg-muted/20 p-2 md:p-4 rounded-xl border border-border/40 print:hidden shrink-0">
               <div className="space-y-1.5 flex-1 min-w-[150px]">
                 <label className="text-xs font-bold text-foreground uppercase tracking-wider">Início</label>
                 <Input type="date" value={filters.startDate} onChange={(e) => setFilters({...filters, startDate: e.target.value})} />
@@ -489,7 +489,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
 
             {/* Resumo Estatístico Missões */}
             {activeReport === "Rel_Missao_Consolidado" && results.length > 0 && (
-              <div className="relative overflow-hidden print:hidden border-b border-border/20 mb-4 pb-2 z-10">
+              <div className="relative overflow-hidden print:hidden border-b border-border/20 mb-6 pb-2 z-20 bg-background/95 backdrop-blur-sm shrink-0">
                 <div className="flex flex-nowrap md:grid md:grid-cols-5 gap-2 overflow-x-auto pb-4 px-1 md:pb-0 custom-scrollbar scroll-smooth snap-x snap-mandatory">
                   <div className="bg-muted/40 p-2 md:p-3 rounded-lg border border-border/50 min-w-[110px] md:min-w-0 flex-shrink-0 snap-start">
                     <p className="text-[8px] md:text-[10px] font-black uppercase text-muted-foreground tracking-tighter">Total</p>
@@ -516,7 +516,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
             )}
 
             {activeReport === "Rel_Equipamentos" && results.length > 0 && (
-              <div className="relative overflow-hidden print:hidden border-b border-border/20 mb-4 pb-2 z-10">
+              <div className="relative overflow-hidden print:hidden border-b border-border/20 mb-6 pb-2 z-20 bg-background/95 backdrop-blur-sm shrink-0">
                 <div className="flex flex-nowrap md:grid md:grid-cols-5 gap-2 overflow-x-auto pb-4 px-1 md:pb-0 custom-scrollbar scroll-smooth snap-x snap-mandatory">
                   
                   <div className="bg-muted/40 p-2 md:p-3 rounded-lg border border-border/50 min-w-[110px] md:min-w-0 flex-shrink-0 snap-start">
