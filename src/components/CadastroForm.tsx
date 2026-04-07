@@ -32,8 +32,8 @@ const cadastroSchema = z.object({
   tEquipSuporte: z.string().optional(),
   tEquipTelecom: z.string().optional(),
   solicitante: z.string().optional(),
-  unidade: z.string().optional(),
-  dataEnt: z.string().optional(),
+  unidade: z.string().min(1, "A unidade é obrigatória"),
+  dataEnt: z.string().min(1, "A data de entrada é obrigatória"),
   nPae: z.string().optional(),
   rp: z.string().optional(),
   nSerie: z.string().optional(),
@@ -229,10 +229,22 @@ export const CadastroForm = ({ onSubmit, onCancel, onPrint, initialData, id = "c
                     <FormItem><FormLabel className="text-sm font-semibold">Solicitante</FormLabel><FormControl><Input className="h-10" {...field} /></FormControl></FormItem>
                   )} />
                   <FormField control={form.control} name="dataEnt" render={({ field }) => (
-                    <FormItem><FormLabel className="text-sm font-semibold">Data Entrada</FormLabel><FormControl><Input type="date" className="h-10" {...field} /></FormControl></FormItem>
+                    <FormItem>
+                      <FormLabel className="text-sm font-bold text-pmpa-navy flex gap-1">
+                        Data Entrada <span className="text-red-500">*</span>
+                      </FormLabel>
+                      <FormControl><Input type="date" className="h-10 border-pmpa-navy/20 focus:ring-pmpa-navy" {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )} />
                   <FormField control={form.control} name="unidade" render={({ field }) => (
-                    <FormItem><FormLabel className="text-sm font-semibold">Unidade</FormLabel><UnidadeCombobox value={field.value} onChange={field.onChange} /></FormItem>
+                    <FormItem>
+                      <FormLabel className="text-sm font-bold text-pmpa-navy flex gap-1">
+                        Unidade <span className="text-red-500">*</span>
+                      </FormLabel>
+                      <UnidadeCombobox value={field.value} onChange={field.onChange} />
+                      <FormMessage />
+                    </FormItem>
                   )} />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
