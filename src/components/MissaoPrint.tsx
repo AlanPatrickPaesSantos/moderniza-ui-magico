@@ -165,11 +165,6 @@ export const MissaoPrint = ({ data }: { data: MissaoData }) => {
             <p className="text-[9px] font-black">Solicitante / Receptor</p>
           </div>
         </div>
-
-        {/* Footer Text */}
-        <div className="text-center text-[8px] font-bold text-gray-500 mt-4 italic">
-          Documento gerado pelo Sistema Ditel Dashboard v5 - PMPA
-        </div>
       </div>
     </div>,
     mountNode
