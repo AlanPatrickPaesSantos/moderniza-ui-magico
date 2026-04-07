@@ -22,7 +22,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
   const [activeReport, setActiveReport] = useState<string | null>(null);
   const [results, setResults] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [filters, setFilters] = useState({ startDate: "", endDate: "", q: "", status: "" });
+  const [filters, setFilters] = useState({ startDate: "", endDate: "", q: "", status: "", bateria: false });
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
   const [stats, setStats] = useState<{
     total: number;
@@ -71,14 +71,17 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
       
       const currentQ = queryText !== undefined ? queryText : filters.q;
       const searchQuery = currentQ ? `&q=${encodeURIComponent(currentQ)}` : "";
+      
+      const currentBateria = filters.bateria;
+      const bateriaParam = currentBateria ? "&bateria=true" : "";
 
       // 1. Busca Contagens Exatas
-      const countUrl = `${API_BASE}/${endpoint}/count?startDate=${start}&endDate=${end}${statusParam}${searchQuery}`;
+      const countUrl = `${API_BASE}/${endpoint}/count?startDate=${start}&endDate=${end}${statusParam}${searchQuery}${bateriaParam}`;
       const countResp = await fetch(countUrl);
       const exactStats = await countResp.json();
 
       // 2. Busca Registros para a Lista
-      const listUrl = `${API_BASE}/${endpoint}?startDate=${start}&endDate=${end}${statusParam}${searchQuery}`;
+      const listUrl = `${API_BASE}/${endpoint}?startDate=${start}&endDate=${end}${statusParam}${searchQuery}${bateriaParam}`;
       const listResp = await fetch(listUrl);
       const data = await listResp.json();
       
@@ -98,16 +101,18 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
         // Para Equipamentos, buscamos Total, Pendente e Pronto separadamente se necessário
         // Mas por padrão a busca principal já traz o que está no statusParam
         // Para uma visão consolidada, faremos buscas paralelas
-        const [pentoResp, prontoResp, laudoResp, totalResp] = await Promise.all([
+        const [pentoResp, prontoResp, laudoResp, bateriaResp, totalResp] = await Promise.all([
           fetch(`${API_BASE}/servicos/count?startDate=${start}&endDate=${end}&status=PENDENTE${searchQuery}`),
           fetch(`${API_BASE}/servicos/count?startDate=${start}&endDate=${end}&status=PRONTO${searchQuery}`),
           fetch(`${API_BASE}/servicos/count?startDate=${start}&endDate=${end}&status=LAUDO${searchQuery}`),
+          fetch(`${API_BASE}/servicos/count?startDate=${start}&endDate=${end}&bateria=true${searchQuery}`),
           fetch(`${API_BASE}/servicos/count?startDate=${start}&endDate=${end}${searchQuery}`)
         ]);
         
         const pentoData = await pentoResp.json();
         const prontoData = await prontoResp.json();
         const laudoData = await laudoResp.json();
+        const bateriaData = await bateriaResp.json();
         const totalData = await totalResp.json();
 
         setStats({
@@ -115,7 +120,8 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
           interno: 0, externo: 0, remoto: 0, 
           pendente: pentoData.count || 0,
           pronto: prontoData.count || 0,
-          laudo: laudoData.count || 0
+          laudo: laudoData.count || 0,
+          bateria: bateriaData.count || 0
         });
       }
     } catch (error) {
@@ -408,8 +414,8 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
         if (!open) {
           setActiveReport(null);
           setResults([]);
-          setStats({ total: 0, interno: 0, externo: 0, remoto: 0, pendente: 0, pronto: 0, laudo: 0 });
-          setFilters({ startDate: "", endDate: "", q: "", status: "" });
+          setStats({ total: 0, interno: 0, externo: 0, remoto: 0, pendente: 0, pronto: 0, laudo: 0, bateria: 0 });
+          setFilters({ startDate: "", endDate: "", q: "", status: "", bateria: false });
         }
       }}>
         <DialogContent className="max-w-5xl w-[95vw] sm:w-full max-h-[92vh] overflow-hidden flex flex-col p-4 md:p-6 border-border/50 shadow-2xl">
@@ -437,21 +443,26 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
                       Filtro: {filters.status}
                     </span>
                   )}
+                  {filters.bateria && (
+                    <span className="text-[9px] font-black px-1.5 py-0.5 rounded uppercase bg-amber-500/20 text-amber-600">
+                      Filtro: BATERIA
+                    </span>
+                  )}
                 </div>
                 <div className="relative">
                   <Input 
                     placeholder="Pesquisar..." 
                     value={filters.q} 
-                    onChange={(e) => setFilters({...filters, q: e.target.value, status: ""})} 
+                    onChange={(e) => setFilters({...filters, q: e.target.value, status: "", bateria: false})} 
                     onKeyDown={(e) => e.key === "Enter" && handleGenerateReport()}
-                    className={filters.status ? "border-primary/50 bg-primary/5" : ""}
+                    className={(filters.status || filters.bateria) ? "border-primary/50 bg-primary/5" : ""}
                   />
-                  {filters.status && (
+                  {(filters.status || filters.bateria) && (
                     <button 
                       onClick={() => {
-                        const newFilters = { ...filters, status: "" };
+                        const newFilters = { ...filters, status: "", bateria: false };
                         setFilters(newFilters);
-                        fetchReportData(newFilters.startDate, newFilters.endDate, activeReport!, newFilters.q, "");
+                        fetchReportData(newFilters.startDate, newFilters.endDate, activeReport!, "", "");
                       }}
                       className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-muted rounded-md transition-colors"
                     >
@@ -524,7 +535,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
                   </div>
                   <div 
                     onClick={() => {
-                        const newFilters = { ...filters, q: "", status: "LAUDO" };
+                        const newFilters = { ...filters, q: "", status: "LAUDO", bateria: false };
                         setFilters(newFilters);
                         fetchReportData(newFilters.startDate, newFilters.endDate, activeReport!, "", "LAUDO");
                     }}
@@ -535,7 +546,18 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
                   </div>
                   <div 
                     onClick={() => {
-                        const newFilters = { ...filters, q: "", status: "PRONTO" };
+                        const newFilters = { ...filters, q: "", status: "", bateria: true };
+                        setFilters(newFilters);
+                        fetchReportData(newFilters.startDate, newFilters.endDate, activeReport!, "", "");
+                    }}
+                    className={`bg-amber-500/10 p-2 md:p-3 rounded-lg border min-w-[100px] flex-shrink-0 cursor-pointer hover:bg-amber-500/20 active:scale-[0.97] transition-all ${filters.bateria ? "ring-2 ring-amber-500 border-amber-500 bg-amber-500/20" : "border-amber-500/20"}`}
+                  >
+                    <p className="text-[8px] md:text-[10px] font-black uppercase text-amber-500">Bateria</p>
+                    <p className="text-lg md:text-2xl font-black text-amber-600 dark:text-amber-400">{String(stats.bateria || 0)}</p>
+                  </div>
+                  <div 
+                    onClick={() => {
+                        const newFilters = { ...filters, q: "", status: "PRONTO", bateria: false };
                         setFilters(newFilters);
                         fetchReportData(newFilters.startDate, newFilters.endDate, activeReport!, "", "PRONTO");
                     }}

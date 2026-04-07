@@ -68,7 +68,7 @@ app.use('/api/unidades', verificarToken);
 // Busca e filtros de serviços (listagem com limite)
 app.get('/api/servicos', async (req, res) => {
   try {
-    const { q, startDate, endDate, status } = req.query;
+    const { q, startDate, endDate, status, bateria } = req.query;
     let query = {};
 
     if (q) {
@@ -96,6 +96,11 @@ app.get('/api/servicos', async (req, res) => {
       query.Serviço = { $regex: new RegExp(`^\\s*${status}\\s*$`, 'i') };
     }
 
+    if (bateria === "true") {
+      // Filtrar apenas registros onde o campo Bateria não está vazio
+      query.Bateria = { $ne: "", $exists: true };
+    }
+
     const servicos = await Servico.find(query).limit(50).sort({ Id_cod: -1 });
     res.json(servicos);
   } catch (err) {
@@ -106,7 +111,7 @@ app.get('/api/servicos', async (req, res) => {
 // Contagem EXATA de serviços para relatórios (sem limite)
 app.get('/api/servicos/count', async (req, res) => {
   try {
-    const { startDate, endDate, status } = req.query;
+    const { startDate, endDate, status, bateria } = req.query;
     let query = {};
 
     if (startDate || endDate) {
@@ -118,6 +123,10 @@ app.get('/api/servicos/count', async (req, res) => {
     if (status) {
       // Busca insensível a maiúsculas/minúsculas (ex: PRONTO, Pronto, pronto)
       query.Serviço = { $regex: new RegExp(`^\\s*${status}\\s*$`, 'i') };
+    }
+
+    if (bateria === "true") {
+      query.Bateria = { $ne: "", $exists: true };
     }
 
     const total = await Servico.countDocuments(query);
