@@ -47,6 +47,7 @@ const cadastroSchema = z.object({
   laudoTecnico: z.string().optional(),
   telefone: z.string().optional(),
   saidaEquip: z.string().optional(),
+  dataSaida: z.string().optional(),
   fonteCabo: z.boolean().default(false),
 });
 
@@ -65,6 +66,7 @@ export const CadastroForm = ({ onSubmit, initialData, id = "cadastro-form" }: Ca
     defaultValues: {
       fonteCabo: false,
       saidaEquip: "",
+      dataSaida: "",
     },
   });
 
@@ -121,7 +123,8 @@ export const CadastroForm = ({ onSubmit, initialData, id = "cadastro-form" }: Ca
         dataRetorno: fmtDate(initialData.Data_Retorno || initialData.dataRetorno),
         laudoTecnico: initialData.Laudo_Tecnico || initialData.laudoTecnico || "",
         telefone: initialData.telefone || initialData.Telefone || "",
-        saidaEquip: fmtDate(initialData.Data_Saida || initialData.saidaEquip),
+        dataSaida: fmtDate(initialData.Data_Saida || ""),
+        saidaEquip: typeof initialData.saidaEquip === 'string' && !initialData.saidaEquip.includes('-') && !initialData.saidaEquip.includes('/') ? initialData.saidaEquip : "", 
         fonteCabo: initialData.fonteCabo === true || initialData.fonteCabo === 'true' || false,
       });
     } else {
@@ -144,6 +147,7 @@ export const CadastroForm = ({ onSubmit, initialData, id = "cadastro-form" }: Ca
         dataRetorno: "",
         laudoTecnico: "",
         telefone: "",
+        dataSaida: "",
         saidaEquip: "",
         fonteCabo: false,
       });
@@ -281,7 +285,7 @@ export const CadastroForm = ({ onSubmit, initialData, id = "cadastro-form" }: Ca
                       </Select>
                     </FormItem>
                   )} />
-                  <FormField control={form.control} name="saidaEquip" render={({ field }) => (
+                  <FormField control={form.control} name="dataSaida" render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-sm font-bold text-red-600 dark:text-red-400 uppercase tracking-wider">Data / Hora Saída Definitiva</FormLabel>
                       <FormControl>
@@ -296,6 +300,12 @@ export const CadastroForm = ({ onSubmit, initialData, id = "cadastro-form" }: Ca
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField control={form.control} name="saidaEquip" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-bold uppercase text-pmpa-navy">Quem Recebeu (Nome / RG)</FormLabel>
+                      <FormControl><Input className="h-10" placeholder="Nome do recebedor..." {...field} /></FormControl>
+                    </FormItem>
+                  )} />
                   <FormField control={form.control} name="dataEnvio" render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-sm font-semibold">Data de Envio (Manutenção Ext.)</FormLabel>

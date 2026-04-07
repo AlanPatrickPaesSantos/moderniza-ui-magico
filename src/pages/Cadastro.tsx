@@ -5,9 +5,7 @@ import { CadastroForm } from "@/components/CadastroForm";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Search, Loader2, FileText, ChevronLeft, ChevronRight, Printer } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { LaudoPrint } from "@/components/LaudoPrint";
-import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
 const Cadastro = () => {
@@ -20,7 +18,6 @@ const Cadastro = () => {
   const [hasNext, setHasNext] = useState(false);
   const [printType, setPrintType] = useState<'laudo' | 'saida'>('laudo');
   const [isNavLoading, setIsNavLoading] = useState(false);
-  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [novoFormKey, setNovoFormKey] = useState(0);
 
   useEffect(() => {
@@ -44,7 +41,7 @@ const Cadastro = () => {
     return () => clearTimeout(timer);
   }, [query]);
 
-  // Carrega um registro e verifica adjacentes (Turbo Mode)
+  // Carrega um registro e verifica adjacentes
   const loadRecord = async (item: any) => {
     try {
       const res = await fetch(`${API_BASE}/servicos/${item.Id_cod}`);
@@ -62,12 +59,11 @@ const Cadastro = () => {
       setHasPrev(false);
       setHasNext(false);
     }
-    setIsDetailsOpen(true);
     setQuery("");
     setResults([]);
   };
 
-  // Navega para OS anterior ou próxima (Turbo Mode: Single Call)
+  // Navega para OS anterior ou próxima
   const navigateTo = async (direction: "prev" | "next") => {
     if (!selectedRecord || isNavLoading) return;
     setIsNavLoading(true);
@@ -81,9 +77,6 @@ const Cadastro = () => {
       setSelectedRecord(data.record);
       setHasPrev(data.hasPrev);
       setHasNext(data.hasNext);
-      
-      // Feedback visual opcional: scroll suave para o topo do formulário se necessário
-      // window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       console.error("Erro ao navegar:", err);
       toast.error("Não há mais registros nesta direção.");
@@ -92,20 +85,27 @@ const Cadastro = () => {
     }
   };
 
-  // Salva NOVO equipamento
+  // Salva NOVO equipamento ou ATUALIZA existente
   const handleSubmit = async (data: any) => {
+    const isEditing = !!selectedRecord;
+    const url = isEditing ? `${API_BASE}/servicos/${selectedRecord.Id_cod}` : `${API_BASE}/servicos`;
+    const method = isEditing ? "PUT" : "POST";
+
     try {
-      const res = await fetch(`${API_BASE}/servicos`, {
-        method: "POST",
+      const res = await fetch(url, {
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
       const result = await res.json();
       if (result.success) {
-        toast.success(`✅ Equipamento cadastrado! OS nº ${result.os}`);
-        // Força a limpeza profunda resetando a chave do componente
-        setNovoFormKey(prev => prev + 1);
-        setSelectedRecord(null);
+        toast.success(isEditing ? `✅ OS nº ${selectedRecord.Id_cod} atualizada!` : `✅ Equipamento cadastrado! OS nº ${result.os}`);
+        if (!isEditing) {
+          setNovoFormKey(prev => prev + 1);
+          setSelectedRecord(null);
+        } else {
+          setSelectedRecord(result.record);
+        }
       } else {
         toast.error("Erro ao salvar: " + (result.error || "Tente novamente."));
       }
@@ -117,30 +117,74 @@ const Cadastro = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <div className="flex-1 flex flex-col container mx-auto px-4 py-4">
-        {/* Cabeçalho com botão Voltar */}
+        {/* Cabeçalho */}
         <div className="flex items-center gap-4 mb-3 shrink-0">
           <Button variant="ghost" onClick={() => navigate("/")} className="gap-2">
             <ArrowLeft className="h-4 w-4" />
             Voltar
           </Button>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground leading-tight">Cadastro de Equipamento</h1>
+          <div className="flex-1">
+            <h1 className="text-xl md:text-2xl font-bold text-foreground leading-tight">Equipamentos</h1>
+          </div>
+
+          {/* Botões de Navegação Direta */}
+          <div className="flex items-center gap-2 bg-muted/30 p-1 rounded-lg border border-border/40">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigateTo('prev')}
+              disabled={!hasPrev || isNavLoading}
+              className="h-8 gap-1 text-pmpa-navy hover:bg-pmpa-navy/10 px-2"
+              title="Registro Anterior"
+            >
+              <ChevronLeft className="h-4 w-4" />
+              <span className="hidden sm:inline font-bold text-[10px] uppercase">Anterior</span>
+            </Button>
+            
+            <div className="w-px h-4 bg-border/60 mx-1" />
+
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigateTo('next')}
+              disabled={!hasNext || isNavLoading}
+              className="h-8 gap-1 text-pmpa-navy hover:bg-pmpa-navy/10 px-2"
+              title="Próximo Registro"
+            >
+              <span className="hidden sm:inline font-bold text-[10px] uppercase">Próximo</span>
+              <ChevronRight className="h-4 w-4" />
+            </Button>
           </div>
         </div>
 
         {/* Barra de Pesquisa */}
         <div className="shrink-0 mb-3 relative">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Buscar cadastro existente por ID, Série ou RP..."
-              className="pl-10 pr-10 bg-card border-border/60 shadow-sm focus:border-primary/40 transition-colors h-11"
-            />
-            {isLoading && (
-              <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-primary" />
-            )}
+          <div className="flex items-center gap-2">
+            <Button 
+               variant={!selectedRecord ? "secondary" : "ghost"}
+               size="sm"
+               onClick={() => {
+                 setSelectedRecord(null);
+                 setNovoFormKey(prev => prev + 1);
+                 setHasPrev(false);
+                 setHasNext(false);
+               }}
+               className="h-8 gap-1 font-bold text-[10px] uppercase border"
+            >
+              Novo
+            </Button>
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Buscar por ID, Série ou RP..."
+                className="pl-10 pr-10 bg-card border-border/60 shadow-sm focus:border-primary/40 transition-colors h-11"
+              />
+              {isLoading && (
+                <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-primary" />
+              )}
+            </div>
           </div>
 
           {/* Dropdown de Resultados */}
@@ -167,138 +211,56 @@ const Cadastro = () => {
           )}
         </div>
 
-        {/* Formulário de Novo Cadastro */}
+        {/* Formulário Principal */}
         <div className="bg-card rounded-lg shadow-[var(--shadow-card)] border border-border p-4 mb-4">
           <div className="mb-4">
             <CadastroForm
-              key={novoFormKey}
+              key={selectedRecord ? `edit-${selectedRecord.Id_cod}` : `new-${novoFormKey}`}
               id="novo-form"
+              initialData={selectedRecord}
               onSubmit={handleSubmit}
               onCancel={() => navigate("/")}
             />
           </div>
 
           <div className="pt-4 border-t bg-muted/5 flex flex-col sm:flex-row justify-end gap-3">
+            <div className="flex flex-1 gap-2">
+              <Button
+                variant="outline"
+                onClick={() => { setPrintType('laudo'); setTimeout(() => window.print(), 100); }}
+                className="h-12 sm:h-11 gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold flex-1 sm:flex-none"
+                disabled={!selectedRecord}
+              >
+                <Printer className="h-4 w-4" />
+                Laudo
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => { setPrintType('saida'); setTimeout(() => window.print(), 100); }}
+                className="h-12 sm:h-11 gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold flex-1 sm:flex-none"
+                disabled={!selectedRecord}
+              >
+                <Printer className="h-4 w-4" />
+                Saída
+              </Button>
+            </div>
+            
             <Button variant="outline" onClick={() => navigate("/")} className="h-12 sm:h-11 px-6 font-bold w-full sm:w-auto">
-              Cancelar
+              Sair
             </Button>
             <Button
               type="submit"
               form="novo-form"
               className="bg-pmpa-navy hover:bg-pmpa-navy/90 text-white h-12 sm:h-11 px-12 font-bold shadow-lg uppercase w-full sm:w-auto"
             >
-              Finalizar Novo Cadastro
+              {selectedRecord ? "Atualizar Registro" : "Finalizar Novo Cadastro"}
             </Button>
           </div>
         </div>
+
+        {/* Renderização do Laudo para Impressão */}
+        {selectedRecord && <div className="hidden"><LaudoPrint data={selectedRecord} type={printType} /></div>}
       </div>
-
-      {/* Modal de Detalhes do Registro Buscado */}
-      <Dialog open={isDetailsOpen} onOpenChange={(open) => {
-        setIsDetailsOpen(open);
-        if (!open) setTimeout(() => setSelectedRecord(null), 300);
-      }}>
-        <DialogContent className="max-w-4xl w-[95vw] sm:w-full max-h-[92vh] overflow-hidden flex flex-col p-0 border-pmpa-navy/20">
-          <DialogHeader className="p-4 md:p-6 pb-2 border-b border-border/50 bg-pmpa-navy/5">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="px-2 py-0.5 rounded-full bg-pmpa-navy/10 text-pmpa-navy text-[10px] font-bold uppercase tracking-wider">
-                Detalhamento de Registro
-              </span>
-            </div>
-            <DialogTitle className="text-xl md:text-2xl font-bold text-pmpa-navy leading-tight">
-              Equipamento #{selectedRecord ? String(selectedRecord.Id_cod) : ""}
-            </DialogTitle>
-            <DialogDescription className="text-xs md:text-sm">
-              Visualizando dados do sistema PMPA / DITEL.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="p-4 md:p-6 flex-1 overflow-y-auto">
-            <CadastroForm
-              id="editar-consulta-form"
-              initialData={selectedRecord}
-              onCancel={() => {
-                setIsDetailsOpen(false);
-                setTimeout(() => setSelectedRecord(null), 300);
-              }}
-              onSubmit={async (data) => {
-                try {
-                  const res = await fetch(
-                    `${API_BASE}/servicos/${selectedRecord?.Id_cod}`,
-                    {
-                      method: "PUT",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify(data),
-                    }
-                  );
-                  const result = await res.json();
-                  if (result.success) {
-                    toast.success(`✅ OS nº ${selectedRecord ? String(selectedRecord.Id_cod) : ""} atualizada com sucesso!`);
-                    setSelectedRecord(result.record);
-                  } else {
-                    toast.error("Erro ao salvar: " + (result.error || "Tente novamente."));
-                  }
-                } catch (err) {
-                  toast.error("Erro de conexão com o servidor.");
-                }
-              }}
-            />
-            {selectedRecord && <LaudoPrint data={selectedRecord} type={printType} />}
-          </div>
-
-          {/* Navegação e Ações no Rodapé do Modal */}
-          <div className="p-3 md:p-4 border-t bg-muted/20 shrink-0 shadow-inner">
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-4">
-              <Button
-                variant="outline"
-                onClick={() => navigateTo('prev')}
-                disabled={!hasPrev || isNavLoading}
-                className="h-12 md:h-14 gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold"
-              >
-                <ChevronLeft className="h-5 w-5 md:h-7 md:w-7" />
-                <span className="text-xs md:text-lg">Anterior</span>
-              </Button>
-
-              <Button
-                type="submit"
-                form="editar-consulta-form"
-                className="col-span-2 md:col-span-1 h-12 md:h-14 bg-pmpa-navy hover:bg-pmpa-navy/90 text-white font-black text-lg md:text-xl shadow-lg border-2 border-white/10 uppercase tracking-tight order-first md:order-none"
-              >
-                SALVAR
-              </Button>
-
-              <Button
-                variant="outline"
-                onClick={() => { setPrintType('laudo'); setTimeout(() => window.print(), 100); }}
-                className="h-12 md:h-14 gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold text-[10px] md:text-[13px]"
-                title="Gerar Laudo Técnico para Impressão"
-              >
-                <Printer className="h-4 w-4 md:h-6 md:w-6" />
-                <span className="inline text-[9px] md:text-[13px]">LAUDO</span>
-              </Button>
-
-              <Button
-                variant="outline"
-                onClick={() => { setPrintType('saida'); setTimeout(() => window.print(), 100); }}
-                className="h-12 md:h-14 gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold text-[10px] md:text-[13px]"
-                title="Gerar Relatório de Saída"
-              >
-                <Printer className="h-4 w-4 md:h-6 md:w-6" />
-                <span className="inline text-[9px] md:text-[13px]">SAÍDA</span>
-              </Button>
-
-              <Button
-                variant="outline"
-                onClick={() => navigateTo('next')}
-                disabled={!hasNext || isNavLoading}
-                className="h-12 md:h-14 gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold"
-              >
-                <span className="text-xs md:text-lg">Próximo</span>
-                <ChevronRight className="h-5 w-5 md:h-7 md:w-7" />
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
