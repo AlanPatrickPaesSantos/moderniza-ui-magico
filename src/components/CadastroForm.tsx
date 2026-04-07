@@ -57,16 +57,19 @@ interface CadastroFormProps {
   onSubmit: (data: CadastroFormValues) => void | Promise<void>;
   onCancel: () => void;
   onPrint?: (type: 'laudo' | 'saida') => void;
+  onNavigate?: (dir: 'prev' | 'next') => void;
+  hasPrev?: boolean;
+  hasNext?: boolean;
   initialData?: any;
   id?: string;
   isEditMode?: boolean;
 }
 
-import { Printer, Loader2 } from "lucide-react";
+import { Printer, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
-export const CadastroForm = ({ onSubmit, onCancel, onPrint, initialData, id = "cadastro-form", isEditMode }: CadastroFormProps) => {
+export const CadastroForm = ({ onSubmit, onCancel, onPrint, onNavigate, hasPrev, hasNext, initialData, id = "cadastro-form", isEditMode }: CadastroFormProps) => {
   const form = useForm<CadastroFormValues>({
     resolver: zodResolver(cadastroSchema),
     defaultValues: {
@@ -359,39 +362,70 @@ export const CadastroForm = ({ onSubmit, onCancel, onPrint, initialData, id = "c
         </Tabs>
 
         {/* Barra de Ações Interna ao Formulário */}
-        <div className="mt-6 pt-4 border-t bg-muted/5 flex flex-col sm:flex-row justify-end gap-3 sticky bottom-0 bg-card z-10 p-2 -mx-2">
-          <div className="flex flex-1 gap-2">
+        <div className="mt-6 pt-4 border-t bg-muted/20 flex flex-nowrap items-center justify-between gap-2 md:gap-3 sticky bottom-0 bg-card z-30 p-2 md:p-3 -mx-2 md:-mx-4 shadow-[0_-8px_30px_rgb(0,0,0,0.06)] rounded-b-xl">
+          <div className="flex gap-2">
+            {onNavigate && (
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => onNavigate('prev')}
+                disabled={!hasPrev}
+                className="h-10 md:h-12 w-10 md:w-auto md:px-4 gap-2 text-pmpa-navy hover:bg-pmpa-navy/10 font-black border border-pmpa-navy/20"
+                title="OS Anterior"
+              >
+                <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
+                <span className="hidden md:inline text-xs uppercase tracking-tighter">Anterior</span>
+              </Button>
+            )}
+            
             <Button
               type="button"
               variant="outline"
               onClick={() => onPrint?.('laudo')}
-              className="h-10 md:h-11 gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold flex-1 sm:flex-none"
+              className="h-10 md:h-12 gap-1 md:gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold px-2 md:px-4 flex-1 sm:flex-none"
               disabled={!initialData}
             >
-              <Printer className="h-4 w-4" />
-              <span className="font-bold text-[13px] uppercase">Laudo</span>
+              <Printer className="h-4 w-4 md:h-5 md:w-5" />
+              <span className="text-[10px] md:text-[13px] uppercase">Laudo</span>
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => onPrint?.('saida')}
-              className="h-10 md:h-11 gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold flex-1 sm:flex-none"
+              className="h-10 md:h-12 gap-1 md:gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold px-2 md:px-4 flex-1 sm:flex-none"
               disabled={!initialData}
             >
-              <Printer className="h-4 w-4" />
-              <span className="font-bold text-[13px] uppercase">Saída</span>
+              <Printer className="h-4 w-4 md:h-5 md:w-5" />
+              <span className="text-[10px] md:text-[13px] uppercase">Saída</span>
             </Button>
           </div>
           
-          <Button type="button" variant="outline" onClick={onCancel} className="h-10 md:h-11 px-6 font-bold w-full sm:w-auto">
-            Sair
-          </Button>
-          <Button
-            type="submit"
-            className="bg-pmpa-navy hover:bg-pmpa-navy/90 text-white h-10 md:h-11 px-10 font-bold shadow-lg uppercase w-full sm:w-auto min-w-[180px]"
-          >
-            {isEditMode || initialData ? "Atualizar Registro" : "Finalizar Novo Cadastro"}
-          </Button>
+          <div className="flex gap-2 items-center">
+            <Button
+              type="submit"
+              className="bg-pmpa-navy hover:bg-pmpa-navy/90 text-white h-10 md:h-12 px-6 md:px-12 font-black shadow-lg uppercase tracking-tight text-xs md:text-lg border-2 border-white/10"
+            >
+              {isEditMode || initialData ? "Atualizar" : "Finalizar Cadastro"}
+            </Button>
+
+            {onNavigate && (
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => onNavigate('next')}
+                disabled={!hasNext}
+                className="h-10 md:h-12 w-10 md:w-auto md:px-4 gap-2 text-pmpa-navy hover:bg-pmpa-navy/10 font-black border border-pmpa-navy/20"
+                title="Próxima OS"
+              >
+                <span className="hidden md:inline text-xs uppercase tracking-tighter">Próximo</span>
+                <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
+              </Button>
+            )}
+            
+            <Button type="button" variant="ghost" onClick={onCancel} className="h-10 md:h-12 px-3 md:px-4 font-bold text-muted-foreground hover:text-foreground">
+              Sair
+            </Button>
+          </div>
         </div>
       </form>
     </Form>

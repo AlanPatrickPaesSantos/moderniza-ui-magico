@@ -44,15 +44,15 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
       const end = externalTrigger.dateRange?.end || "";
       const query = externalTrigger.q || "";
       const statusValue = externalTrigger.status || "";
-      
+
       setFilters({ startDate: start, endDate: end, q: query, status: statusValue, bateria: false });
       setActiveReport(externalTrigger.id);
-      
+
       // Pequeno delay para garantir que os estados foram aplicados antes da busca
       setTimeout(() => {
         handleGenerateReportFromParams(start, end, query, statusValue);
       }, 100);
-      
+
       onTriggerClean?.();
     }
   }, [externalTrigger]);
@@ -64,15 +64,15 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
       const isMissions = reportId === "Rel_Missao_Consolidado";
       const isEquipments = reportId === "Rel_Equipamentos";
       const endpoint = isMissions ? "missoes" : "servicos";
-      
+
       // Se houver statusText ou filters.status, usamos ele estritamente
       // Caso contrário, se for relatórios de missões ou específico, o statusParam fica vazio.
       const currentStatus = statusText !== undefined ? statusText : filters.status;
       const statusParam = currentStatus ? `&status=${currentStatus}` : (isMissions || isEquipments ? "" : "&status=PENDENTE");
-      
+
       const currentQ = queryText !== undefined ? queryText : filters.q;
       const searchQuery = currentQ ? `&q=${encodeURIComponent(currentQ)}` : "";
-      
+
       const currentBateria = filters.bateria;
       const bateriaParam = currentBateria ? "&bateria=true" : "";
 
@@ -85,9 +85,9 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
       const listUrl = `${API_BASE}/${endpoint}?startDate=${start}&endDate=${end}${statusParam}${searchQuery}${bateriaParam}`;
       const listResp = await fetch(listUrl);
       const data = await listResp.json();
-      
+
       setResults(Array.isArray(data) ? data : []);
-      
+
       if (isMissions) {
         setStats({
           total: exactStats?.total || 0,
@@ -110,7 +110,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
           fetch(`${API_BASE}/servicos/count?startDate=${start}&endDate=${end}&bateria=true${searchQuery}`),
           fetch(`${API_BASE}/servicos/count?startDate=${start}&endDate=${end}${searchQuery}`)
         ]);
-        
+
         const pentoData = await pentoResp.json();
         const prontoData = await prontoResp.json();
         const laudoData = await laudoResp.json();
@@ -119,7 +119,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
 
         setStats({
           total: totalData.count || 0,
-          interno: 0, externo: 0, remoto: 0, 
+          interno: 0, externo: 0, remoto: 0,
           pendente: pentoData.count || 0,
           pronto: prontoData.count || 0,
           laudo: laudoData.count || 0,
@@ -137,7 +137,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
     if (!activeReport) return;
     await fetchReportData(start, end, activeReport, queryText, statusText);
   };
-  
+
   const handleGenerateReport = async () => {
     if (!activeReport) return;
     await fetchReportData(filters.startDate, filters.endDate, activeReport, filters.q, filters.status);
@@ -389,13 +389,13 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
               { icon: Activity, id: "Rel_Missao_Consolidado", title: "Consolidado Missões", desc: "Relatório de serviços Int/Ext" },
               { icon: Wrench, id: "Rel_Equipamentos", title: "Consolidado Equipamentos", desc: "Relatório de Manutenção e Reparos" },
             ].map((item) => (
-              <Button 
+              <Button
                 key={item.id}
                 onClick={() => {
-                   setActiveReport(item.id);
-                   setResults([]);
+                  setActiveReport(item.id);
+                  setResults([]);
                 }}
-                variant="outline" 
+                variant="outline"
                 className="w-full justify-start gap-3 h-auto py-3.5 border-[1.5px] border-border hover:bg-primary/5 hover:border-primary/20 transition-all group"
               >
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
@@ -433,11 +433,11 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
             <div className="flex flex-wrap gap-2 md:gap-3 items-end bg-muted/20 p-2 md:p-4 rounded-xl border border-border/40 print:hidden shrink-0">
               <div className="space-y-1.5 flex-1 min-w-[150px]">
                 <label className="text-xs font-bold text-foreground uppercase tracking-wider">Início</label>
-                <Input type="date" value={filters.startDate} onChange={(e) => setFilters({...filters, startDate: e.target.value})} />
+                <Input type="date" value={filters.startDate} onChange={(e) => setFilters({ ...filters, startDate: e.target.value })} />
               </div>
               <div className="space-y-1.5 flex-1 min-w-[150px]">
                 <label className="text-xs font-bold text-foreground uppercase tracking-wider">Fim</label>
-                <Input type="date" value={filters.endDate} onChange={(e) => setFilters({...filters, endDate: e.target.value})} />
+                <Input type="date" value={filters.endDate} onChange={(e) => setFilters({ ...filters, endDate: e.target.value })} />
               </div>
               <div className="space-y-1.5 flex-1 min-w-[200px]">
                 <div className="flex justify-between items-center mb-1">
@@ -454,15 +454,15 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
                   )}
                 </div>
                 <div className="relative">
-                  <Input 
-                    placeholder="Pesquisar..." 
-                    value={filters.q} 
-                    onChange={(e) => setFilters({...filters, q: e.target.value, status: "", bateria: false})} 
+                  <Input
+                    placeholder="Pesquisar..."
+                    value={filters.q}
+                    onChange={(e) => setFilters({ ...filters, q: e.target.value, status: "", bateria: false })}
                     onKeyDown={(e) => e.key === "Enter" && handleGenerateReport()}
                     className={(filters.status || filters.bateria) ? "border-primary/50 bg-primary/5" : ""}
                   />
                   {(filters.status || filters.bateria) && (
-                    <button 
+                    <button
                       onClick={() => {
                         const newFilters = { ...filters, status: "", bateria: false };
                         setFilters(newFilters);
@@ -475,7 +475,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
                   )}
                 </div>
               </div>
-              
+
               <Button onClick={handleGenerateReport} className="bg-pmpa-navy hover:bg-pmpa-navy/90 gap-2 h-10 px-6">
                 {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
                 GERAR
@@ -520,17 +520,17 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
             {activeReport === "Rel_Equipamentos" && results.length > 0 && (
               <div className="relative overflow-hidden print:hidden border-b border-border/20 mb-6 pb-2 z-20 bg-background/95 backdrop-blur-sm shrink-0">
                 <div className="flex flex-nowrap md:grid md:grid-cols-5 gap-2 overflow-x-auto pb-4 px-1 md:pb-0 custom-scrollbar scroll-smooth snap-x snap-mandatory">
-                  
+
                   <div className="bg-muted/40 p-2 md:p-3 rounded-lg border border-border/50 min-w-[110px] md:min-w-0 flex-shrink-0 snap-start">
                     <p className="text-[8px] md:text-[10px] font-black uppercase text-muted-foreground tracking-tighter">Total O.S.</p>
                     <p className="text-sm md:text-xl font-black text-foreground">{String(stats.total || 0)}</p>
                   </div>
 
-                  <div 
+                  <div
                     onClick={() => {
-                        const newFilters = { ...filters, q: "", status: "PENDENTE", bateria: false };
-                        setFilters(newFilters);
-                        fetchReportData(newFilters.startDate, newFilters.endDate, activeReport!, "", "PENDENTE");
+                      const newFilters = { ...filters, q: "", status: "PENDENTE", bateria: false };
+                      setFilters(newFilters);
+                      fetchReportData(newFilters.startDate, newFilters.endDate, activeReport!, "", "PENDENTE");
                     }}
                     className={`bg-orange-500/10 p-2 md:p-3 rounded-lg border min-w-[110px] md:min-w-0 flex-shrink-0 cursor-pointer hover:bg-orange-500/20 active:scale-[0.97] transition-all snap-start ${filters.status === "PENDENTE" ? "ring-2 ring-orange-500 border-orange-500 bg-orange-500/20" : "border-orange-500/20"}`}
                   >
@@ -538,11 +538,11 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
                     <p className="text-sm md:text-xl font-black text-orange-600 dark:text-orange-400">{String(stats.pendente || 0)}</p>
                   </div>
 
-                  <div 
+                  <div
                     onClick={() => {
-                        const newFilters = { ...filters, q: "", status: "LAUDO", bateria: false };
-                        setFilters(newFilters);
-                        fetchReportData(newFilters.startDate, newFilters.endDate, activeReport!, "", "LAUDO");
+                      const newFilters = { ...filters, q: "", status: "LAUDO", bateria: false };
+                      setFilters(newFilters);
+                      fetchReportData(newFilters.startDate, newFilters.endDate, activeReport!, "", "LAUDO");
                     }}
                     className={`bg-blue-500/10 p-2 md:p-3 rounded-lg border min-w-[110px] md:min-w-0 flex-shrink-0 cursor-pointer hover:bg-blue-500/20 active:scale-[0.97] transition-all snap-start ${filters.status === "LAUDO" ? "ring-2 ring-blue-500 border-blue-500 bg-blue-500/20" : "border-blue-500/20"}`}
                   >
@@ -550,11 +550,11 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
                     <p className="text-sm md:text-xl font-black text-blue-600 dark:text-blue-400">{String(stats.laudo || 0)}</p>
                   </div>
 
-                  <div 
+                  <div
                     onClick={() => {
-                        const newFilters = { ...filters, q: "", status: "", bateria: true };
-                        setFilters(newFilters);
-                        fetchReportData(newFilters.startDate, newFilters.endDate, activeReport!, "", "");
+                      const newFilters = { ...filters, q: "", status: "", bateria: true };
+                      setFilters(newFilters);
+                      fetchReportData(newFilters.startDate, newFilters.endDate, activeReport!, "", "");
                     }}
                     className={`bg-amber-500/10 p-2 md:p-3 rounded-lg border min-w-[110px] md:min-w-0 flex-shrink-0 cursor-pointer hover:bg-amber-500/20 active:scale-[0.97] transition-all snap-start ${filters.bateria ? "ring-2 ring-amber-500 border-amber-500 bg-amber-500/20" : "border-amber-500/20"}`}
                   >
@@ -562,11 +562,11 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
                     <p className="text-sm md:text-xl font-black text-amber-600 dark:text-amber-400">{String(stats.bateria || 0)}</p>
                   </div>
 
-                  <div 
+                  <div
                     onClick={() => {
-                        const newFilters = { ...filters, q: "", status: "PRONTO", bateria: false };
-                        setFilters(newFilters);
-                        fetchReportData(newFilters.startDate, newFilters.endDate, activeReport!, "", "PRONTO");
+                      const newFilters = { ...filters, q: "", status: "PRONTO", bateria: false };
+                      setFilters(newFilters);
+                      fetchReportData(newFilters.startDate, newFilters.endDate, activeReport!, "", "PRONTO");
                     }}
                     className={`bg-emerald-500/10 p-2 md:p-3 rounded-lg border min-w-[110px] md:min-w-0 flex-shrink-0 cursor-pointer hover:bg-emerald-500/20 active:scale-[0.97] transition-all snap-start ${filters.status === "PRONTO" ? "ring-2 ring-emerald-500 border-emerald-500 bg-emerald-500/20" : "border-emerald-500/20"}`}
                   >
@@ -586,7 +586,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
                 </div>
               )}
               {Array.isArray(results) && results.filter(Boolean).map((item, index) => (
-                <button 
+                <button
                   key={item._id || `report-item-${index}`}
                   onClick={() => loadDetail(item)}
                   className="w-full text-left p-4 hover:bg-primary/5 transition-colors group flex flex-col relative pr-10"
@@ -605,7 +605,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
                         {activeReport === "Rel_Missao_Consolidado" ? "Unidade / Solicitante" : "Equipamento / Unidade"}
                       </p>
                       <p className="font-semibold text-foreground truncate">
-                        {activeReport === "Rel_Missao_Consolidado" 
+                        {activeReport === "Rel_Missao_Consolidado"
                           ? `${String(item.unidade || "N/A")} - ${String(item.solicitante || 'N/A')}`
                           : `${String(item.T_EquipSuporte || item.T_EquipTelecom || "N/A")} - ${String(item.Unidade || "N/A")}`}
                       </p>
@@ -614,11 +614,11 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
                       <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Data Ref.</p>
                       <p className="font-bold text-foreground">
                         {(() => {
-                           const d = item.Data_Saida || item.saidaEquip || item.data || item.Data_Ent;
-                           if (!d) return "---";
-                           if (typeof d === 'string' && d.includes('/')) return d.split(' ')[0];
-                           const date = new Date(d);
-                           return isNaN(date.getTime()) ? "---" : date.toLocaleDateString('pt-BR');
+                          const d = item.Data_Saida || item.saidaEquip || item.data || item.Data_Ent;
+                          if (!d) return "---";
+                          if (typeof d === 'string' && d.includes('/')) return d.split(' ')[0];
+                          const date = new Date(d);
+                          return isNaN(date.getTime()) ? "---" : date.toLocaleDateString('pt-BR');
                         })()}
                       </p>
                     </div>
@@ -626,8 +626,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
                       <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">
                         {activeReport === "Rel_Missao_Consolidado" ? "Tipo" : "Status"}
                       </p>
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                        (() => {
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${(() => {
                           const val = String(item.servico || item.Serviço || "").toLowerCase();
                           if (val.includes("externo")) return "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400";
                           if (val.includes("interno")) return "bg-blue-500/10 text-blue-600 dark:text-blue-400";
@@ -635,12 +634,12 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
                           if (val.includes("pronto")) return "bg-green-500/10 text-green-600 dark:text-green-400";
                           return "bg-amber-500/10 text-amber-600 dark:text-amber-400";
                         })()
-                      }`}>
+                        }`}>
                         {activeReport === "Rel_Missao_Consolidado" ? String(item.servico || "N/A") : String(item.Serviço || "PENDENTE")}
                       </span>
                     </div>
                   </div>
-                  
+
                   {/* Prévia de Defeito/Análise - VISIBILIDADE TOTAL */}
                   <div className="mt-4 pt-3 border-t border-border/20 grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
                     <div className="space-y-1">
@@ -680,49 +679,25 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
           </DialogHeader>
           <div className="p-4 md:p-6 flex-1 overflow-y-auto">
             {activeReport === "Rel_Missao_Consolidado" ? (
-              <ServicoInternoExternoForm id="report-detail-form" initialData={selectedRecord} onCancel={() => setSelectedRecord(null)} onSubmit={handleSave} />
+              <ServicoInternoExternoForm 
+                id="report-detail-form" 
+                initialData={selectedRecord} 
+                onCancel={() => setSelectedRecord(null)} 
+                onSubmit={handleSave}
+                onPrint={(type) => { setPrintType(type); setTimeout(() => window.print(), 100); }}
+                isEditMode={!!selectedRecord}
+              />
             ) : (
-              <CadastroForm id="report-detail-form" initialData={selectedRecord} onCancel={() => setSelectedRecord(null)} onSubmit={handleSave} />
+              <CadastroForm 
+                id="report-detail-form" 
+                initialData={selectedRecord} 
+                onCancel={() => setSelectedRecord(null)} 
+                onSubmit={handleSave}
+                onPrint={(type) => { setPrintType(type); setTimeout(() => window.print(), 100); }}
+                isEditMode={!!selectedRecord}
+              />
             )}
             {selectedRecord && <LaudoPrint data={selectedRecord} type={printType} />}
-          </div>
-
-          <div className="p-3 md:p-4 border-t bg-muted/20 shrink-0 shadow-inner">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
-              <Button
-                variant="outline"
-                onClick={() => setSelectedRecord(null)}
-                className="h-12 md:h-14 gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold"
-              >
-                FECHAR
-              </Button>
-
-              <Button
-                variant="outline"
-                onClick={() => { setPrintType('laudo'); setTimeout(() => window.print(), 100); }}
-                className="h-12 md:h-14 gap-1 md:gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold px-1"
-              >
-                <Printer className="h-4 w-4 md:h-6 md:w-6" />
-                <span className="inline text-[9px] md:text-[13px]">LAUDO</span>
-              </Button>
-
-              <Button
-                variant="outline"
-                onClick={() => { setPrintType('saida'); setTimeout(() => window.print(), 100); }}
-                className="h-12 md:h-14 gap-1 md:gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold px-1"
-              >
-                <Printer className="h-4 w-4 md:h-6 md:w-6" />
-                <span className="inline text-[9px] md:text-[13px]">SAÍDA</span>
-              </Button>
-
-              <Button
-                type="submit"
-                form="report-detail-form"
-                className="h-12 md:h-14 bg-pmpa-navy hover:bg-pmpa-navy/90 text-white font-black text-lg shadow-lg border-2 border-white/10 uppercase tracking-tight"
-              >
-                SALVAR
-              </Button>
-            </div>
           </div>
         </DialogContent>
       </Dialog>

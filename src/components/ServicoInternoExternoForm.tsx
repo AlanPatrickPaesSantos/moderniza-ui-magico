@@ -13,9 +13,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { UnidadeCombobox } from "./UnidadeCombobox";
 import { API_BASE } from "../lib/api-config";
+import { Printer, ChevronLeft, ChevronRight } from "lucide-react";
 
 const formSchema = z.object({
   os: z.union([z.string(), z.number()]).transform(v => String(v)),
@@ -42,6 +43,11 @@ interface ServicoInternoExternoFormProps {
   initialData?: any;
   onSubmit: (data: FormData) => void;
   onCancel: () => void;
+  onPrint?: (type: 'laudo' | 'saida') => void;
+  onNavigate?: (dir: 'prev' | 'next') => void;
+  hasPrev?: boolean;
+  hasNext?: boolean;
+  isEditMode?: boolean;
 }
 
 export const ServicoInternoExternoForm = ({
@@ -49,6 +55,11 @@ export const ServicoInternoExternoForm = ({
   initialData,
   onSubmit,
   onCancel,
+  onPrint,
+  onNavigate,
+  hasPrev,
+  hasNext,
+  isEditMode,
 }: ServicoInternoExternoFormProps) => {
   const {
     register,
@@ -258,6 +269,73 @@ export const ServicoInternoExternoForm = ({
             placeholder="Informações adicionais do relatório..." 
             className="min-h-[100px] text-base border-pmpa-navy/20 focus-visible:ring-pmpa-navy shadow-inner bg-card" 
           />
+        </div>
+
+        {/* Barra de Ações Interna ao Formulário */}
+        <div className="mt-6 pt-4 border-t bg-muted/20 flex flex-nowrap items-center justify-between gap-2 md:gap-3 sticky bottom-0 bg-card z-30 p-2 md:p-3 -mx-2 md:-mx-4 shadow-[0_-8px_30px_rgb(0,0,0,0.06)] rounded-b-xl">
+          <div className="flex gap-2">
+            {onNavigate && (
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => onNavigate('prev')}
+                disabled={!hasPrev}
+                className="h-10 md:h-12 w-10 md:w-auto md:px-4 gap-2 text-pmpa-navy hover:bg-pmpa-navy/10 font-black border border-pmpa-navy/20"
+                title="OS Anterior"
+              >
+                <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
+                <span className="hidden md:inline text-xs uppercase tracking-tighter">Anterior</span>
+              </Button>
+            )}
+            
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onPrint?.('laudo')}
+              className="h-10 md:h-12 gap-1 md:gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold px-2 md:px-4 flex-1 sm:flex-none"
+              disabled={!initialData}
+            >
+              <Printer className="h-4 w-4 md:h-5 md:w-5" />
+              <span className="text-[10px] md:text-[13px] uppercase">Laudo</span>
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onPrint?.('saida')}
+              className="h-10 md:h-12 gap-1 md:gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold px-2 md:px-4 flex-1 sm:flex-none"
+              disabled={!initialData}
+            >
+              <Printer className="h-4 w-4 md:h-5 md:w-5" />
+              <span className="text-[10px] md:text-[13px] uppercase">Saída</span>
+            </Button>
+          </div>
+          
+          <div className="flex gap-2 items-center">
+            <Button
+              type="submit"
+              className="bg-pmpa-navy hover:bg-pmpa-navy/90 text-white h-10 md:h-12 px-6 md:px-12 font-black shadow-lg uppercase tracking-tight text-xs md:text-lg border-2 border-white/10"
+            >
+              {isEditMode || initialData ? "Atualizar" : "Finalizar Cadastro"}
+            </Button>
+
+            {onNavigate && (
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => onNavigate('next')}
+                disabled={!hasNext}
+                className="h-10 md:h-12 w-10 md:w-auto md:px-4 gap-2 text-pmpa-navy hover:bg-pmpa-navy/10 font-black border border-pmpa-navy/20"
+                title="Próxima OS"
+              >
+                <span className="hidden md:inline text-xs uppercase tracking-tighter">Próximo</span>
+                <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
+              </Button>
+            )}
+            
+            <Button type="button" variant="ghost" onClick={onCancel} className="h-10 md:h-12 px-3 md:px-4 font-bold text-muted-foreground hover:text-foreground">
+              Sair
+            </Button>
+          </div>
         </div>
       </div>
     </form>

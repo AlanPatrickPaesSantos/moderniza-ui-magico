@@ -221,6 +221,9 @@ const Cadastro = () => {
               onSubmit={handleSubmit}
               onCancel={() => navigate("/")}
               onPrint={(type) => { setPrintType(type); setTimeout(() => window.print(), 100); }}
+              onNavigate={navigateTo}
+              hasPrev={hasPrev}
+              hasNext={hasNext}
               isEditMode={!!selectedRecord}
             />
           </div>

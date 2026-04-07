@@ -165,10 +165,6 @@ export const ConsultasSection = () => {
             <CadastroForm
               id="editar-consulta-form"
               initialData={selectedRecord}
-              onCancel={() => {
-                setIsDetailsOpen(false);
-                setTimeout(() => setSelectedRecord(null), 300);
-              }}
               onSubmit={async (data) => {
                 try {
                   const res = await fetch(
@@ -195,63 +191,17 @@ export const ConsultasSection = () => {
                   toast.error("Erro de conexão com o servidor.");
                 }
               }}
+              onCancel={() => {
+                setIsDetailsOpen(false);
+                setTimeout(() => setSelectedRecord(null), 300);
+              }}
+              onPrint={(type) => { setPrintType(type); setTimeout(() => window.print(), 100); }}
+              onNavigate={navigateTo}
+              hasPrev={hasPrev}
+              hasNext={hasNext}
+              isEditMode={true}
             />
             {selectedRecord && <LaudoPrint data={selectedRecord} type={printType} />}
-          </div>
-
-          {/* Navegação e Ações no Rodapé do Modal */}
-          <div className="p-3 md:p-4 border-t bg-muted/20 shrink-0 shadow-inner">
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-4">
-              <Button
-                variant="outline"
-                onClick={() => navigateTo('prev')}
-                disabled={!hasPrev || isNavLoading}
-                className="h-12 md:h-14 gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold"
-                title="OS Anterior"
-              >
-                <ChevronLeft className="h-5 w-5 md:h-7 md:w-7" />
-                <span className="text-xs md:text-lg">Anterior</span>
-              </Button>
-
-              <Button
-                type="submit"
-                form="editar-consulta-form"
-                className="col-span-2 md:col-span-1 h-12 md:h-14 bg-pmpa-navy hover:bg-pmpa-navy/90 text-white font-black text-lg md:text-xl shadow-lg border-2 border-white/10 uppercase tracking-tight order-first md:order-none"
-              >
-                SALVAR
-              </Button>
-
-              <Button
-                variant="outline"
-                onClick={() => { setPrintType('laudo'); setTimeout(() => window.print(), 100); }}
-                className="h-12 md:h-14 gap-1 md:gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold px-1"
-                title="Gerar Laudo Técnico para Impressão"
-              >
-                <Printer className="h-4 w-4 md:h-5 md:w-5" />
-                <span className="inline text-[9px] md:text-[13px]">LAUDO</span>
-              </Button>
-
-              <Button
-                variant="outline"
-                onClick={() => { setPrintType('saida'); setTimeout(() => window.print(), 100); }}
-                className="h-12 md:h-14 gap-1 md:gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold px-1"
-                title="Gerar Relatório de Saída"
-              >
-                <Printer className="h-4 w-4 md:h-5 md:w-5" />
-                <span className="inline text-[9px] md:text-[13px]">SAÍDA</span>
-              </Button>
-
-              <Button
-                variant="outline"
-                onClick={() => navigateTo('next')}
-                disabled={!hasNext || isNavLoading}
-                className="h-12 md:h-14 gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold"
-                title="Próxima OS"
-              >
-                <span className="text-xs md:text-lg">Próximo</span>
-                <ChevronRight className="h-5 w-5 md:h-7 md:w-7" />
-              </Button>
-            </div>
           </div>
         </DialogContent>
       </Dialog>
