@@ -338,11 +338,20 @@ app.get('/api/missoes/count', async (req, res) => {
     if (endDate) dateQuery.$lte = new Date(endDate + 'T23:59:59.999Z');
     const baseQuery = (startDate || endDate) ? { data: dateQuery } : {};
 
+    // Função auxiliar para contar tipos de missões (checa tanto 'servico' legado quanto 'categoria' nova)
+    const countTipo = (regex) => Missao.countDocuments({
+      ...baseQuery,
+      $or: [
+        { servico: { $regex: regex } },
+        { categoria: { $regex: regex } }
+      ]
+    });
+
     const [total, interno, externo, remoto, pendente] = await Promise.all([
       Missao.countDocuments(baseQuery),
-      Missao.countDocuments({ ...baseQuery, servico: { $regex: /^\s*interno\s*$/i } }),
-      Missao.countDocuments({ ...baseQuery, servico: { $regex: /^\s*externo\s*$/i } }),
-      Missao.countDocuments({ ...baseQuery, servico: { $regex: /^\s*remoto\s*$/i } }),
+      countTipo(/^\s*interno\s*$/i),
+      countTipo(/^\s*externo\s*$/i),
+      countTipo(/^\s*remoto\s*$/i),
       Missao.countDocuments({ ...baseQuery, servico: { $regex: /^\s*pendente\s*$/i } }),
     ]);
 
