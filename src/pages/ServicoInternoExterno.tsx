@@ -12,6 +12,7 @@ const ServicoInternoExterno = () => {
   const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
+  const [resetKey, setResetKey] = useState(0);
 
   // Busca e carrega a missão pela Lupa
   const handleSearch = async () => {
@@ -60,6 +61,7 @@ const ServicoInternoExterno = () => {
       if (res.ok && result.success && result.missao) {
         toast.success(selectedRecord ? `✅ Missão OS ${result.missao.os} atualizada!` : `✅ Missão OS ${result.missao.os} criada com sucesso!`);
         setSelectedRecord(null);
+        setResetKey(prev => prev + 1); // Força reinício do formulário
       } else {
         toast.error("Erro ao salvar missão: " + (result.error || "Tente novamente."));
       }
@@ -122,7 +124,7 @@ const ServicoInternoExterno = () => {
         {/* Form Container: Now wrapping content naturally */}
         <div className="bg-card rounded-lg shadow-[var(--shadow-card)] border border-border p-4 md:p-6 mb-8">
           <ServicoInternoExternoForm 
-            key={selectedRecord ? `edit-${selectedRecord.os}` : "new"}
+            key={selectedRecord ? `edit-${selectedRecord.os}` : `new-${resetKey}`}
             id="missao-form"
             initialData={selectedRecord}
             onSubmit={handleSubmit}
