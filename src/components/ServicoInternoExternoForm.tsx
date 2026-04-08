@@ -331,10 +331,6 @@ export const ServicoInternoExternoForm = ({
                 <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
               </Button>
             )}
-            
-            <Button type="button" variant="ghost" onClick={onCancel} className="h-10 md:h-12 px-3 md:px-4 font-bold text-muted-foreground hover:text-foreground">
-              Sair
-            </Button>
           </div>
         </div>
       </div>
