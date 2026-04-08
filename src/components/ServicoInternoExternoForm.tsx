@@ -315,7 +315,7 @@ export const ServicoInternoExternoForm = ({
               type="submit"
               className="bg-pmpa-navy hover:bg-pmpa-navy/90 text-white h-10 md:h-12 px-6 md:px-12 font-black shadow-lg uppercase tracking-tight text-xs md:text-lg border-2 border-white/10"
             >
-              {isEditMode || initialData ? "Atualizar" : "Finalizar Cadastro"}
+              {isEditMode || initialData ? "Atualizar Missão" : "Salvar Missão"}
             </Button>
 
             {onNavigate && (
@@ -331,6 +331,15 @@ export const ServicoInternoExternoForm = ({
                 <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
               </Button>
             )}
+            
+            <Button 
+              type="button" 
+              variant="ghost" 
+              onClick={onCancel} 
+              className="h-10 md:h-12 px-3 md:px-4 font-bold text-muted-foreground hover:text-foreground uppercase text-xs"
+            >
+              Voltar
+            </Button>
           </div>
         </div>
       </div>

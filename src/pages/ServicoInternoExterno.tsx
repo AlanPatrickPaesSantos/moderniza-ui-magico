@@ -134,40 +134,9 @@ const ServicoInternoExterno = () => {
             initialData={selectedRecord}
             onSubmit={handleSubmit}
             onCancel={() => navigate("/")}
+            onPrint={handlePrint}
+            isEditMode={!!selectedRecord}
           />
-          
-          {/* Action Buttons: Glued to the form bottom */}
-          <div className="mt-6 pt-6 border-t border-border/40 flex flex-col sm:flex-row gap-3 justify-end w-full">
-            <Button
-              variant="outline"
-              onClick={() => {
-                if (selectedRecord) setSelectedRecord(null);
-                else navigate("/");
-              }}
-              className="w-full sm:w-48 h-12 border-2 border-slate-200 text-slate-600 font-bold text-lg uppercase tracking-tight hover:bg-slate-50 order-last sm:order-first"
-            >
-              VOLTAR
-            </Button>
-
-            {selectedRecord && (
-              <Button
-                type="button"
-                onClick={handlePrint}
-                className="w-full sm:w-48 h-12 bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg uppercase tracking-tight shadow-md flex gap-2"
-              >
-                <Printer className="h-5 w-5" />
-                IMPRIMIR O.S.
-              </Button>
-            )}
-
-            <Button
-              type="submit"
-              form="missao-form"
-              className="flex-1 md:max-w-[400px] h-12 bg-pmpa-navy hover:bg-pmpa-navy/90 text-white font-black text-lg shadow-lg border-2 border-white/10 uppercase tracking-tight"
-            >
-              {selectedRecord ? "ATUALIZAR MISSÃO" : "SALVAR MISSÃO"}
-            </Button>
-          </div>
         </div>
 
         {/* Componente de Impressão (Invisível na UI, aparece no Print) */}
