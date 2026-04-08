@@ -142,7 +142,7 @@ export const ServicoInternoExternoForm = ({
 
   return (
     <form id={id} onSubmit={handleSubmit(onSubmit)} className="space-y-4 px-1 py-1">
-      <div className="space-y-4">
+      <div className="space-y-4 pb-24">
         
         {/* Row 1: OS, Seção, Unidade */}
         <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-3 pt-1">
