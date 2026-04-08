@@ -272,7 +272,7 @@ export const ServicoInternoExternoForm = ({
         </div>
 
         {/* Barra de Ações Interna ao Formulário */}
-        <div className="mt-6 pt-4 border-t bg-muted/20 flex flex-nowrap items-center justify-between gap-2 md:gap-3 p-2 md:p-3 -mx-2 md:-mx-4 rounded-b-xl">
+        <div className="mt-6 bg-muted/20 flex flex-nowrap items-center justify-between gap-2 md:gap-3 p-2 md:p-3 -mx-2 md:-mx-4 rounded-b-xl">
           <div className="flex gap-2">
             {onNavigate && (
               <Button
