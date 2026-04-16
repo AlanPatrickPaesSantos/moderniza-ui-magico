@@ -270,7 +270,7 @@ export const EqUnidadeDialog = ({ open, onOpenChange }: EqUnidadeDialogProps) =>
               <Input
                 id="id"
                 value={id}
-                className="h-12 font-bold text-center bg-white border-border/80 text-lg text-muted-foreground"
+                className="h-12 font-bold text-center bg-white border-border/80 text-lg text-slate-500"
                 readOnly
               />
             </div>
@@ -283,7 +283,7 @@ export const EqUnidadeDialog = ({ open, onOpenChange }: EqUnidadeDialogProps) =>
                 id="sigla"
                 value={sigla}
                 onChange={(e) => setSigla(e.target.value.toUpperCase())}
-                className="h-12 font-black bg-white border-border/80 text-lg focus-visible:ring-pmpa-navy uppercase"
+                className="h-12 font-black bg-white border-border/80 text-lg text-slate-800 focus-visible:ring-pmpa-navy uppercase"
                 placeholder="Ex: BPCHOQUE"
               />
             </div>
@@ -325,7 +325,7 @@ export const EqUnidadeDialog = ({ open, onOpenChange }: EqUnidadeDialogProps) =>
                     placeholder="Buscar sigla..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-9 h-9 text-[13px] bg-muted/30 border-border/40 focus:bg-white transition-all uppercase"
+                    className="pl-9 h-9 text-[13px] bg-muted/30 border-border/40 text-slate-800 focus:bg-white transition-all uppercase"
                     onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                   />
                 </div>

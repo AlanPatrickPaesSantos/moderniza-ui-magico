@@ -265,7 +265,7 @@ export const EqSuporteDialog = ({ open, onOpenChange }: EqSuporteDialogProps) =>
               <Input
                 id="id"
                 value={id}
-                className="h-12 font-bold text-center bg-white border-border/80 text-lg text-muted-foreground"
+                className="h-12 font-bold text-center bg-white border-border/80 text-lg text-slate-500"
                 readOnly
               />
             </div>
@@ -278,7 +278,7 @@ export const EqSuporteDialog = ({ open, onOpenChange }: EqSuporteDialogProps) =>
                 id="equipamento"
                 value={equipamento}
                 onChange={(e) => setEquipamento(e.target.value)}
-                className="h-12 font-black bg-white border-border/80 text-lg focus-visible:ring-pmpa-navy uppercase"
+                className="h-12 font-black bg-white border-border/80 text-lg text-slate-800 focus-visible:ring-pmpa-navy uppercase"
                 placeholder="Ex: NOBREAK INTELBRAS"
               />
             </div>
@@ -317,7 +317,7 @@ export const EqSuporteDialog = ({ open, onOpenChange }: EqSuporteDialogProps) =>
                     placeholder="Buscar equipamento..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-9 h-9 text-[13px] bg-muted/30 border-border/40 focus:bg-white transition-all uppercase"
+                    className="pl-9 h-9 text-[13px] bg-muted/30 border-border/40 text-slate-800 focus:bg-white transition-all uppercase"
                     onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                   />
                 </div>
