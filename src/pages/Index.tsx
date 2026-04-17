@@ -106,7 +106,7 @@ const Index = () => {
                 const yearEnd = `${now.getFullYear()}-12-31`;
                 setExternalReportTrigger({ id: "Rel_Equipamentos", dateRange: { start: yearStart, end: yearEnd } });
               }}
-              className="group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-7 cursor-pointer shadow-sm hover:shadow-[0_15px_40px_rgba(220,38,38,0.1)] transition-all duration-500 hover:-translate-y-1 hover:border-red-200 dark:hover:border-red-900/50"
+              className="group relative overflow-hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-7 cursor-pointer shadow-sm hover:shadow-[0_15px_40px_rgba(220,38,38,0.1)] transition-all duration-500 hover:-translate-y-1 hover:border-red-200 dark:hover:border-red-900/50"
             >
               <div className="absolute right-[-24px] bottom-[-24px] opacity-[0.03] pointer-events-none group-hover:scale-110 group-hover:rotate-12 transition-transform duration-700">
                 <Wrench className="w-32 h-32 text-red-600" />
@@ -134,7 +134,7 @@ const Index = () => {
                 const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
                 setExternalReportTrigger({ id: "Rel_Missao_Consolidado", dateRange: { start: firstDay, end: lastDay } });
               }}
-              className="group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-6 cursor-pointer shadow-sm hover:shadow-[0_15px_40px_rgba(0,78,154,0.1)] transition-all duration-500 hover:-translate-y-1 hover:border-blue-200 dark:hover:border-blue-900/50 flex flex-col justify-between"
+              className="group relative overflow-hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-6 cursor-pointer shadow-sm hover:shadow-[0_15px_40px_rgba(0,78,154,0.1)] transition-all duration-500 hover:-translate-y-1 hover:border-blue-200 dark:hover:border-blue-900/50 flex flex-col justify-between"
             >
               <div className="absolute right-[-14px] bottom-[-14px] opacity-[0.03] pointer-events-none group-hover:scale-110 group-hover:rotate-12 transition-transform duration-700">
                 <Activity className="w-24 h-24 text-[#004e9a]" />
