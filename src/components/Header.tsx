@@ -21,7 +21,7 @@ export const Header = () => {
           <div className="flex items-center justify-center transition-all hover:scale-105" onClick={() => navigate("/")} role="button">
             <img src="/logo-pmpa.png" alt="Brasão PMPA" className="h-[50px] md:h-[80px] w-auto object-contain" />
           </div>
-          <div className="flex flex-col justify-center" onClick={() => navigate("/")} role="button">
+          <div className="flex flex-col justify-center -translate-y-1" onClick={() => navigate("/")} role="button">
             <h1 className="text-xl md:text-3xl font-extrabold tracking-tight text-white uppercase leading-none mb-0.5 md:mb-1 drop-shadow-md">
               PMPA
             </h1>
