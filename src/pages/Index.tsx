@@ -169,15 +169,14 @@ const Index = () => {
             {/* [BENTO 4] Atalho: Serviço Interno/Externo (Ocupa 1 Coluna) */}
             <div 
               onClick={() => navigate("/servico-interno-externo")}
-              className="group relative bg-slate-100 dark:bg-slate-800/50 border border-slate-200/50 dark:border-slate-800 rounded-[2rem] p-7 cursor-pointer hover:bg-white dark:hover:bg-slate-800 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+              className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-6 cursor-pointer hover:border-[#004e9a]/30 hover:shadow-md transition-all duration-300 hover:-translate-y-1 flex items-center gap-4"
             >
-              <div className="relative z-10 h-full flex flex-col justify-between">
-                 <div className="p-3 bg-slate-200 dark:bg-slate-700 rounded-xl w-fit mb-8 group-hover:bg-[#004e9a] group-hover:text-white transition-colors duration-500">
-                    <Server className="w-5 h-5 text-slate-600 dark:text-slate-300 group-hover:text-white" />
-                  </div>
-                <div>
-                  <h3 className="text-lg font-black text-slate-800 dark:text-white leading-tight">Serviço<br/>Int / Ext</h3>
-                </div>
+              <div className="p-3.5 bg-slate-50 dark:bg-slate-800 rounded-2xl group-hover:bg-blue-50 transition-colors">
+                <Server className="w-6 h-6 text-slate-500 group-hover:text-[#004e9a]" />
+              </div>
+              <div>
+                <h3 className="text-sm font-black text-slate-800 dark:text-white">Serviços</h3>
+                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Int / Ext</p>
               </div>
             </div>
 
