@@ -146,10 +146,10 @@ const Index = () => {
                 <span className="text-[9px] font-bold text-[#004e9a] uppercase tracking-widest">Neste Mês</span>
               </div>
               <div className="relative z-10">
-                <p className="text-3xl font-black text-slate-800 dark:text-white tracking-tight leading-none mb-1">
-                  {isLoading ? <Loader2 className="h-6 w-6 animate-spin text-[#004e9a]/50" /> : stats.missions}
+                <p className="text-4xl font-black text-slate-800 dark:text-white tracking-tighter mb-1">
+                  {isLoading ? <Loader2 className="h-8 w-8 animate-spin text-[#004e9a]/50" /> : stats.missions}
                 </p>
-                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Missões Reg.</p>
+                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-widest leading-tight">Missões Reg.</p>
               </div>
             </div>
 
