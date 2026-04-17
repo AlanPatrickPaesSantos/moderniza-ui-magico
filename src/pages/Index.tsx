@@ -64,11 +64,11 @@ const Index = () => {
 
 
       <main className="container flex-1 px-6 pt-8 pb-12 relative overflow-hidden">
-        {/* Premium SaaS Brand Fade */}
-        <div className="absolute top-0 left-0 right-0 h-[65vh] bg-gradient-to-b from-[#004e9a]/[0.07] via-[#004e9a]/[0.02] to-transparent pointer-events-none z-0" />
+        {/* Deep SaaS Brand Fade (Highly Visible) */}
+        <div className="absolute top-0 left-0 right-0 h-[80vh] bg-gradient-to-b from-[#004e9a]/[0.15] via-[#004e9a]/[0.05] to-transparent pointer-events-none z-0" />
         
-        {/* Subtle Modern Dot Grid Background */}
-        <div className="absolute inset-0 z-0 bg-[radial-gradient(#004e9a_1px,transparent_1px)] dark:bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.06] dark:opacity-[0.03]" />
+        {/* Architect Blueprint Mesh (Highly Visible) */}
+        <div className="absolute inset-0 z-0 bg-[linear-gradient(to_right,#004e9a1a_1px,transparent_1px),linear-gradient(to_bottom,#004e9a1a_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#ffffff1a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff1a_1px,transparent_1px)] bg-[size:3rem_3rem] [mask-image:linear-gradient(to_bottom,white_40%,transparent_100%)] pointer-events-none" />
         
         {/* Subtle Watermark Overlay */}
         <div className="absolute bottom-10 right-10 opacity-[0.02] dark:opacity-[0.03] pointer-events-none z-0">
