@@ -1,7 +1,7 @@
 import { useEffect, useState, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
-import { NavigationCard } from "@/components/NavigationCard";
+
 import { ConsultasSection } from "@/components/ConsultasSection";
 // Lazy load components that are not needed immediately
 const RelatoriosSection = lazy(() => import("@/components/RelatoriosSection").then(m => ({ default: m.RelatoriosSection })));
@@ -59,18 +59,16 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 overflow-x-hidden">
       <Header />
 
 
-      <main className="container flex-1 px-6 pt-8 pb-12 relative z-10">
-        {/* Fundo ultra limpo absoluto (Nenhuma marca d'água) */}
-        <div className="absolute inset-0 z-[-1] bg-slate-50 dark:bg-slate-900/50 pointer-events-none" />
+      <main className="w-full max-w-screen-xl mx-auto flex-1 px-4 md:px-6 pt-6 md:pt-8 pb-12">
 
         <div className="relative z-10 w-full mb-10">
           <div className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
-              <h2 className="text-3xl md:text-4xl font-black text-slate-800 dark:text-white tracking-tight drop-shadow-sm">Centro de Comando</h2>
+              <h2 className="text-2xl md:text-4xl font-black text-slate-800 dark:text-white tracking-tight drop-shadow-sm">Centro de Comando</h2>
             </div>
           </div>
 
@@ -224,15 +222,15 @@ const Index = () => {
       {/* Footer */}
       <footer className="w-full mt-auto bg-white/80 dark:bg-slate-900 relative border-t border-slate-200 dark:border-slate-800">
         <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#004e9a]/20 to-transparent" />
-        <div className="container px-6 py-3 text-center flex flex-col items-center justify-center">
+        <div className="w-full max-w-screen-xl mx-auto px-4 py-3 text-center flex flex-col items-center justify-center">
           <div className="flex items-center gap-2 mb-1.5">
-            <Shield className="h-4 w-4 text-pmpa-navy opacity-80 translate-y-[-1px]" />
-            <p className="text-xs font-extrabold text-pmpa-navy dark:text-white tracking-widest uppercase">
+            <Shield className="shrink-0 h-4 w-4 text-pmpa-navy opacity-80" />
+            <p className="text-[10px] md:text-xs font-extrabold text-pmpa-navy dark:text-white tracking-widest uppercase leading-tight">
               PROGRAMA DE CADASTRO DE EQUIPAMENTOS E SERVIÇOS DA PMPA
             </p>
           </div>
-          <p className="text-[11px] text-muted-foreground leading-relaxed">
-            Use este sistema corporativo para controlar a entrada e saída de equipamentos com máxima segurança e rastreabilidade. Ditel - Diretoria de Informática e Telecomunicações.
+          <p className="text-[10px] md:text-[11px] text-muted-foreground leading-relaxed">
+            Ditel - Diretoria de Informática e Telecomunicações.
           </p>
         </div>
         {/* Linha fina azul marinho no fundo para dar um acabamento PMPA igual ao header */}
