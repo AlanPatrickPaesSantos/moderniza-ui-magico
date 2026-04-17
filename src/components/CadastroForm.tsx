@@ -172,11 +172,11 @@ export const CadastroForm = ({ onSubmit, onCancel, onPrint, onNavigate, hasPrev,
     <Form {...form}>
       <form id={id} onSubmit={form.handleSubmit(onSubmit, handleError)} className="flex flex-col h-full">
         <Tabs defaultValue="identificacao" className="flex-1 flex flex-col min-h-0">
-          <TabsList className="w-full inline-flex p-1.5 bg-slate-200/60 dark:bg-slate-800/60 rounded-xl mb-6 shadow-inner gap-1 overflow-x-auto overflow-y-hidden no-scrollbar justify-start">
-            <TabsTrigger value="identificacao" className="data-[state=active]:bg-[#004e9a] data-[state=active]:text-white data-[state=active]:shadow-md rounded-lg px-5 md:px-8 py-2.5 font-bold uppercase tracking-wider text-[11px] md:text-sm transition-all duration-300 data-[state=inactive]:text-slate-600 data-[state=inactive]:hover:bg-slate-300/50 whitespace-nowrap">
+          <TabsList className="w-full inline-flex p-1 bg-slate-100/80 dark:bg-slate-800/80 rounded-xl mb-6 gap-1 overflow-x-auto overflow-y-hidden no-scrollbar justify-start border border-slate-200/50 dark:border-slate-700/50">
+            <TabsTrigger value="identificacao" className="data-[state=active]:bg-white data-[state=active]:dark:bg-slate-700 data-[state=active]:text-[#004e9a] data-[state=active]:dark:text-white data-[state=active]:shadow-sm rounded-lg px-5 md:px-8 py-2.5 font-bold uppercase tracking-wider text-[11px] md:text-sm transition-all duration-300 data-[state=inactive]:text-slate-500 data-[state=inactive]:hover:bg-slate-200/50 whitespace-nowrap">
               Identificação
             </TabsTrigger>
-            <TabsTrigger value="analise" className="data-[state=active]:bg-[#004e9a] data-[state=active]:text-white data-[state=active]:shadow-md rounded-lg px-5 md:px-8 py-2.5 font-bold uppercase tracking-wider text-[11px] md:text-sm transition-all duration-300 data-[state=inactive]:text-slate-600 data-[state=inactive]:hover:bg-slate-300/50 whitespace-nowrap">
+            <TabsTrigger value="analise" className="data-[state=active]:bg-white data-[state=active]:dark:bg-slate-700 data-[state=active]:text-[#004e9a] data-[state=active]:dark:text-white data-[state=active]:shadow-sm rounded-lg px-5 md:px-8 py-2.5 font-bold uppercase tracking-wider text-[11px] md:text-sm transition-all duration-300 data-[state=inactive]:text-slate-500 data-[state=inactive]:hover:bg-slate-200/50 whitespace-nowrap">
               Análise & Serviço
             </TabsTrigger>
           </TabsList>
@@ -186,9 +186,9 @@ export const CadastroForm = ({ onSubmit, onCancel, onPrint, onNavigate, hasPrev,
             {/* ABA 1: IDENTIFICAÇÃO */}
             <TabsContent value="identificacao" className="m-0 space-y-6">
               <div className="p-6 bg-white/95 dark:bg-slate-900/95 border border-slate-200/60 dark:border-white/10 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-5 relative overflow-hidden transition-all focus-within:shadow-[0_8px_30px_rgba(0,78,154,0.08)] focus-within:border-[#004e9a]/30">
-                <div className="absolute top-0 left-0 w-1.5 bottom-0 bg-[#004e9a]/80" />
-                <h3 className="text-[13px] font-black text-[#004e9a] dark:text-blue-400 uppercase tracking-[0.2em] border-b border-slate-100 dark:border-slate-800 pb-2 flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#004e9a] animate-pulse" /> Informações Principais
+                <div className="absolute top-0 left-0 w-1 bottom-0 bg-[#004e9a]/80" />
+                <h3 className="text-[13px] font-black text-slate-800 dark:text-slate-200 uppercase tracking-[0.2em] border-b border-slate-100 dark:border-slate-800 pb-2 flex items-center gap-2">
+                  Informações Principais
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <FormField control={form.control} name="os" render={({ field }) => (
@@ -229,9 +229,9 @@ export const CadastroForm = ({ onSubmit, onCancel, onPrint, onNavigate, hasPrev,
               </div>
 
               <div className="p-6 bg-white/95 dark:bg-slate-900/95 border border-slate-200/60 dark:border-white/10 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-5 relative overflow-hidden transition-all focus-within:shadow-[0_8px_30px_rgba(0,78,154,0.08)] focus-within:border-[#004e9a]/30">
-                <div className="absolute top-0 left-0 w-1.5 bottom-0 bg-emerald-500/80" />
-                <h3 className="text-[13px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-[0.2em] border-b border-slate-100 dark:border-slate-800 pb-2 flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Dados de Entrada
+                <div className="absolute top-0 left-0 w-1 bottom-0 bg-[#004e9a]/60" />
+                <h3 className="text-[13px] font-black text-slate-800 dark:text-slate-200 uppercase tracking-[0.2em] border-b border-slate-100 dark:border-slate-800 pb-2 flex items-center gap-2">
+                  Dados de Entrada
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                   <FormField control={form.control} name="solicitante" render={({ field }) => (
@@ -279,9 +279,9 @@ export const CadastroForm = ({ onSubmit, onCancel, onPrint, onNavigate, hasPrev,
             {/* ABA 2: ANÁLISE & SERVIÇO */}
             <TabsContent value="analise" className="m-0 space-y-6">
               <div className="p-6 bg-white/95 dark:bg-slate-900/95 border border-slate-200/60 dark:border-white/10 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-5 relative overflow-hidden transition-all focus-within:shadow-[0_8px_30px_rgba(0,78,154,0.08)] focus-within:border-[#004e9a]/30">
-                <div className="absolute top-0 left-0 w-1.5 bottom-0 bg-yellow-500/80" />
-                <h3 className="text-[13px] font-black text-yellow-600 dark:text-yellow-400 uppercase tracking-[0.2em] border-b border-slate-100 dark:border-slate-800 pb-2 flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse" /> Diagnóstico
+                <div className="absolute top-0 left-0 w-1 bottom-0 bg-[#004e9a]/80" />
+                <h3 className="text-[13px] font-black text-slate-800 dark:text-slate-200 uppercase tracking-[0.2em] border-b border-slate-100 dark:border-slate-800 pb-2 flex items-center gap-2">
+                  Diagnóstico
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField control={form.control} name="defeitoRecl" render={({ field }) => (
@@ -298,9 +298,9 @@ export const CadastroForm = ({ onSubmit, onCancel, onPrint, onNavigate, hasPrev,
               </div>
 
               <div className="p-6 bg-white/95 dark:bg-slate-900/95 border border-slate-200/60 dark:border-white/10 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-5 relative overflow-hidden transition-all focus-within:shadow-[0_8px_30px_rgba(0,78,154,0.08)] focus-within:border-[#004e9a]/30">
-                <div className="absolute top-0 left-0 w-1.5 bottom-0 bg-purple-500/80" />
-                <h3 className="text-[13px] font-black text-purple-600 dark:text-purple-400 uppercase tracking-[0.2em] border-b border-slate-100 dark:border-slate-800 pb-2 flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse" /> Conclusão e Saída
+                <div className="absolute top-0 left-0 w-1 bottom-0 bg-[#004e9a]/60" />
+                <h3 className="text-[13px] font-black text-slate-800 dark:text-slate-200 uppercase tracking-[0.2em] border-b border-slate-100 dark:border-slate-800 pb-2 flex items-center gap-2">
+                  Conclusão e Saída
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <FormField control={form.control} name="servico" render={({ field }) => (
