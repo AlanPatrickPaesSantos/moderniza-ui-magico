@@ -144,21 +144,25 @@ export const ServicoInternoExternoForm = ({
     <form id={id} onSubmit={handleSubmit(onSubmit)} className="space-y-4 px-1 py-1">
       <div className="space-y-4">
         
+                {/* Section Header 1 */}
+        <h3 className="text-[12px] font-black text-[#004e9a] uppercase tracking-[0.2em] border-b border-slate-100 dark:border-slate-800 pb-2 mb-4 mt-2 flex items-center gap-2">
+          Identificação
+        </h3>
         {/* Row 1: OS, Seção, Unidade */}
         <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-3 pt-1">
           <div className="md:col-span-2 space-y-1.5">
-            <Label htmlFor="os" className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">OS (MISSÃO) *</Label>
+            <Label htmlFor="os" className="text-[11px] font-bold text-[#004e9a] uppercase tracking-widest">OS (MISSÃO) *</Label>
             <Input
               id="os"
               disabled
               {...register("os")}
               placeholder="Gerado Auto."
-              className={`h-11 bg-slate-50 hover:bg-slate-100/50 border-slate-200/60 focus:bg-white focus:border-[#004e9a]/40 focus:ring-4 focus:ring-[#004e9a]/10 transition-all rounded-xl shadow-sm text-slate-800 font-medium bg-muted font-bold text-lg text-center ${errors.os ? "border-destructive" : ""}`}
+              className={`h-11 bg-blue-50/40 border-[#004e9a]/20 text-[#004e9a] font-black text-lg text-center transition-all rounded-xl shadow-inner ${errors.os ? "border-destructive" : ""}`}
             />
           </div>
 
           <div className="space-y-1.5 md:col-span-2">
-            <Label htmlFor="secao" className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Seção *</Label>
+            <Label htmlFor="secao" className="text-[11px] font-bold text-[#004e9a] uppercase tracking-widest">Seção *</Label>
             <Select onValueChange={(value) => setValue("secao", value)} value={watch("secao")}>
               <SelectTrigger className={`h-11 bg-slate-50 hover:bg-slate-100/50 border-slate-200/60 focus:bg-white focus:border-[#004e9a]/40 focus:ring-4 focus:ring-[#004e9a]/10 transition-all rounded-xl shadow-sm text-slate-800 font-medium ${errors.secao ? "border-destructive" : ""}`}>
                 <SelectValue placeholder="Selecione" />
@@ -171,7 +175,7 @@ export const ServicoInternoExternoForm = ({
           </div>
 
           <div className="space-y-1.5 md:col-span-2">
-            <Label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Unidade *</Label>
+            <Label className="text-[11px] font-bold text-[#004e9a] uppercase tracking-widest">Unidade *</Label>
             <UnidadeCombobox
               value={watch("unidade")}
               onChange={(value) => setValue("unidade", value, { shouldValidate: true })}
@@ -183,7 +187,7 @@ export const ServicoInternoExternoForm = ({
         {/* Row 2: Data, Horário, Técnicos */}
         <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-3">
           <div className="space-y-1.5 lg:col-span-1">
-            <Label htmlFor="data" className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Data *</Label>
+            <Label htmlFor="data" className="text-[11px] font-bold text-[#004e9a] uppercase tracking-widest">Data *</Label>
             <Input id="data" type="date" {...register("data")} className={`h-11 bg-slate-50 hover:bg-slate-100/50 border-slate-200/60 focus:bg-white focus:border-[#004e9a]/40 focus:ring-4 focus:ring-[#004e9a]/10 transition-all rounded-xl shadow-sm text-slate-800 font-medium ${errors.data ? "border-destructive" : ""}`} />
           </div>
 
@@ -211,7 +215,7 @@ export const ServicoInternoExternoForm = ({
           </div>
 
           <div className="space-y-1.5 lg:col-span-1">
-            <Label htmlFor="categoria" className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Categoria *</Label>
+            <Label htmlFor="categoria" className="text-[11px] font-bold text-[#004e9a] uppercase tracking-widest">Categoria *</Label>
             <Select onValueChange={(value) => setValue("categoria", value)} value={watch("categoria")}>
               <SelectTrigger className={`h-11 bg-slate-50 hover:bg-slate-100/50 border-slate-200/60 focus:bg-white focus:border-[#004e9a]/40 focus:ring-4 focus:ring-[#004e9a]/10 transition-all rounded-xl shadow-sm text-slate-800 font-medium ${errors.categoria ? "border-destructive" : ""}`}>
                 <SelectValue placeholder="Tipo" />
@@ -225,7 +229,7 @@ export const ServicoInternoExternoForm = ({
           </div>
 
           <div className="space-y-1.5 lg:col-span-1">
-            <Label htmlFor="servico" className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Status *</Label>
+            <Label htmlFor="servico" className="text-[11px] font-bold text-[#004e9a] uppercase tracking-widest">Status *</Label>
             <Select onValueChange={(value) => setValue("servico", value)} value={watch("servico")}>
               <SelectTrigger className={`h-11 bg-slate-50 hover:bg-slate-100/50 border-slate-200/60 focus:bg-white focus:border-[#004e9a]/40 focus:ring-4 focus:ring-[#004e9a]/10 transition-all rounded-xl shadow-sm text-slate-800 font-medium ${errors.servico ? "border-destructive" : ""}`}>
                 <SelectValue placeholder="Status" />
@@ -238,6 +242,11 @@ export const ServicoInternoExternoForm = ({
           </div>
         </div>
 
+        
+        {/* Section Header 2 */}
+        <h3 className="text-[12px] font-black text-[#004e9a] uppercase tracking-[0.2em] border-b border-slate-100 dark:border-slate-800 pb-2 mb-4 mt-6 flex items-center gap-2">
+          Detalhamento Técnico
+        </h3>
         {/* Row 4: Descrições Técnicas (Lado a Lado) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1.5">
