@@ -64,17 +64,8 @@ const Index = () => {
 
 
       <main className="container flex-1 px-6 pt-8 pb-12 relative z-10">
-        {/* Fundo ultra limpo */}
+        {/* Fundo ultra limpo absoluto (Nenhuma marca d'água) */}
         <div className="absolute inset-0 z-[-1] bg-slate-50 dark:bg-slate-900/50 pointer-events-none" />
-        
-        {/* Marca d'água Central da DITEL */}
-        <div className="absolute inset-0 z-[-1] pointer-events-none flex items-center justify-center overflow-hidden">
-          <img 
-            src="/Logo Ditel.jpeg" 
-            alt="DITEL Watermark" 
-            className="w-[80vw] max-w-[800px] h-auto opacity-[0.03] grayscale mix-blend-multiply dark:mix-blend-screen"
-          />
-        </div>
 
         <div className="relative z-10 w-full mb-10">
           <div className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
