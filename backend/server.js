@@ -70,21 +70,32 @@ app.use('/api/eqsuporte', verificarToken);
 // Busca e filtros de serviços (listagem com limite)
 app.get('/api/servicos', async (req, res) => {
   try {
-    const { q, startDate, endDate, status, bateria, bateria_vazia } = req.query;
+    const { q, startDate, endDate, status, bateria, bateria_vazia, filterType } = req.query;
     let query = {};
 
     if (q) {
       const isNum = !isNaN(q);
-      query = {
-        $or: [
-          ...(isNum ? [{ Id_cod: parseInt(q) }] : []),
-          { Nº_Serie: { $regex: q, $options: 'i' } },
-          { RP: { $regex: q, $options: 'i' } },
-          { Solicitante: { $regex: q, $options: 'i' } },
-          { Unidade: { $regex: q, $options: 'i' } },
-          { Serviço: { $regex: q, $options: 'i' } }
-        ]
-      };
+      
+      if (filterType === 'os' && isNum) {
+        query = { Id_cod: parseInt(q) };
+      } else if (filterType === 'serie') {
+        query = { Nº_Serie: { $regex: q, $options: 'i' } };
+      } else if (filterType === 'rp') {
+        query = { RP: { $regex: q, $options: 'i' } };
+      } else if (filterType === 'unidade') {
+        query = { Unidade: { $regex: q, $options: 'i' } };
+      } else {
+        query = {
+          $or: [
+            ...(isNum ? [{ Id_cod: parseInt(q) }] : []),
+            { Nº_Serie: { $regex: q, $options: 'i' } },
+            { RP: { $regex: q, $options: 'i' } },
+            { Solicitante: { $regex: q, $options: 'i' } },
+            { Unidade: { $regex: q, $options: 'i' } },
+            { Serviço: { $regex: q, $options: 'i' } }
+          ]
+        };
+      }
     }
 
     if (startDate || endDate) {

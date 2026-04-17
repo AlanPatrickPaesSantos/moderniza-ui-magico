@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, FileText, Loader2, ChevronLeft, ChevronRight, Printer } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { CadastroForm } from "./CadastroForm";
 import { LaudoPrint } from "./LaudoPrint";
@@ -11,6 +12,7 @@ import { API_BASE } from "../lib/api-config";
 
 export const ConsultasSection = () => {
   const [query, setQuery] = useState("");
+  const [filterType, setFilterType] = useState("all");
   const [results, setResults] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
@@ -29,7 +31,7 @@ export const ConsultasSection = () => {
 
       setIsLoading(true);
       try {
-        const response = await fetch(`${API_BASE}/servicos?q=${encodeURIComponent(query)}`);
+        const response = await fetch(`${API_BASE}/servicos?q=${encodeURIComponent(query)}&filterType=${filterType}`);
         const data = await response.json();
         setResults(data);
       } catch (error) {
@@ -41,7 +43,7 @@ export const ConsultasSection = () => {
 
     const debounceTimer = setTimeout(fetchResults, 400);
     return () => clearTimeout(debounceTimer);
-  }, [query]);
+  }, [query, filterType]);
 
   const loadRecord = async (record: any) => {
     try {
@@ -86,14 +88,28 @@ export const ConsultasSection = () => {
   return (
     <div className="space-y-6">
       <div className="bg-card rounded-lg p-3 md:p-4 border border-border/50 shadow-sm mb-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-          <Input
-            placeholder="Buscar por ID, Série ou RP..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="pl-10 h-10 md:h-12 text-base font-medium border-pmpa-navy/20 focus-visible:ring-pmpa-navy shadow-inner"
-          />
+        <div className="flex flex-col md:flex-row gap-2 relative">
+          <Select value={filterType} onValueChange={setFilterType}>
+            <SelectTrigger className="w-full md:w-[180px] h-10 md:h-12 border-pmpa-navy/20 font-bold text-pmpa-navy bg-muted/20 focus:ring-pmpa-navy uppercase text-[11px] md:text-xs tracking-wider shrink-0">
+              <SelectValue placeholder="Filtro" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all" className="font-semibold text-xs">🌐 TODAS AS CATEGORIAS</SelectItem>
+              <SelectItem value="os" className="font-semibold text-xs">🔢 NÚMERO DA OS</SelectItem>
+              <SelectItem value="serie" className="font-semibold text-xs">🔤 Nº DE SÉRIE</SelectItem>
+              <SelectItem value="rp" className="font-semibold text-xs">🏷️ NÚMERO DE RP</SelectItem>
+              <SelectItem value="unidade" className="font-semibold text-xs">🏢 UNIDADE / SIGLA</SelectItem>
+            </SelectContent>
+          </Select>
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Input
+              placeholder={filterType === 'all' ? "Buscar por ID, Série, RP, Unidade..." : "Digite o termo para buscar no filtro..."}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="pl-10 h-10 md:h-12 text-base font-medium border-pmpa-navy/20 focus-visible:ring-pmpa-navy shadow-inner w-full"
+            />
+          </div>
         </div>
       </div>
 
