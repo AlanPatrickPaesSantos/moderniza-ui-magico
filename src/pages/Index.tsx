@@ -64,12 +64,16 @@ const Index = () => {
 
 
       <main className="container flex-1 px-6 pt-8 pb-12 relative z-10">
-        {/* Elegant Color-Wash Background (Full of life but ultra clean) */}
-        <div className="absolute inset-0 z-[-1] bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#004e9a]/10 via-slate-50 to-emerald-500/5 dark:from-[#004e9a]/20 dark:via-slate-950 dark:to-[#002f5c]/40 pointer-events-none" />
+        {/* Fundo ultra limpo */}
+        <div className="absolute inset-0 z-[-1] bg-slate-50 dark:bg-slate-900/50 pointer-events-none" />
         
-        {/* Subtle Watermark Overlay */}
-        <div className="absolute bottom-10 right-10 opacity-[0.02] dark:opacity-[0.03] pointer-events-none z-0">
-          <img src="/logo-pmpa.png" alt="PMPA Watermark" className="w-[500px] h-auto grayscale" />
+        {/* Marca d'água Central da DITEL */}
+        <div className="absolute inset-0 z-[-1] pointer-events-none flex items-center justify-center overflow-hidden">
+          <img 
+            src="/Logo Ditel.jpeg" 
+            alt="DITEL Watermark" 
+            className="w-[80vw] max-w-[800px] h-auto opacity-[0.03] grayscale mix-blend-multiply dark:mix-blend-screen"
+          />
         </div>
 
         <div className="relative z-10 w-full mb-10">
