@@ -29,6 +29,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { CadastroForm } from "./CadastroForm";
 import { toast } from "sonner";
 import { LaudoPrint } from "./LaudoPrint";
+import { EqSuporteDialog } from "./EqSuporteDialog";
+import { EqUnidadeDialog } from "./EqUnidadeDialog";
 
 export function CommandMenu() {
   const [open, setOpen] = useState(false);
@@ -41,6 +43,10 @@ export function CommandMenu() {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
   const [printType, setPrintType] = useState<'laudo' | 'saida' | 'entrada'>('laudo');
+
+  // States for Catalog Dialogs
+  const [isSuporteOpen, setIsSuporteOpen] = useState(false);
+  const [isUnidadeOpen, setIsUnidadeOpen] = useState(false);
 
   const navigate = useNavigate();
   const { logout } = useAuth();
@@ -178,6 +184,16 @@ export function CommandMenu() {
               <span>Gestão de Missões</span>
               <span className="ml-auto text-[10px] text-muted-foreground">⌘M</span>
             </CommandItem>
+            <CommandItem onSelect={() => runCommand(() => setIsSuporteOpen(true))}>
+              <Headphones className="mr-2 h-4 w-4" />
+              <span>Gerenciar Itens de Suporte</span>
+              <span className="ml-auto text-[10px] text-muted-foreground">⌘S</span>
+            </CommandItem>
+            <CommandItem onSelect={() => runCommand(() => setIsUnidadeOpen(true))}>
+              <Building className="mr-2 h-4 w-4" />
+              <span>Gerenciar Unidades / Siglas</span>
+              <span className="ml-auto text-[10px] text-muted-foreground">⌘U</span>
+            </CommandItem>
           </CommandGroup>
 
           <CommandSeparator />
@@ -248,6 +264,10 @@ export function CommandMenu() {
           </div>
         </div>
       )}
+
+      {/* Catálogos de Equipamentos e Unidades */}
+      <EqSuporteDialog open={isSuporteOpen} onOpenChange={setIsSuporteOpen} />
+      <EqUnidadeDialog open={isUnidadeOpen} onOpenChange={setIsUnidadeOpen} />
     </>
   );
 }
