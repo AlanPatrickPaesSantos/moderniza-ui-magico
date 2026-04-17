@@ -89,26 +89,29 @@ export const ConsultasSection = () => {
     <div className="space-y-6">
       <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl rounded-2xl p-4 md:p-6 border border-slate-200/50 dark:border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.06)] mb-8 transition-all hover:shadow-[0_15px_50px_rgba(0,78,154,0.1)] group">
         <div className="flex flex-col md:flex-row gap-3 relative">
-          <Select value={filterType} onValueChange={setFilterType}>
-            <SelectTrigger className="w-full md:w-[220px] h-12 md:h-14 border-slate-200 dark:border-slate-700 font-bold text-[#004e9a] dark:text-blue-400 bg-slate-50 dark:bg-slate-800 focus:ring-[#004e9a] uppercase text-[11px] md:text-sm tracking-wider shrink-0 rounded-xl shadow-inner transition-colors group-hover:border-[#004e9a]/30">
-              <SelectValue placeholder="Filtro" />
-            </SelectTrigger>
-            <SelectContent className="rounded-xl border-slate-200 shadow-xl backdrop-blur-xl bg-white/95">
-              <SelectItem value="all" className="font-bold text-xs py-3 uppercase text-slate-700 focus:bg-blue-50 focus:text-[#004e9a] cursor-pointer"><span className="mr-2 opacity-70">🌐</span> TODAS AS CATEGORIAS</SelectItem>
-              <SelectItem value="os" className="font-bold text-xs py-3 uppercase text-slate-700 focus:bg-blue-50 focus:text-[#004e9a] cursor-pointer"><span className="mr-2 opacity-70">🔢</span> NÚMERO DA OS</SelectItem>
-              <SelectItem value="serie" className="font-bold text-xs py-3 uppercase text-slate-700 focus:bg-blue-50 focus:text-[#004e9a] cursor-pointer"><span className="mr-2 opacity-70">🔤</span> Nº DE SÉRIE</SelectItem>
-              <SelectItem value="rp" className="font-bold text-xs py-3 uppercase text-slate-700 focus:bg-blue-50 focus:text-[#004e9a] cursor-pointer"><span className="mr-2 opacity-70">🏷️</span> NÚMERO DE RP</SelectItem>
-              <SelectItem value="unidade" className="font-bold text-xs py-3 uppercase text-slate-700 focus:bg-blue-50 focus:text-[#004e9a] cursor-pointer"><span className="mr-2 opacity-70">🏢</span> UNIDADE / SIGLA</SelectItem>
-            </SelectContent>
-          </Select>
-          <div className="relative flex-1 group/input">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-6 w-6 text-slate-400 transition-colors group-focus-within/input:text-[#004e9a]" />
+          <div className="relative flex-1 group/input flex items-center">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-6 w-6 text-slate-400 border-none transition-colors group-focus-within/input:text-[#004e9a]" />
             <Input
               placeholder={filterType === 'all' ? "Buscar por ID, Série, RP, Unidade..." : "Digite o termo para buscar..."}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="pl-14 h-12 md:h-14 text-base font-medium border-slate-200 dark:border-slate-700 focus-visible:ring-2 focus-visible:ring-[#004e9a]/50 focus-visible:border-[#004e9a] shadow-inner w-full rounded-xl bg-slate-50 dark:bg-slate-800 transition-all text-slate-800 dark:text-slate-100 placeholder:text-slate-400"
+              className="pl-14 pr-16 h-12 md:h-14 text-base font-medium border-slate-200 dark:border-slate-700 focus-visible:ring-2 focus-visible:ring-[#004e9a]/50 focus-visible:border-[#004e9a] shadow-inner w-full rounded-xl bg-slate-50 dark:bg-slate-800 transition-all text-slate-800 dark:text-slate-100 placeholder:text-slate-400"
             />
+            {/* Filter Inside the Search Bar */}
+            <Select value={filterType} onValueChange={setFilterType}>
+              <SelectTrigger className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 md:h-12 md:w-12 p-0 flex items-center justify-center border-none bg-transparent hover:bg-slate-200 dark:hover:bg-slate-700/50 focus:ring-0 shadow-none transition-colors rounded-lg group-hover:text-[#004e9a]">
+                <div className="flex items-center justify-center w-full h-full text-slate-400 hover:text-[#004e9a]">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                </div>
+              </SelectTrigger>
+              <SelectContent className="rounded-xl border-slate-200 shadow-xl backdrop-blur-xl bg-white/95 z-[100] mt-1 mr-2">
+                <SelectItem value="all" className="font-bold text-xs py-3 uppercase text-slate-700 focus:bg-blue-50 focus:text-[#004e9a] cursor-pointer"><span className="mr-2 opacity-70">🌐</span> TODAS AS CATEGORIAS</SelectItem>
+                <SelectItem value="os" className="font-bold text-xs py-3 uppercase text-slate-700 focus:bg-blue-50 focus:text-[#004e9a] cursor-pointer"><span className="mr-2 opacity-70">🔢</span> NÚMERO DA OS</SelectItem>
+                <SelectItem value="serie" className="font-bold text-xs py-3 uppercase text-slate-700 focus:bg-blue-50 focus:text-[#004e9a] cursor-pointer"><span className="mr-2 opacity-70">🔤</span> Nº DE SÉRIE</SelectItem>
+                <SelectItem value="rp" className="font-bold text-xs py-3 uppercase text-slate-700 focus:bg-blue-50 focus:text-[#004e9a] cursor-pointer"><span className="mr-2 opacity-70">🏷️</span> NÚMERO DE RP</SelectItem>
+                <SelectItem value="unidade" className="font-bold text-xs py-3 uppercase text-slate-700 focus:bg-blue-50 focus:text-[#004e9a] cursor-pointer"><span className="mr-2 opacity-70">🏢</span> UNIDADE / SIGLA</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </div>
