@@ -63,9 +63,12 @@ const Index = () => {
       <Header />
 
 
-      <main className="container flex-1 px-6 pt-6 pb-12 relative overflow-hidden">
+      <main className="container flex-1 px-6 pt-8 pb-12 relative overflow-hidden">
+        {/* Premium SaaS Brand Fade */}
+        <div className="absolute top-0 left-0 right-0 h-[65vh] bg-gradient-to-b from-[#004e9a]/[0.07] via-[#004e9a]/[0.02] to-transparent pointer-events-none z-0" />
+        
         {/* Subtle Modern Dot Grid Background */}
-        <div className="absolute inset-0 z-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] dark:bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px] opacity-50" />
+        <div className="absolute inset-0 z-0 bg-[radial-gradient(#004e9a_1px,transparent_1px)] dark:bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.06] dark:opacity-[0.03]" />
         
         {/* Subtle Watermark Overlay */}
         <div className="absolute bottom-10 right-10 opacity-[0.02] dark:opacity-[0.03] pointer-events-none z-0">
