@@ -22,28 +22,29 @@ export const ConsultasSection = () => {
   const [printType, setPrintType] = useState<'laudo' | 'saida' | 'entrada'>('laudo');
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchResults = async () => {
-      if (query.trim().length === 0) {
-        setResults([]);
-        return;
-      }
+  const fetchResults = async () => {
+    if (query.trim().length === 0) {
+      setResults([]);
+      return;
+    }
 
-      setIsLoading(true);
-      try {
-        const response = await fetch(`${API_BASE}/servicos?q=${encodeURIComponent(query)}&filterType=${filterType}`);
-        const data = await response.json();
-        setResults(data);
-      } catch (error) {
-        console.error("Erro ao buscar dados:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${API_BASE}/servicos?q=${encodeURIComponent(query)}&filterType=${filterType}`);
+      const data = await response.json();
+      setResults(data);
+    } catch (error) {
+      console.error("Erro ao buscar dados:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    const debounceTimer = setTimeout(fetchResults, 400);
-    return () => clearTimeout(debounceTimer);
-  }, [query, filterType]);
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      fetchResults();
+    }
+  };
 
   const loadRecord = async (record: any) => {
     try {
@@ -90,7 +91,7 @@ export const ConsultasSection = () => {
       <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl rounded-full p-2 border border-slate-200/80 dark:border-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.04)] mb-8 transition-all hover:shadow-[0_15px_40px_rgba(0,78,154,0.08)] group focus-within:ring-4 focus-within:ring-[#004e9a]/10">
         <div className="flex flex-col md:flex-row gap-2 relative">
           <Select value={filterType} onValueChange={setFilterType}>
-            <SelectTrigger className="w-full md:w-[220px] h-12 md:h-[52px] border-none font-bold text-[#004e9a] dark:text-blue-400 bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 focus:ring-0 uppercase text-[10px] md:text-xs tracking-widest shrink-0 rounded-full transition-all px-6">
+            <SelectTrigger className="w-full md:w-[180px] h-12 md:h-[52px] border-none font-bold text-[#004e9a] dark:text-blue-400 bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 focus:ring-0 uppercase text-[10px] md:text-xs tracking-widest shrink-0 rounded-full transition-all px-6">
               <SelectValue placeholder="Filtrar por..." />
             </SelectTrigger>
             <SelectContent className="rounded-2xl border-slate-200 shadow-2xl backdrop-blur-xl bg-white/95 dark:bg-slate-900/95 p-2">
@@ -102,16 +103,25 @@ export const ConsultasSection = () => {
             </SelectContent>
           </Select>
           
-          <div className="w-px h-8 bg-slate-200 dark:bg-slate-700 absolute left-[225px] top-1/2 -translate-y-1/2 hidden md:block" />
+          <div className="w-px h-8 bg-slate-200 dark:bg-slate-700 absolute left-[185px] top-1/2 -translate-y-1/2 hidden md:block" />
 
-          <div className="relative flex-1 group/input">
+          <div className="relative flex-1 group/input flex items-center">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 transition-colors group-focus-within/input:text-[#004e9a]" />
             <Input
               placeholder={filterType === 'all' ? "Digite para buscar no sistema..." : "Digite o termo para buscar..."}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="pl-12 h-12 md:h-[52px] text-sm font-medium border-none focus-visible:ring-0 w-full rounded-full bg-slate-50/50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-800 dark:text-slate-100 placeholder:text-slate-400"
+              onKeyDown={handleKeyDown}
+              className="pl-12 pr-32 h-12 md:h-[52px] text-sm font-medium border-none focus-visible:ring-0 w-full rounded-full bg-slate-50/50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-800 dark:text-slate-100 placeholder:text-slate-400"
             />
+            <div className="absolute right-1 top-1 bottom-1">
+              <Button 
+                onClick={fetchResults}
+                className="h-full rounded-full bg-gradient-to-r from-[#004e9a] to-[#002f5c] hover:from-blue-600 hover:to-[#004e9a] text-white px-6 font-bold shadow-md hover:shadow-lg transition-all active:scale-95"
+              >
+                Pesquisar
+              </Button>
+            </div>
           </div>
         </div>
       </div>

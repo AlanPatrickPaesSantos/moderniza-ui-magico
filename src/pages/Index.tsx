@@ -81,15 +81,16 @@ const Index = () => {
           </div>
 
           {/* BENTO GRID ARCHITECTURE */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
-            
-            {/* [BENTO 1] Destaque: Cadastro (Ocupa 2 Colunas) */}
+          
+          {/* ROW 1: Principal */}
+          <div className="mb-6">
+            {/* [BENTO 1] Destaque: Cadastro (Ocupa Toda Extensão) */}
             <div 
               onClick={() => navigate("/cadastro")} 
-              className="lg:col-span-2 group relative bg-gradient-to-br from-[#004e9a] to-[#002f5c] rounded-[2rem] p-8 overflow-hidden cursor-pointer shadow-lg hover:shadow-[0_20px_50px_rgba(0,78,154,0.3)] transition-all duration-500 hover:-translate-y-1"
+              className="group relative bg-gradient-to-br from-[#004e9a] to-[#002f5c] rounded-[2rem] p-8 overflow-hidden cursor-pointer shadow-lg hover:shadow-[0_20px_50px_rgba(0,78,154,0.3)] transition-all duration-500 hover:-translate-y-1"
             >
               <div className="absolute right-[-10%] bottom-[-20%] opacity-[0.06] pointer-events-none group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-700">
-                <Database className="w-64 h-64 text-white" />
+                <Database className="w-64 h-64 md:w-96 md:h-96 text-white" />
               </div>
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 to-cyan-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="relative z-10 h-full flex flex-col justify-between min-h-[160px]">
@@ -105,6 +106,10 @@ const Index = () => {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* ROW 2: Estatísticas e Operacional */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-6">
 
             {/* [BENTO 2] Stats: Manutenção (Ocupa 1 Coluna) */}
             <div 
@@ -175,8 +180,10 @@ const Index = () => {
                 <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Int / Ext</p>
               </div>
             </div>
+          </div>
 
-            {/* --- SEGUNDA LINHA DO BENTO GRID --- */}
+          {/* ROW 3: Módulos de Gestão */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-10">
 
             {/* [BENTO 5] Gerenciar: Telecom (Ocupa 1 Coluna) */}
             <div onClick={() => setEqTelecomOpen(true)} className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-6 cursor-pointer hover:border-[#004e9a]/30 hover:shadow-md transition-all duration-300 hover:-translate-y-1 flex items-center gap-4">
