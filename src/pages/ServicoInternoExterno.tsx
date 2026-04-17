@@ -111,13 +111,12 @@ const ServicoInternoExterno = () => {
           </div>
         </div>
 
-        {/* Informer Box */}
         {selectedRecord && (
-          <div className="mb-3 p-3 bg-emerald-50 border border-emerald-200 rounded-md flex justify-between items-center text-emerald-800 animate-in slide-in-from-top-2">
+          <div className="mb-3 p-3 bg-blue-50/80 border border-[#004e9a]/20 rounded-xl flex justify-between items-center text-[#004e9a] animate-in slide-in-from-top-2 shadow-sm">
             <div className="font-medium text-sm">
-              Editando Missão Isolada <b>OS #{selectedRecord.os}</b>.
+              Editando Missão Isolada <strong className="font-black text-pmpa-navy">OS #{selectedRecord.os}</strong>.
             </div>
-            <Button variant="outline" size="sm" onClick={() => setSelectedRecord(null)} className="h-8 border-emerald-300 hover:bg-emerald-100 font-bold">
+            <Button variant="outline" size="sm" onClick={() => setSelectedRecord(null)} className="h-8 border-[#004e9a]/30 hover:bg-[#004e9a]/10 hover:text-pmpa-navy font-bold text-xs">
               Cancelar / Inserir Nova
             </Button>
           </div>

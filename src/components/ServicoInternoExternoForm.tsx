@@ -144,10 +144,11 @@ export const ServicoInternoExternoForm = ({
     <form id={id} onSubmit={handleSubmit(onSubmit)} className="space-y-4 px-1 py-1">
       <div className="space-y-4">
         
-                {/* Section Header 1 */}
-        <h3 className="text-[12px] font-black text-[#004e9a] uppercase tracking-[0.2em] border-b border-slate-100 dark:border-slate-800 pb-2 mb-4 mt-2 flex items-center gap-2">
-          Identificação
-        </h3>
+                <div className="p-6 bg-slate-50/30 dark:bg-slate-800/20 border border-slate-200/60 dark:border-slate-800 rounded-2xl shadow-sm relative overflow-hidden transition-all focus-within:shadow-[0_8px_30px_rgba(0,78,154,0.06)] focus-within:border-[#004e9a]/30">
+          <div className="absolute top-0 left-0 w-1 bottom-0 bg-[#004e9a]/80" />
+          <h3 className="text-[12px] font-black text-[#004e9a] uppercase tracking-[0.2em] border-b border-slate-200/60 dark:border-slate-800 pb-2 mb-5 flex items-center gap-2">
+            Identificação Principal
+          </h3>
         {/* Row 1: OS, Seção, Unidade */}
         <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-3 pt-1">
           <div className="md:col-span-2 space-y-1.5">
@@ -243,10 +244,13 @@ export const ServicoInternoExternoForm = ({
         </div>
 
         
-        {/* Section Header 2 */}
-        <h3 className="text-[12px] font-black text-[#004e9a] uppercase tracking-[0.2em] border-b border-slate-100 dark:border-slate-800 pb-2 mb-4 mt-6 flex items-center gap-2">
-          Detalhamento Técnico
-        </h3>
+        </div>
+        
+        <div className="p-6 bg-slate-50/30 dark:bg-slate-800/20 border border-slate-200/60 dark:border-slate-800 rounded-2xl shadow-sm relative overflow-hidden transition-all focus-within:shadow-[0_8px_30px_rgba(0,78,154,0.06)] focus-within:border-[#004e9a]/30">
+          <div className="absolute top-0 left-0 w-1 bottom-0 bg-[#004e9a]/60" />
+          <h3 className="text-[12px] font-black text-[#004e9a] uppercase tracking-[0.2em] border-b border-slate-200/60 dark:border-slate-800 pb-2 mb-5 flex items-center gap-2">
+            Detalhamento Técnico
+          </h3>
         {/* Row 4: Descrições Técnicas (Lado a Lado) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1.5">
@@ -276,10 +280,12 @@ export const ServicoInternoExternoForm = ({
             id="relatorio" 
             {...register("relatorio")} 
             placeholder="Informações adicionais do relatório..." 
-            className="min-h-[100px] text-base border-pmpa-navy/20 focus-visible:ring-pmpa-navy shadow-inner bg-card" 
+            className="min-h-[100px] text-sm leading-relaxed p-4 bg-slate-50 hover:bg-slate-100/50 border-slate-200/60 focus:bg-white focus:border-[#004e9a]/40 focus:ring-4 focus:ring-[#004e9a]/10 transition-all rounded-xl shadow-sm text-slate-800 font-medium custom-scrollbar" 
           />
         </div>
 
+        </div>
+        
         {/* Barra de Ações Interna ao Formulário */}
         <div className="mt-6 bg-muted/20 flex flex-col md:flex-row items-center justify-between gap-3 p-2 md:p-3 -mx-2 md:-mx-4 rounded-b-xl">
           <div className="flex flex-wrap md:flex-nowrap w-full md:w-auto gap-2 justify-center md:justify-start">
