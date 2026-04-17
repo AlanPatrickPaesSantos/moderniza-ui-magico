@@ -59,7 +59,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950">
       <Header />
 
 
@@ -70,10 +70,10 @@ const Index = () => {
         </div>
 
         <div className="relative z-10">
-          <div className="mb-2 flex items-center justify-between">
+          <div className="mb-4 flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-pmpa-navy dark:text-white tracking-tight">Painel de Controle</h2>
-              <p className="text-sm text-muted-foreground mt-0.5">Acesso rápido às ferramentas do sistema</p>
+              <h2 className="text-2xl md:text-3xl font-black text-slate-800 dark:text-white tracking-tight drop-shadow-sm">Painel de Controle</h2>
+              <p className="text-sm font-semibold text-slate-500 mt-1 uppercase tracking-wider">Acesso corporativo às ferramentas do sistema</p>
             </div>
           </div>
 
@@ -86,10 +86,10 @@ const Index = () => {
             <NavigationCard icon={Headphones} title="Suporte" onClick={() => setEqSuporteOpen(true)} />
           </div>
 
-          <div className="mb-2 flex items-center justify-between mt-4">
+          <div className="mb-4 flex items-center justify-between mt-8">
             <div>
-              <h2 className="text-2xl font-bold text-pmpa-navy dark:text-white tracking-tight">Visão Geral</h2>
-              <p className="text-sm text-muted-foreground mt-0.5">Acompanhamento e relatórios do mês atual</p>
+              <h2 className="text-2xl md:text-3xl font-black text-slate-800 dark:text-white tracking-tight drop-shadow-sm">Visão Geral</h2>
+              <p className="text-sm font-semibold text-slate-500 mt-1 uppercase tracking-wider">Acompanhamento e estatísticas do mês atual</p>
             </div>
           </div>
 
@@ -106,17 +106,17 @@ const Index = () => {
                   dateRange: { start: yearStart, end: yearEnd } 
                 });
               }}
-              className="group bg-card border border-border/60 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all relative overflow-hidden cursor-pointer hover:border-pmpa-red/30 active:scale-[0.98]"
+              className="group bg-white/90 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_10px_40px_rgba(0,0,0,0.08)] transition-all duration-500 relative overflow-hidden cursor-pointer hover:border-red-500/30 active:scale-[0.98] backdrop-blur-sm"
             >
-              <div className="absolute right-[-16px] bottom-[-16px] opacity-10 group-hover:opacity-20 group-hover:scale-110 transition-all duration-500 pointer-events-none">
-                <Wrench className="w-32 h-32 text-pmpa-red" />
+              <div className="absolute right-[-16px] bottom-[-16px] opacity-5 group-hover:opacity-10 group-hover:scale-110 group-hover:rotate-12 transition-all duration-700 pointer-events-none">
+                <Wrench className="w-32 h-32 text-red-600" />
               </div>
               <div className="relative z-10">
                 <div className="flex justify-between items-start mb-6">
-                  <div className="p-3 bg-pmpa-red/10 rounded-xl">
-                    <Wrench className="w-6 h-6 text-pmpa-red" />
+                  <div className="p-3.5 bg-red-50 dark:bg-red-900/20 rounded-2xl shadow-sm border border-red-100 dark:border-red-900/30 group-hover:bg-red-100 transition-colors">
+                    <Wrench className="w-6 h-6 text-red-600 dark:text-red-400" />
                   </div>
-                  <span className="text-xs font-semibold text-pmpa-red bg-pmpa-red/10 px-3 py-1 rounded-full">Atual</span>
+                  <span className="text-[11px] font-bold text-red-700 bg-red-100 border border-red-200 px-3 py-1 rounded-full uppercase tracking-widest shadow-sm">Ativo</span>
                 </div>
                 <div className="flex items-end justify-between">
                   <div>
@@ -142,17 +142,17 @@ const Index = () => {
                   dateRange: { start: firstDay, end: lastDay } 
                 });
               }}
-              className="group bg-card border border-border/60 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all relative overflow-hidden cursor-pointer hover:border-pmpa-navy/30 active:scale-[0.98]"
+              className="group bg-white/90 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_10px_40px_rgba(0,78,154,0.1)] transition-all duration-500 relative overflow-hidden cursor-pointer hover:border-[#004e9a]/30 active:scale-[0.98] backdrop-blur-sm"
             >
-              <div className="absolute right-[-16px] bottom-[-16px] opacity-10 group-hover:opacity-20 group-hover:scale-110 transition-all duration-500 pointer-events-none">
-                <Activity className="w-32 h-32 text-pmpa-navy" />
+              <div className="absolute right-[-16px] bottom-[-16px] opacity-5 group-hover:opacity-10 group-hover:scale-110 group-hover:rotate-12 transition-all duration-700 pointer-events-none">
+                <Activity className="w-32 h-32 text-[#004e9a]" />
               </div>
               <div className="relative z-10">
                 <div className="flex justify-between items-start mb-6">
-                  <div className="p-3 bg-pmpa-navy/10 rounded-xl">
-                    <Activity className="w-6 h-6 text-pmpa-navy" />
+                  <div className="p-3.5 bg-blue-50 dark:bg-blue-900/20 rounded-2xl shadow-sm border border-blue-100 dark:border-blue-900/30 group-hover:bg-blue-100 transition-colors">
+                    <Activity className="w-6 h-6 text-[#004e9a] dark:text-blue-400" />
                   </div>
-                  <span className="text-xs font-semibold text-pmpa-navy bg-pmpa-navy/10 px-3 py-1 rounded-full">Neste Mês</span>
+                  <span className="text-[11px] font-bold text-[#004e9a] bg-blue-100 border border-blue-200 px-3 py-1 rounded-full uppercase tracking-widest shadow-sm">Neste Mês</span>
                 </div>
                 <div>
                   <p className="text-4xl font-black text-pmpa-navy dark:text-white mb-2 flex items-center gap-2">
@@ -179,8 +179,8 @@ const Index = () => {
       </main>
 
       {/* Footer */}
-      <footer className="w-full mt-auto bg-card relative">
-        <div className="absolute top-0 left-0 right-0 h-[1px] bg-pmpa-navy" />
+      <footer className="w-full mt-auto bg-white/80 dark:bg-slate-900 relative border-t border-slate-200 dark:border-slate-800">
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#004e9a]/20 to-transparent" />
         <div className="container px-6 py-3 text-center flex flex-col items-center justify-center">
           <div className="flex items-center gap-2 mb-1.5">
             <Shield className="h-4 w-4 text-pmpa-navy opacity-80 translate-y-[-1px]" />

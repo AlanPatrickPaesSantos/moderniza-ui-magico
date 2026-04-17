@@ -172,11 +172,11 @@ export const CadastroForm = ({ onSubmit, onCancel, onPrint, onNavigate, hasPrev,
     <Form {...form}>
       <form id={id} onSubmit={form.handleSubmit(onSubmit, handleError)} className="flex flex-col h-full">
         <Tabs defaultValue="identificacao" className="flex-1 flex flex-col min-h-0">
-          <TabsList className="w-full flex flex-wrap justify-start border-b rounded-none px-0 mb-2 bg-transparent border-border/50 gap-1 md:gap-4 shrink-0 h-auto overflow-x-auto overflow-y-hidden no-scrollbar">
-            <TabsTrigger value="identificacao" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-pmpa-navy rounded-none px-2 md:px-4 py-2 md:py-3 font-bold uppercase tracking-wider text-[11px] md:text-sm transition-all whitespace-nowrap">
+          <TabsList className="w-full inline-flex p-1.5 bg-slate-200/60 dark:bg-slate-800/60 rounded-xl mb-6 shadow-inner gap-1 overflow-x-auto overflow-y-hidden no-scrollbar justify-start">
+            <TabsTrigger value="identificacao" className="data-[state=active]:bg-[#004e9a] data-[state=active]:text-white data-[state=active]:shadow-md rounded-lg px-5 md:px-8 py-2.5 font-bold uppercase tracking-wider text-[11px] md:text-sm transition-all duration-300 data-[state=inactive]:text-slate-600 data-[state=inactive]:hover:bg-slate-300/50 whitespace-nowrap">
               Identificação
             </TabsTrigger>
-            <TabsTrigger value="analise" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-pmpa-navy rounded-none px-2 md:px-4 py-2 md:py-3 font-bold uppercase tracking-wider text-[11px] md:text-sm transition-all whitespace-nowrap">
+            <TabsTrigger value="analise" className="data-[state=active]:bg-[#004e9a] data-[state=active]:text-white data-[state=active]:shadow-md rounded-lg px-5 md:px-8 py-2.5 font-bold uppercase tracking-wider text-[11px] md:text-sm transition-all duration-300 data-[state=inactive]:text-slate-600 data-[state=inactive]:hover:bg-slate-300/50 whitespace-nowrap">
               Análise & Serviço
             </TabsTrigger>
           </TabsList>
