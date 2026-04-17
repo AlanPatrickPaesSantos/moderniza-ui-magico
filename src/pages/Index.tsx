@@ -214,7 +214,7 @@ const Index = () => {
           </div>
 
           {/* Main Content Grid */}
-          <div className="grid lg:grid-cols-2 gap-4">
+          <div className="mt-10 grid lg:grid-cols-2 gap-6">
             <ConsultasSection />
             <Suspense fallback={
               <div className="flex items-center justify-center p-12 bg-card border border-border/60 rounded-2xl animate-pulse">
