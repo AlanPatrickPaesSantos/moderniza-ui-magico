@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,9 +11,7 @@ import { toast } from "sonner";
 import { API_BASE } from "../lib/api-config";
 
 export const ConsultasSection = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const initialQuery = searchParams.get("q") || "";
-  const [query, setQuery] = useState(initialQuery);
+  const [query, setQuery] = useState("");
   const [filterType, setFilterType] = useState("all");
   const [results, setResults] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -24,15 +21,6 @@ export const ConsultasSection = () => {
   const [isNavLoading, setIsNavLoading] = useState(false);
   const [printType, setPrintType] = useState<'laudo' | 'saida' | 'entrada'>('laudo');
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-
-  useEffect(() => {
-    const q = searchParams.get("q");
-    if (q) {
-      setQuery(q);
-      // Optional: scroll to section
-      document.getElementById('consultas-search-input')?.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [searchParams]);
 
   useEffect(() => {
     const fetchResults = async () => {
