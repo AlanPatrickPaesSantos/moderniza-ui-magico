@@ -85,12 +85,12 @@ const Index = () => {
           </div>
 
           {/* BENTO GRID ARCHITECTURE */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
             
-            {/* [BENTO 1] Destaque: Cadastro (Ocupa 2 Colunas) */}
+            {/* [BENTO 1] Destaque: Cadastro (Ocupa 3 Colunas como Mega Banner) */}
             <div 
               onClick={() => navigate("/cadastro")} 
-              className="lg:col-span-2 group relative bg-gradient-to-br from-[#004e9a] to-[#002f5c] rounded-[2rem] p-8 overflow-hidden cursor-pointer shadow-lg hover:shadow-[0_20px_50px_rgba(0,78,154,0.3)] transition-all duration-500 hover:-translate-y-1"
+              className="lg:col-span-3 group relative bg-gradient-to-br from-[#004e9a] to-[#002f5c] rounded-[2rem] p-8 overflow-hidden cursor-pointer shadow-lg hover:shadow-[0_20px_50px_rgba(0,78,154,0.3)] transition-all duration-500 hover:-translate-y-1"
             >
               <div className="absolute right-[-10%] bottom-[-20%] opacity-[0.06] pointer-events-none group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-700">
                 <Database className="w-64 h-64 text-white" />
@@ -139,7 +139,34 @@ const Index = () => {
               </div>
             </div>
 
-            {/* [BENTO 3] Atalho: Serviço Interno/Externo (Ocupa 1 Coluna) */}
+            {/* [BENTO 3] Stats: Missões (Tirado da linha de baixo e movido para o lado da manutenção) */}
+            <div 
+              onClick={() => {
+                const now = new Date();
+                const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+                const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
+                setExternalReportTrigger({ id: "Rel_Missao_Consolidado", dateRange: { start: firstDay, end: lastDay } });
+              }}
+              className="group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-7 cursor-pointer shadow-sm hover:shadow-[0_15px_40px_rgba(0,78,154,0.1)] transition-all duration-500 hover:-translate-y-1 hover:border-blue-200 dark:hover:border-blue-900/50 flex flex-col justify-between"
+            >
+              <div className="absolute right-[-14px] bottom-[-14px] opacity-[0.03] pointer-events-none group-hover:scale-110 group-hover:rotate-12 transition-transform duration-700">
+                <Activity className="w-24 h-24 text-[#004e9a]" />
+              </div>
+              <div className="flex justify-between items-start mb-4 relative z-10">
+                <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl group-hover:bg-blue-100 transition-colors">
+                  <Activity className="w-5 h-5 text-[#004e9a]" />
+                </div>
+                <span className="text-[10px] font-bold text-[#004e9a] bg-blue-50 px-3 py-1 rounded-full uppercase tracking-widest mt-1 shadow-sm border border-blue-100">Neste Mês</span>
+              </div>
+              <div className="relative z-10">
+                <p className="text-4xl font-black text-slate-800 dark:text-white tracking-tighter leading-none mb-1">
+                  {isLoading ? <Loader2 className="h-8 w-8 animate-spin text-[#004e9a]/50" /> : stats.missions}
+                </p>
+                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-widest leading-tight mt-1">Missões Reg.</p>
+              </div>
+            </div>
+
+            {/* [BENTO 4] Atalho: Serviço Interno/Externo (Ocupa 1 Coluna) */}
             <div 
               onClick={() => navigate("/servico-interno-externo")}
               className="group relative bg-slate-100 dark:bg-slate-800/50 border border-slate-200/50 dark:border-slate-800 rounded-[2rem] p-7 cursor-pointer hover:bg-white dark:hover:bg-slate-800 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
@@ -154,9 +181,9 @@ const Index = () => {
               </div>
             </div>
 
-            {/* --- SEGUNDA LINHA DO BENTO GRID --- */}
+            {/* --- TERCEIRA LINHA DO BENTO GRID --- */}
 
-            {/* [BENTO 4] Gerenciar: Telecom (Ocupa 1 Coluna) */}
+            {/* [BENTO 5] Gerenciar: Telecom (Ocupa 1 Coluna) */}
             <div onClick={() => setEqTelecomOpen(true)} className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-6 cursor-pointer hover:border-[#004e9a]/30 hover:shadow-md transition-all duration-300 hover:-translate-y-1 flex items-center gap-4">
               <div className="p-3.5 bg-slate-50 dark:bg-slate-800 rounded-2xl group-hover:bg-blue-50 transition-colors">
                 <Phone className="w-6 h-6 text-slate-500 group-hover:text-[#004e9a]" />
@@ -167,7 +194,7 @@ const Index = () => {
               </div>
             </div>
 
-            {/* [BENTO 5] Gerenciar: Unidade (Ocupa 1 Coluna) */}
+            {/* [BENTO 6] Gerenciar: Unidade (Ocupa 1 Coluna) */}
             <div onClick={() => setEqUnidadeOpen(true)} className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-6 cursor-pointer hover:border-[#004e9a]/30 hover:shadow-md transition-all duration-300 hover:-translate-y-1 flex items-center gap-4">
               <div className="p-3.5 bg-slate-50 dark:bg-slate-800 rounded-2xl group-hover:bg-blue-50 transition-colors">
                 <Building className="w-6 h-6 text-slate-500 group-hover:text-[#004e9a]" />
@@ -178,7 +205,7 @@ const Index = () => {
               </div>
             </div>
 
-            {/* [BENTO 6] Gerenciar: Suporte (Ocupa 1 Coluna) */}
+            {/* [BENTO 7] Gerenciar: Suporte (Ocupa 1 Coluna) */}
             <div onClick={() => setEqSuporteOpen(true)} className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-6 cursor-pointer hover:border-[#004e9a]/30 hover:shadow-md transition-all duration-300 hover:-translate-y-1 flex items-center gap-4">
               <div className="p-3.5 bg-slate-50 dark:bg-slate-800 rounded-2xl group-hover:bg-blue-50 transition-colors">
                 <Headphones className="w-6 h-6 text-slate-500 group-hover:text-[#004e9a]" />
@@ -186,33 +213,6 @@ const Index = () => {
               <div>
                 <h3 className="text-sm font-black text-slate-800 dark:text-white">Suporte</h3>
                 <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Módulo</p>
-              </div>
-            </div>
-
-            {/* [BENTO 7] Stats: Missões (Ocupa 1 Coluna) */}
-            <div 
-              onClick={() => {
-                const now = new Date();
-                const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
-                const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
-                setExternalReportTrigger({ id: "Rel_Missao_Consolidado", dateRange: { start: firstDay, end: lastDay } });
-              }}
-              className="group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-6 cursor-pointer shadow-sm hover:shadow-[0_15px_40px_rgba(0,78,154,0.1)] transition-all duration-500 hover:-translate-y-1 hover:border-blue-200 dark:hover:border-blue-900/50 flex flex-col justify-between"
-            >
-              <div className="absolute right-[-14px] bottom-[-14px] opacity-[0.03] pointer-events-none group-hover:scale-110 group-hover:rotate-12 transition-transform duration-700">
-                <Activity className="w-24 h-24 text-[#004e9a]" />
-              </div>
-              <div className="flex justify-between items-center mb-3 relative z-10">
-                <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg group-hover:bg-blue-100 transition-colors">
-                  <Activity className="w-4 h-4 text-[#004e9a]" />
-                </div>
-                <span className="text-[9px] font-bold text-[#004e9a] uppercase tracking-widest">Neste Mês</span>
-              </div>
-              <div className="relative z-10">
-                <p className="text-3xl font-black text-slate-800 dark:text-white tracking-tight leading-none mb-1">
-                  {isLoading ? <Loader2 className="h-6 w-6 animate-spin text-[#004e9a]/50" /> : stats.missions}
-                </p>
-                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Missões Reg.</p>
               </div>
             </div>
 
