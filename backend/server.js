@@ -114,6 +114,11 @@ app.get('/api/servicos', async (req, res) => {
       query.Bateria = { $ne: "", $exists: true };
     }
 
+    if (garantia === "true") {
+      // Filtrar apenas equipamentos em garantia (valor "sim") com regex insensível
+      query.Garantia = { $regex: /^\s*sim\s*$/i };
+    }
+
     if (bateria_vazia === "true") {
       // Filtrar onde o campo Bateria está vazio ou não existe
       query.$or = [
@@ -148,6 +153,10 @@ app.get('/api/servicos/count', async (req, res) => {
 
     if (bateria === "true") {
       query.Bateria = { $ne: "", $exists: true };
+    }
+
+    if (garantia === "true") {
+      query.Garantia = { $regex: /^\s*sim\s*$/i };
     }
 
     if (bateria_vazia === "true") {

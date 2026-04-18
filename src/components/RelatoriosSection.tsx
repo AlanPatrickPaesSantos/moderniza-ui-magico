@@ -22,7 +22,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
   const [activeReport, setActiveReport] = useState<string | null>(null);
   const [results, setResults] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [filters, setFilters] = useState({ startDate: "", endDate: "", q: "", status: "", bateria: false });
+  const [filters, setFilters] = useState({ startDate: "", endDate: "", q: "", status: "", bateria: false, garantia: false });
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
   const [stats, setStats] = useState<{
     total: number;
@@ -33,7 +33,8 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
     pronto: number;
     laudo: number;
     bateria: number;
-  }>({ total: 0, interno: 0, externo: 0, remoto: 0, pendente: 0, pronto: 0, laudo: 0, bateria: 0 });
+    garantia: number;
+  }>({ total: 0, interno: 0, externo: 0, remoto: 0, pendente: 0, pronto: 0, laudo: 0, bateria: 0, garantia: 0 });
 
   const [printType, setPrintType] = useState<'laudo' | 'saida' | 'entrada'>('laudo');
 
@@ -76,13 +77,16 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
       const currentBateria = filters.bateria;
       const bateriaParam = currentBateria ? "&bateria=true" : "";
 
+      const currentGarantia = filters.garantia;
+      const garantiaParam = currentGarantia ? "&garantia=true" : "";
+
       // 1. Busca Contagens Exatas
       const countUrl = `${API_BASE}/${endpoint}/count?startDate=${start}&endDate=${end}${statusParam}${searchQuery}${bateriaParam}`;
       const countResp = await fetch(countUrl);
       const exactStats = await countResp.json();
 
       // 2. Busca Registros para a Lista
-      const listUrl = `${API_BASE}/${endpoint}?startDate=${start}&endDate=${end}${statusParam}${searchQuery}${bateriaParam}`;
+      const listUrl = `${API_BASE}/${endpoint}?startDate=${start}&endDate=${end}${statusParam}${searchQuery}${bateriaParam}${garantiaParam}`;
       const listResp = await fetch(listUrl);
       const data = await listResp.json();
 
@@ -108,6 +112,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
           fetch(`${API_BASE}/servicos/count?startDate=${start}&endDate=${end}&status=PRONTO${searchQuery}`),
           fetch(`${API_BASE}/servicos/count?startDate=${start}&endDate=${end}&status=LAUDO${searchQuery}`),
           fetch(`${API_BASE}/servicos/count?startDate=${start}&endDate=${end}&bateria=true${searchQuery}`),
+          fetch(`${API_BASE}/servicos/count?startDate=${start}&endDate=${end}&garantia=true${searchQuery}`),
           fetch(`${API_BASE}/servicos/count?startDate=${start}&endDate=${end}${searchQuery}`)
         ]);
 
@@ -115,6 +120,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
         const prontoData = await prontoResp.json();
         const laudoData = await laudoResp.json();
         const bateriaData = await bateriaResp.json();
+        const garantiaData = await garantiaResp.json();
         const totalData = await totalResp.json();
 
         setStats({
@@ -123,7 +129,8 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
           pendente: pentoData.count || 0,
           pronto: prontoData.count || 0,
           laudo: laudoData.count || 0,
-          bateria: bateriaData.count || 0
+          bateria: bateriaData.count || 0,
+          garantia: garantiaData.count || 0
         });
       }
     } catch (error) {
@@ -521,7 +528,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
 
             {activeReport === "Rel_Equipamentos" && results.length > 0 && (
               <div className="relative overflow-hidden print:hidden border-b border-border/20 mb-6 pb-2 z-20 bg-background/95 backdrop-blur-sm shrink-0">
-                <div className="flex flex-nowrap md:grid md:grid-cols-5 gap-2 overflow-x-auto pb-4 px-1 md:pb-0 custom-scrollbar scroll-smooth snap-x snap-mandatory">
+                <div className="flex flex-nowrap md:grid md:grid-cols-6 gap-2 overflow-x-auto pb-4 px-1 md:pb-0 custom-scrollbar scroll-smooth snap-x snap-mandatory">
 
                   <div className="bg-muted/40 p-2 md:p-3 rounded-lg border border-border/50 min-w-[110px] md:min-w-0 flex-shrink-0 snap-start">
                     <p className="text-[8px] md:text-[10px] font-black uppercase text-muted-foreground tracking-tighter">Total O.S.</p>
@@ -530,7 +537,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
 
                   <div
                     onClick={() => {
-                      const newFilters = { ...filters, q: "", status: "PENDENTE", bateria: false };
+                      const newFilters = { ...filters, q: "", status: "PENDENTE", bateria: false, garantia: false };
                       setFilters(newFilters);
                       fetchReportData(newFilters.startDate, newFilters.endDate, activeReport!, "", "PENDENTE");
                     }}
@@ -542,7 +549,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
 
                   <div
                     onClick={() => {
-                      const newFilters = { ...filters, q: "", status: "LAUDO", bateria: false };
+                      const newFilters = { ...filters, q: "", status: "LAUDO", bateria: false, garantia: false };
                       setFilters(newFilters);
                       fetchReportData(newFilters.startDate, newFilters.endDate, activeReport!, "", "LAUDO");
                     }}
@@ -554,7 +561,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
 
                   <div
                     onClick={() => {
-                      const newFilters = { ...filters, q: "", status: "", bateria: true };
+                      const newFilters = { ...filters, q: "", status: "", bateria: true, garantia: false };
                       setFilters(newFilters);
                       fetchReportData(newFilters.startDate, newFilters.endDate, activeReport!, "", "");
                     }}
@@ -566,7 +573,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
 
                   <div
                     onClick={() => {
-                      const newFilters = { ...filters, q: "", status: "PRONTO", bateria: false };
+                      const newFilters = { ...filters, q: "", status: "PRONTO", bateria: false, garantia: false };
                       setFilters(newFilters);
                       fetchReportData(newFilters.startDate, newFilters.endDate, activeReport!, "", "PRONTO");
                     }}
@@ -574,6 +581,18 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
                   >
                     <p className="text-[8px] md:text-[10px] font-black uppercase text-emerald-500">PRONTO</p>
                     <p className="text-sm md:text-xl font-black text-emerald-600 dark:text-emerald-400">{String(stats.pronto || 0)}</p>
+                  </div>
+
+                  <div
+                    onClick={() => {
+                      const newFilters = { ...filters, q: "", status: "", bateria: false, garantia: true };
+                      setFilters(newFilters);
+                      fetchReportData(newFilters.startDate, newFilters.endDate, activeReport!, "", "");
+                    }}
+                    className={`bg-cyan-500/10 p-2 md:p-3 rounded-lg border min-w-[110px] md:min-w-0 flex-shrink-0 cursor-pointer hover:bg-cyan-500/20 active:scale-[0.97] transition-all snap-start ${filters.garantia ? "ring-2 ring-cyan-500 border-cyan-500 bg-cyan-500/20" : "border-cyan-500/20"}`}
+                  >
+                    <p className="text-[8px] md:text-[10px] font-black uppercase text-cyan-500">Garantia</p>
+                    <p className="text-sm md:text-xl font-black text-cyan-600 dark:text-cyan-400">{String(stats.garantia || 0)}</p>
                   </div>
                 </div>
               </div>
