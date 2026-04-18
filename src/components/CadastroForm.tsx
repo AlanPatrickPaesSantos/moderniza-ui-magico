@@ -477,7 +477,42 @@ export const CadastroForm = ({ onSubmit, onCancel, onPrint, onNavigate, hasPrev,
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="analiseTecnica" render={({ field }) => (
-                    <FormItem><FormLabel className="text-[11px] font-bold text-[#004e9a] uppercase tracking-widest">Análise Técnica Preliminar</FormLabel>
+                    <FormItem>
+                      <div className="flex items-center justify-between mb-2">
+                        <FormLabel className="text-[11px] font-bold text-[#004e9a] uppercase tracking-widest">Análise Técnica Preliminar</FormLabel>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter flex items-center gap-1">
+                            <Sparkles className="w-3 h-3 text-amber-500" /> Sugestões:
+                          </span>
+                          <Button 
+                            type="button" 
+                            variant="outline" 
+                            size="sm" 
+                            className="h-6 text-[9px] uppercase font-bold border-emerald-200 hover:bg-emerald-50 text-emerald-700"
+                            onClick={() => form.setValue("analiseTecnica", "Realizado backup dos dados e formatação completa do sistema.")}
+                          >
+                            Backup & Formatação
+                          </Button>
+                          <Button 
+                            type="button" 
+                            variant="outline" 
+                            size="sm" 
+                            className="h-6 text-[9px] uppercase font-bold border-blue-200 hover:bg-blue-50 text-blue-700"
+                            onClick={() => form.setValue("analiseTecnica", "Executada limpeza interna preventiva para remoção de poeira e oxidação.")}
+                          >
+                            Limpeza Interna
+                          </Button>
+                          <Button 
+                            type="button" 
+                            variant="outline" 
+                            size="sm" 
+                            className="h-6 text-[9px] uppercase font-bold border-purple-200 hover:bg-purple-50 text-purple-700"
+                            onClick={() => form.setValue("analiseTecnica", "Substituição de bateria por componente novo e testes de autonomia realizados.")}
+                          >
+                            Troca de Bateria
+                          </Button>
+                        </div>
+                      </div>
                       <FormControl><Textarea {...field} className="min-h-[160px] text-sm leading-relaxed p-4 bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 border-slate-200/60 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:border-[#004e9a]/40 dark:focus:border-[#004e9a]/60 focus:ring-4 focus:ring-[#004e9a]/10 dark:focus:ring-[#004e9a]/20 transition-all rounded-xl shadow-sm text-slate-800 dark:text-slate-100 font-medium custom-scrollbar" /></FormControl>
                     </FormItem>
                   )} />
@@ -543,46 +578,10 @@ export const CadastroForm = ({ onSubmit, onCancel, onPrint, onNavigate, hasPrev,
                       <FormControl><Input type="date" className="h-11 bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 border-slate-200/60 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:border-[#004e9a]/40 dark:focus:border-[#004e9a]/60 focus:ring-4 focus:ring-[#004e9a]/10 dark:focus:ring-[#004e9a]/20 transition-all rounded-xl shadow-sm text-slate-800 dark:text-slate-100 font-medium" {...field} /></FormControl>
                     </FormItem>
                   )} />
-                </div>
-                
                 <div className="grid grid-cols-1 gap-4">
                   <FormField control={form.control} name="laudoTecnico" render={({ field }) => (
                     <FormItem>
-                      <div className="flex items-center justify-between mb-2">
-                        <FormLabel className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Laudo Técnico Final</FormLabel>
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter flex items-center gap-1">
-                            <Sparkles className="w-3 h-3 text-amber-500" /> Sugestões Rápidas:
-                          </span>
-                          <Button 
-                            type="button" 
-                            variant="outline" 
-                            size="sm" 
-                            className="h-6 text-[9px] uppercase font-bold border-emerald-200 hover:bg-emerald-50 text-emerald-700"
-                            onClick={() => form.setValue("laudoTecnico", "Realizado backup dos dados e formatação completa do sistema.")}
-                          >
-                            Backup & Formatação
-                          </Button>
-                          <Button 
-                            type="button" 
-                            variant="outline" 
-                            size="sm" 
-                            className="h-6 text-[9px] uppercase font-bold border-blue-200 hover:bg-blue-50 text-blue-700"
-                            onClick={() => form.setValue("laudoTecnico", "Executada limpeza interna preventiva para remoção de poeira e oxidação.")}
-                          >
-                            Limpeza Interna
-                          </Button>
-                          <Button 
-                            type="button" 
-                            variant="outline" 
-                            size="sm" 
-                            className="h-6 text-[9px] uppercase font-bold border-purple-200 hover:bg-purple-50 text-purple-700"
-                            onClick={() => form.setValue("laudoTecnico", "Substituição de bateria por componente novo e testes de autonomia realizados.")}
-                          >
-                            Troca de Bateria
-                          </Button>
-                        </div>
-                      </div>
+                      <FormLabel className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Laudo Técnico Final</FormLabel>
                       <FormControl>
                         <Textarea className="h-32 p-4 text-sm leading-relaxed border-slate-200 focus:ring-pmpa-navy focus:border-pmpa-navy" {...field} />
                       </FormControl>
