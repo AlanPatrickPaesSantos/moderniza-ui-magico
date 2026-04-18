@@ -30,7 +30,6 @@ const cadastroSchema = z.object({
   tecnico: z.string().optional(),
   secaoDitel: z.string().optional(),
   tEquipSuporte: z.string().optional(),
-  tEquipTelecom: z.string().optional(),
   solicitante: z.string().optional(),
   unidade: z.string().min(1, "A unidade é obrigatória"),
   dataEnt: z.string().min(1, "A data de entrada é obrigatória"),
@@ -188,7 +187,6 @@ export const CadastroForm = ({ onSubmit, onCancel, onPrint, onNavigate, hasPrev,
         tecnico: initialData.Tecnico || initialData.tecnico || initialData.Técnico || "",
         secaoDitel: initialData.Seção_Ditel || initialData.secaoDitel || "",
         tEquipSuporte: initialData.T_EquipSuporte || initialData.tEquipSuporte || "",
-        tEquipTelecom: initialData.T_EquipTelecom || initialData.tEquipTelecom || "",
         solicitante: initialData.Solicitante || initialData.solicitante || "",
         unidade: initialData.Unidade || initialData.unidade || "",
         dataEnt: fmtDate(initialData.Data_Ent || initialData.dataEnt),
@@ -378,12 +376,9 @@ export const CadastroForm = ({ onSubmit, onCancel, onPrint, onNavigate, hasPrev,
                     </FormItem>
                   )} />
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4">
                   <FormField control={form.control} name="tEquipSuporte" render={({ field }) => (
                     <FormItem><FormLabel className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Equipamento (Suporte/TI)</FormLabel><EquipCombobox value={field.value} onChange={field.onChange} /></FormItem>
-                  )} />
-                  <FormField control={form.control} name="tEquipTelecom" render={({ field }) => (
-                    <FormItem><FormLabel className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Equipamento (Telecom/Rádio)</FormLabel><EquipCombobox value={field.value} onChange={field.onChange} /></FormItem>
                   )} />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
