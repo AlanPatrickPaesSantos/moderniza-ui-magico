@@ -107,7 +107,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
         // Para Equipamentos, buscamos Total, Pendente e Pronto separadamente se necessário
         // Mas por padrão a busca principal já traz o que está no statusParam
         // Para uma visão consolidada, faremos buscas paralelas
-        const [pentoResp, prontoResp, laudoResp, bateriaResp, totalResp] = await Promise.all([
+        const [pentoResp, prontoResp, laudoResp, bateriaResp, garantiaResp, totalResp] = await Promise.all([
           fetch(`${API_BASE}/servicos/count?startDate=${start}&endDate=${end}&status=PENDENTE${searchQuery}`),
           fetch(`${API_BASE}/servicos/count?startDate=${start}&endDate=${end}&status=PRONTO${searchQuery}`),
           fetch(`${API_BASE}/servicos/count?startDate=${start}&endDate=${end}&status=LAUDO${searchQuery}`),
