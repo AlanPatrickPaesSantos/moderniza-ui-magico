@@ -16,7 +16,9 @@ import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { UnidadeCombobox } from "./UnidadeCombobox";
 import { API_BASE } from "../lib/api-config";
-import { Printer, ChevronLeft, ChevronRight } from "lucide-react";
+import { Printer, ChevronLeft, ChevronRight, CheckCircle2, Layout, Car, Globe, Package, Zap, Router, Cable, Layers } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
   os: z.union([z.string(), z.number()]).transform(v => String(v)),
@@ -34,6 +36,7 @@ const formSchema = z.object({
   observacao: z.string().optional(),
   solucao: z.string().optional(),
   relatorio: z.string().optional(),
+  materiais: z.array(z.string()).default([]),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -110,6 +113,7 @@ export const ServicoInternoExternoForm = ({
         observacao: initialData.observacao || initialData.Observaçoes || initialData.Observacao || "",
         solucao: initialData.solucao || initialData.Solução || initialData.Solucao || initialData.Soluções || "",
         relatorio: initialData.relatorio || initialData.Relatório || "",
+        materiais: Array.isArray(initialData.materiais) ? initialData.materiais : [],
       });
     } else {
       reset({
@@ -124,6 +128,7 @@ export const ServicoInternoExternoForm = ({
         servico: "PRONTO",
         categoria: "interno",
         solucao: "",
+        materiais: [],
       });
       
       const fetchNextOs = async () => {
@@ -215,18 +220,46 @@ export const ServicoInternoExternoForm = ({
             <Input id="n_pae" {...register("n_pae")} placeholder="PAE" className="h-11 bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 border-slate-200/60 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:border-[#004e9a]/40 dark:focus:border-[#004e9a]/60 focus:ring-4 focus:ring-[#004e9a]/10 dark:focus:ring-[#004e9a]/20 transition-all rounded-xl shadow-sm text-slate-800 dark:text-slate-100 font-medium" />
           </div>
 
-          <div className="space-y-1.5 lg:col-span-1">
-            <Label htmlFor="categoria" className="text-[11px] font-bold text-[#004e9a] uppercase tracking-widest">Categoria *</Label>
-            <Select onValueChange={(value) => setValue("categoria", value)} value={watch("categoria")}>
-              <SelectTrigger className={`h-11 bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 border-slate-200/60 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:border-[#004e9a]/40 dark:focus:border-[#004e9a]/60 focus:ring-4 focus:ring-[#004e9a]/10 dark:focus:ring-[#004e9a]/20 transition-all rounded-xl shadow-sm text-slate-800 dark:text-slate-100 font-medium ${errors.categoria ? "border-destructive" : ""}`}>
-                <SelectValue placeholder="Tipo" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="interno">Interno</SelectItem>
-                <SelectItem value="externo">Externo</SelectItem>
-                <SelectItem value="remoto">Remoto</SelectItem>
-              </SelectContent>
-            </Select>
+          <div className="space-y-1.5 lg:col-span-3 h-full flex flex-col justify-end">
+            <Label className="text-[11px] font-bold text-[#004e9a] uppercase tracking-widest mb-1 shadow-none">Categoria da Missão *</Label>
+            <div className="grid grid-cols-3 gap-2">
+              <button
+                type="button"
+                onClick={() => setValue("categoria", "interno")}
+                className={cn(
+                  "flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 transition-all font-black text-[10px] uppercase tracking-tighter",
+                  watch("categoria") === "interno" 
+                    ? "bg-blue-600 border-blue-600 text-white shadow-md scale-[1.02]" 
+                    : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-500 hover:border-blue-400"
+                )}
+              >
+                <Layout className="w-4 h-4" /> Interno
+              </button>
+              <button
+                type="button"
+                onClick={() => setValue("categoria", "externo")}
+                className={cn(
+                  "flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 transition-all font-black text-[10px] uppercase tracking-tighter",
+                  watch("categoria") === "externo" 
+                    ? "bg-amber-500 border-amber-500 text-white shadow-md scale-[1.02]" 
+                    : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-500 hover:border-amber-400"
+                )}
+              >
+                <Car className="w-4 h-4" /> Externo
+              </button>
+              <button
+                type="button"
+                onClick={() => setValue("categoria", "remoto")}
+                className={cn(
+                  "flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 transition-all font-black text-[10px] uppercase tracking-tighter",
+                  watch("categoria") === "remoto" 
+                    ? "bg-purple-600 border-purple-600 text-white shadow-md scale-[1.02]" 
+                    : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-500 hover:border-purple-400"
+                )}
+              >
+                <Globe className="w-4 h-4" /> Remoto
+              </button>
+            </div>
           </div>
 
           <div className="space-y-1.5 lg:col-span-1">
@@ -241,6 +274,42 @@ export const ServicoInternoExternoForm = ({
               </SelectContent>
             </Select>
           </div>
+        </div>
+
+        {/* CHECKLIST DE MATERIAIS (Sugestão 5) */}
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-3 mt-4 pt-4 border-t border-slate-200/60 dark:border-slate-800">
+          <div className="md:col-span-6">
+            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 flex items-center gap-2">
+              <Package className="w-3 h-3" /> Materiais Utilizados na Missão
+            </h4>
+          </div>
+          
+          {[
+            { id: "roteador", label: "Roteador", icon: <Router className="w-3 h-3" /> },
+            { id: "cat5", label: "Cabo CAT 5", icon: <Cable className="w-3 h-3" /> },
+            { id: "cat5e", label: "Cabo CAT 5e", icon: <Cable className="w-3 h-3" /> },
+            { id: "cat6", label: "Cabo CAT 6", icon: <Cable className="w-3 h-3" /> },
+            { id: "conectores", label: "Conectores", icon: <Zap className="w-3 h-3" /> },
+            { id: "canaletas", label: "Canaletas", icon: <Layers className="w-3 h-3" /> }
+          ].map((item) => (
+            <div key={item.id} className="flex items-center space-x-2 bg-slate-50/50 dark:bg-slate-800/30 p-2 rounded-lg border border-slate-100 dark:border-slate-800 hover:bg-white dark:hover:bg-slate-800 transition-colors">
+              <Checkbox 
+                id={item.id} 
+                checked={watch("materiais")?.includes(item.id)}
+                onCheckedChange={(checked) => {
+                  const current = watch("materiais") || [];
+                  if (checked) {
+                    setValue("materiais", [...current, item.id]);
+                  } else {
+                    setValue("materiais", current.filter(id => id !== item.id));
+                  }
+                }}
+              />
+              <label htmlFor={item.id} className="text-[10px] font-bold uppercase text-slate-600 dark:text-slate-400 cursor-pointer flex items-center gap-1">
+                {item.icon} {item.label}
+              </label>
+            </div>
+          ))}
         </div>
 
         

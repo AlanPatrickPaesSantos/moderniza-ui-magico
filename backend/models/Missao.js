@@ -15,7 +15,8 @@ const MissaoSchema = new mongoose.Schema({
   analise: String,
   observacao: String,
   solucao: String,
-  relatorio: String
+  relatorio: String,
+  materiais: [String]
 }, {
   timestamps: true,
   collection: 'missoes'

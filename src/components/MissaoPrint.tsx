@@ -12,6 +12,7 @@ interface MissaoData {
   def_recla?: string;
   solucao?: string;
   observacao?: string;
+  materiais?: string[];
 }
 
 export const MissaoPrint = ({ data }: { data: MissaoData }) => {
@@ -148,9 +149,24 @@ export const MissaoPrint = ({ data }: { data: MissaoData }) => {
 
         {/* Observações - If any */}
         {data.observacao && (
-          <div className="mb-6 border border-black p-2 border-dashed">
+          <div className="mb-4 border border-black p-2 border-dashed">
             <span className="text-[9px] font-black uppercase">OBSERVAÇÕES: </span>
             <span className="text-[10px] uppercase font-medium">{data.observacao}</span>
+          </div>
+        )}
+
+        {/* Materiais Utilizados */}
+        {data.materiais && data.materiais.length > 0 && (
+          <div className="mb-6 border border-black p-3 bg-gray-50/10">
+            <h3 className="text-[9px] font-black uppercase border-b border-black mb-2 pb-1">Materiais Utilizados / Aplicados:</h3>
+            <div className="grid grid-cols-3 gap-y-1">
+              {data.materiais.map((m, idx) => (
+                <div key={idx} className="flex items-center gap-1">
+                  <span className="text-[10px] font-bold">☑</span>
+                  <span className="text-[10px] font-bold uppercase">{m}</span>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
