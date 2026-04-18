@@ -286,7 +286,7 @@ export const CadastroForm = ({ onSubmit, onCancel, onPrint, onNavigate, hasPrev,
                 <div className="relative z-10 flex flex-col items-center gap-2">
                   <div className={cn(
                     "w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-500",
-                    form.watch("servico") === "PRONTO" ? "bg-emerald-500 border-emerald-500 text-white shadow-lg" : "bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-400"
+                    (form.watch("servico") === "PRONTO" || form.watch("servico") === "LAUDO") ? "bg-emerald-500 border-emerald-500 text-white shadow-lg" : "bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-400"
                   )}>
                     <CheckCircle2 className="w-5 h-5" />
                   </div>
