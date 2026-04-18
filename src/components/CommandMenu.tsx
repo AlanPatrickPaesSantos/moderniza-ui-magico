@@ -20,7 +20,8 @@ import {
   LogOut,
   User,
   Settings,
-  Loader2
+  Loader2,
+  Headphones
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -72,7 +73,10 @@ export function CommandMenu() {
     const timer = setTimeout(async () => {
       setIsLoading(true);
       try {
-        const res = await fetch(`${API_BASE}/servicos?q=${encodeURIComponent(search)}&limit=5`);
+        const token = localStorage.getItem("token");
+        const res = await fetch(`${API_BASE}/servicos?q=${encodeURIComponent(search)}&limit=5`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
         if (res.ok) {
           const data = await res.json();
           setResults(Array.isArray(data) ? data : []);
@@ -91,7 +95,10 @@ export function CommandMenu() {
     setOpen(false); // Close command menu
     setIsLoadingDetails(true);
     try {
-      const res = await fetch(`${API_BASE}/servicos/${id}`);
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API_BASE}/servicos/${id}`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
       if (!res.ok) throw new Error("Erro ao carregar");
       const data = await res.json();
       if (data && data.record) {
@@ -108,9 +115,13 @@ export function CommandMenu() {
   const handleUpdateRecord = async (data: any) => {
     if (!selectedRecord) return;
     try {
+      const token = localStorage.getItem("token");
       const res = await fetch(`${API_BASE}/servicos/${selectedRecord.Id_cod}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify(data),
       });
       const result = await res.json();
@@ -265,9 +276,9 @@ export function CommandMenu() {
         </div>
       )}
 
-      {/* Catálogos de Equipamentos e Unidades */}
-      <EqSuporteDialog open={isSuporteOpen} onOpenChange={setIsSuporteOpen} />
-      <EqUnidadeDialog open={isUnidadeOpen} onOpenChange={setIsUnidadeOpen} />
+      {/* Catálogos de Equipamentos e Unidades (Renderização condicional para poupar recursos) */}
+      {isSuporteOpen && <EqSuporteDialog open={isSuporteOpen} onOpenChange={setIsSuporteOpen} />}
+      {isUnidadeOpen && <EqUnidadeDialog open={isUnidadeOpen} onOpenChange={setIsUnidadeOpen} />}
     </>
   );
 }
