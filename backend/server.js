@@ -70,7 +70,7 @@ app.use('/api/eqsuporte', verificarToken);
 // Busca e filtros de serviços (listagem com limite)
 app.get('/api/servicos', async (req, res) => {
   try {
-    const { q, startDate, endDate, status, bateria, bateria_vazia, filterType } = req.query;
+    const { q, startDate, endDate, status, bateria, garantia, bateria_vazia, filterType } = req.query;
     let query = {};
 
     if (q) {
@@ -137,7 +137,7 @@ app.get('/api/servicos', async (req, res) => {
 // Contagem EXATA de serviços para relatórios (sem limite)
 app.get('/api/servicos/count', async (req, res) => {
   try {
-    const { startDate, endDate, status, bateria, bateria_vazia } = req.query;
+    const { startDate, endDate, status, bateria, garantia, bateria_vazia } = req.query;
     let query = {};
 
     if (startDate || endDate) {
