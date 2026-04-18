@@ -65,9 +65,28 @@ interface CadastroFormProps {
   isEditMode?: boolean;
 }
 
-import { Printer, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { 
+  Printer, 
+  Loader2, 
+  ChevronLeft, 
+  ChevronRight, 
+  Clock, 
+  User, 
+  Building, 
+  Calendar, 
+  Tag, 
+  Hash, 
+  Layout, 
+  Stethoscope, 
+  CheckCircle2, 
+  History, 
+  Sparkles,
+  Save
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 export const CadastroForm = ({ onSubmit, onCancel, onPrint, onNavigate, hasPrev, hasNext, initialData, id = "cadastro-form", isEditMode }: CadastroFormProps) => {
   const form = useForm<CadastroFormValues>({
@@ -99,9 +118,56 @@ export const CadastroForm = ({ onSubmit, onCancel, onPrint, onNavigate, hasPrev,
     }
   }, [initialData, form]);
 
+  const [historyMatches, setHistoryMatches] = useState<any[]>([]);
+  const [isSearchingHistory, setIsSearchingHistory] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+
+  // Auto-save logic
+  useEffect(() => {
+    if (isEditMode) return; // Don't auto-save in edit mode to avoid overwriting master data
+    const subscription = form.watch((value) => {
+      localStorage.setItem("ditel_draft_cadastro", JSON.stringify(value));
+      setLastSaved(new Date());
+    });
+    return () => subscription.unsubscribe();
+  }, [form, isEditMode]);
+
+  // Load draft
+  useEffect(() => {
+    if (isEditMode) return;
+    const draft = localStorage.getItem("ditel_draft_cadastro");
+    if (draft && !initialData) {
+      try {
+        const parsed = JSON.parse(draft);
+        // Only load if it's a fresh form
+        if (!form.getValues("os")) {
+          form.reset(parsed);
+          toast.info("📋 Rascunho carregado automaticamente.");
+        }
+      } catch (e) {}
+    }
+  }, [isEditMode, initialData, form]);
+
+  // History Check logic
+  const checkHistory = async (type: 'rp' | 'nSerie', value: string) => {
+    if (!value || value.length < 3) return;
+    setIsSearchingHistory(true);
+    try {
+      const res = await fetch(`${API_BASE}/servicos?q=${value}&limit=3`);
+      const data = await res.json();
+      const matches = Array.isArray(data) ? data.filter((item: any) => item.Id_cod != (initialData?.Id_cod || 0)) : [];
+      setHistoryMatches(matches);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsSearchingHistory(false);
+    }
+  };
+
   useEffect(() => {
     if (initialData) {
       const fmtDate = (d: any) => {
+// ... existing date logic ...
         if (!d) return "";
         if (typeof d === 'string' && d.includes('/')) {
           // Handle DD/MM/YYYY from legacy data, trimming any extra spaces
@@ -188,6 +254,88 @@ export const CadastroForm = ({ onSubmit, onCancel, onPrint, onNavigate, hasPrev,
 
           <div className="flex-1 overflow-y-auto px-1 md:px-4 pb-4 custom-scrollbar relative">
             
+            {/* STEPPER VISUAL */}
+            <div className="mb-8 px-2">
+              <div className="flex items-center justify-between max-w-2xl mx-auto relative">
+                {/* Line Background */}
+                <div className="absolute top-1/2 left-0 w-full h-0.5 bg-slate-200 dark:bg-slate-800 -translate-y-1/2 z-0" />
+                
+                {/* Step 1: Entrada */}
+                <div className="relative z-10 flex flex-col items-center gap-2">
+                  <div className={cn(
+                    "w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-500",
+                    form.getValues("dataEnt") ? "bg-[#004e9a] border-[#004e9a] text-white shadow-lg" : "bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-400"
+                  )}>
+                    <Calendar className="w-5 h-5" />
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-tighter">Entrada</span>
+                </div>
+
+                {/* Step 2: Triagem */}
+                <div className="relative z-10 flex flex-col items-center gap-2">
+                  <div className={cn(
+                    "w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-500",
+                    form.getValues("tecnico") || form.getValues("defeitoRecl") ? "bg-[#004e9a] border-[#004e9a] text-white shadow-lg" : "bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-400"
+                  )}>
+                    <Stethoscope className="w-5 h-5" />
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-tighter">Análise</span>
+                </div>
+
+                {/* Step 3: Pronto */}
+                <div className="relative z-10 flex flex-col items-center gap-2">
+                  <div className={cn(
+                    "w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-500",
+                    form.watch("servico") === "PRONTO" ? "bg-emerald-500 border-emerald-500 text-white shadow-lg" : "bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-400"
+                  )}>
+                    <CheckCircle2 className="w-5 h-5" />
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-tighter">Pronto</span>
+                </div>
+
+                {/* Step 4: Saída */}
+                <div className="relative z-10 flex flex-col items-center gap-2">
+                  <div className={cn(
+                    "w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-500",
+                    form.getValues("dataSaida") ? "bg-indigo-600 border-indigo-600 text-white shadow-lg" : "bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-400"
+                  )}>
+                    <Layout className="w-5 h-5" />
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-tighter">Entregue</span>
+                </div>
+              </div>
+            </div>
+
+            {/* ALERTA DE HISTÓRICO */}
+            {historyMatches.length > 0 && (
+              <div className="mb-6 animate-in slide-in-from-top-4 duration-300 shrink-0">
+                <div className="bg-amber-50 dark:bg-amber-950/30 border-2 border-amber-200 dark:border-amber-900/50 p-4 rounded-2xl flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 bg-amber-500 rounded-xl text-white">
+                      <History className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <h4 className="font-black text-amber-900 dark:text-amber-400 uppercase tracking-tighter text-sm">Atenção: Equipamento Recorrente</h4>
+                      <p className="text-xs text-amber-700 dark:text-amber-500">Foram encontradas <strong>{historyMatches.length} passagens anteriores</strong> para este Serial/RP no banco de dados.</p>
+                    </div>
+                  </div>
+                  <Button 
+                    type="button" 
+                    variant="ghost" 
+                    className="text-amber-700 dark:text-amber-400 font-bold hover:bg-amber-100 dark:hover:bg-amber-900/50 uppercase text-[10px]"
+                    onClick={() => {
+                      if (onNavigate) {
+                        toast.info("Redirecionando para o registro mais recente...");
+                        // This is a placeholder for navigation, normally we'd show a list
+                      }
+                    }}
+                  >
+                    Ver Detalhes
+                  </Button>
+                </div>
+              </div>
+            )}
+            
             {/* ABA 1: IDENTIFICAÇÃO */}
             <TabsContent value="identificacao" className="m-0 space-y-6">
               <div className="p-6 bg-white/95 dark:bg-slate-900/95 border border-slate-200/60 dark:border-white/10 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-5 relative overflow-hidden transition-all focus-within:shadow-[0_8px_30px_rgba(0,78,154,0.08)] focus-within:border-[#004e9a]/30">
@@ -203,11 +351,18 @@ export const CadastroForm = ({ onSubmit, onCancel, onPrint, onNavigate, hasPrev,
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="tecnico" render={({ field }) => (
-                    <FormItem className="md:col-span-1"><FormLabel className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Técnico Responsável</FormLabel><FormControl><Input className="h-11 bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 border-slate-200/60 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:border-[#004e9a]/40 dark:focus:border-[#004e9a]/60 focus:ring-4 focus:ring-[#004e9a]/10 dark:focus:ring-[#004e9a]/20 transition-all rounded-xl shadow-sm text-slate-800 dark:text-slate-100 font-medium" {...field} /></FormControl></FormItem>
+                    <FormItem className="md:col-span-1">
+                      <FormLabel className="text-[11px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1">
+                        <User className="w-3 h-3 text-[#004e9a]" /> Técnico Responsável
+                      </FormLabel>
+                      <FormControl><Input className="h-11 bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 border-slate-200/60 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:border-[#004e9a]/40 dark:focus:border-[#004e9a]/60 focus:ring-4 focus:ring-[#004e9a]/10 dark:focus:ring-[#004e9a]/20 transition-all rounded-xl shadow-sm text-slate-800 dark:text-slate-100 font-medium" {...field} /></FormControl>
+                    </FormItem>
                   )} />
                   <FormField control={form.control} name="secaoDitel" render={({ field }) => (
                     <FormItem className="md:col-span-1">
-                      <FormLabel className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Seção</FormLabel>
+                      <FormLabel className="text-[11px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1">
+                        <Building className="w-3 h-3 text-[#004e9a]" /> Seção
+                      </FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl><SelectTrigger className="h-11 bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 border-slate-200/60 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:border-[#004e9a]/40 dark:focus:border-[#004e9a]/60 focus:ring-4 focus:ring-[#004e9a]/10 dark:focus:ring-[#004e9a]/20 transition-all rounded-xl shadow-sm text-slate-800 dark:text-slate-100 font-medium"><SelectValue placeholder="Selecione" /></SelectTrigger></FormControl>
                         <SelectContent><SelectItem value="SUPORTE">Suporte</SelectItem><SelectItem value="TELECOM">Telecom</SelectItem></SelectContent>
@@ -215,7 +370,12 @@ export const CadastroForm = ({ onSubmit, onCancel, onPrint, onNavigate, hasPrev,
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="telefone" render={({ field }) => (
-                    <FormItem><FormLabel className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Telefone</FormLabel><FormControl><Input className="h-11 bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 border-slate-200/60 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:border-[#004e9a]/40 dark:focus:border-[#004e9a]/60 focus:ring-4 focus:ring-[#004e9a]/10 dark:focus:ring-[#004e9a]/20 transition-all rounded-xl shadow-sm text-slate-800 dark:text-slate-100 font-medium" {...field} /></FormControl></FormItem>
+                    <FormItem>
+                      <FormLabel className="text-[11px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1">
+                        <Tag className="w-3 h-3 text-[#004e9a]" /> Telefone
+                      </FormLabel>
+                      <FormControl><Input className="h-11 bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 border-slate-200/60 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:border-[#004e9a]/40 dark:focus:border-[#004e9a]/60 focus:ring-4 focus:ring-[#004e9a]/10 dark:focus:ring-[#004e9a]/20 transition-all rounded-xl shadow-sm text-slate-800 dark:text-slate-100 font-medium" {...field} /></FormControl>
+                    </FormItem>
                   )} />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -266,10 +426,32 @@ export const CadastroForm = ({ onSubmit, onCancel, onPrint, onNavigate, hasPrev,
                     <FormItem><FormLabel className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Nº PAE</FormLabel><FormControl><Input className="h-11 bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 border-slate-200/60 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:border-[#004e9a]/40 dark:focus:border-[#004e9a]/60 focus:ring-4 focus:ring-[#004e9a]/10 dark:focus:ring-[#004e9a]/20 transition-all rounded-xl shadow-sm text-slate-800 dark:text-slate-100 font-medium" {...field} /></FormControl></FormItem>
                   )} />
                   <FormField control={form.control} name="rp" render={({ field }) => (
-                    <FormItem><FormLabel className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">RP</FormLabel><FormControl><Input className="h-11 bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 border-slate-200/60 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:border-[#004e9a]/40 dark:focus:border-[#004e9a]/60 focus:ring-4 focus:ring-[#004e9a]/10 dark:focus:ring-[#004e9a]/20 transition-all rounded-xl shadow-sm text-slate-800 dark:text-slate-100 font-medium" {...field} /></FormControl></FormItem>
+                    <FormItem>
+                      <FormLabel className="text-[11px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1">
+                        <Hash className="w-3 h-3 text-[#004e9a]" /> RP
+                      </FormLabel>
+                      <FormControl>
+                        <Input 
+                          className="h-11 bg-slate-50 dark:bg-slate-900/50 transition-all rounded-xl" 
+                          {...field} 
+                          onBlur={(e) => checkHistory('rp', e.target.value)}
+                        />
+                      </FormControl>
+                    </FormItem>
                   )} />
                   <FormField control={form.control} name="nSerie" render={({ field }) => (
-                    <FormItem><FormLabel className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Nº Série / Patrimônio</FormLabel><FormControl><Input className="h-11 bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 border-slate-200/60 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:border-[#004e9a]/40 dark:focus:border-[#004e9a]/60 focus:ring-4 focus:ring-[#004e9a]/10 dark:focus:ring-[#004e9a]/20 transition-all rounded-xl shadow-sm text-slate-800 dark:text-slate-100 font-medium" {...field} /></FormControl></FormItem>
+                    <FormItem>
+                      <FormLabel className="text-[11px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1">
+                        <Hash className="w-3 h-3 text-[#004e9a]" /> Nº Série / Patrimônio
+                      </FormLabel>
+                      <FormControl>
+                        <Input 
+                          className="h-11 bg-slate-50 dark:bg-slate-900/50 transition-all rounded-xl" 
+                          {...field} 
+                          onBlur={(e) => checkHistory('nSerie', e.target.value)}
+                        />
+                      </FormControl>
+                    </FormItem>
                   )} />
                 </div>
                 <FormField control={form.control} name="fonteCabo" render={({ field }) => (
@@ -366,9 +548,43 @@ export const CadastroForm = ({ onSubmit, onCancel, onPrint, onNavigate, hasPrev,
                 <div className="grid grid-cols-1 gap-4">
                   <FormField control={form.control} name="laudoTecnico" render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Laudo Técnico Final</FormLabel>
+                      <div className="flex items-center justify-between mb-2">
+                        <FormLabel className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Laudo Técnico Final</FormLabel>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter flex items-center gap-1">
+                            <Sparkles className="w-3 h-3 text-amber-500" /> Sugestões Rápidas:
+                          </span>
+                          <Button 
+                            type="button" 
+                            variant="outline" 
+                            size="sm" 
+                            className="h-6 text-[9px] uppercase font-bold border-emerald-200 hover:bg-emerald-50 text-emerald-700"
+                            onClick={() => form.setValue("laudoTecnico", "Realizado backup dos dados e formatação completa do sistema.")}
+                          >
+                            Backup & Formatação
+                          </Button>
+                          <Button 
+                            type="button" 
+                            variant="outline" 
+                            size="sm" 
+                            className="h-6 text-[9px] uppercase font-bold border-blue-200 hover:bg-blue-50 text-blue-700"
+                            onClick={() => form.setValue("laudoTecnico", "Executada limpeza interna preventiva para remoção de poeira e oxidação.")}
+                          >
+                            Limpeza Interna
+                          </Button>
+                          <Button 
+                            type="button" 
+                            variant="outline" 
+                            size="sm" 
+                            className="h-6 text-[9px] uppercase font-bold border-purple-200 hover:bg-purple-50 text-purple-700"
+                            onClick={() => form.setValue("laudoTecnico", "Substituição de bateria por componente novo e testes de autonomia realizados.")}
+                          >
+                            Troca de Bateria
+                          </Button>
+                        </div>
+                      </div>
                       <FormControl>
-                        <Textarea className="h-32" {...field} />
+                        <Textarea className="h-32 p-4 text-sm leading-relaxed border-slate-200 focus:ring-pmpa-navy focus:border-pmpa-navy" {...field} />
                       </FormControl>
                     </FormItem>
                   )} />
@@ -430,8 +646,15 @@ export const CadastroForm = ({ onSubmit, onCancel, onPrint, onNavigate, hasPrev,
         </Tabs>
 
         {/* Barra de Ações Interna ao Formulário */}
-        <div className="mt-6 bg-muted/20 flex flex-col md:flex-row items-center justify-between gap-3 p-2 md:p-3 -mx-2 md:-mx-4 rounded-b-xl">
-          <div className="flex flex-wrap md:flex-nowrap w-full md:w-auto gap-2 justify-center md:justify-start">
+        <div className="mt-6 bg-muted/20 flex flex-col md:flex-row items-center justify-between gap-3 p-2 md:p-3 -mx-2 md:-mx-4 rounded-b-xl border-t border-slate-100 dark:border-slate-800">
+          <div className="flex items-center gap-3">
+            {lastSaved && (
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                <Save className="w-3 h-3 text-emerald-500" /> Rascunho Salvo {lastSaved.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </div>
+            )}
+          </div>
+          <div className="flex flex-wrap md:flex-nowrap w-full md:w-auto gap-2 justify-center md:justify-end items-center">
             {onNavigate && (
               <Button
                 type="button"
