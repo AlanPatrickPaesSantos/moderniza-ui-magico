@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState } from "react"; // Final stabilization v33.3
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Save, Trash2, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Search, Phone, Filter } from "lucide-react";
+import { Save, Trash2, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Search, Phone, Filter, X } from "lucide-react";
 import { toast } from "sonner";
 
 interface EqTelecomDialogProps {
