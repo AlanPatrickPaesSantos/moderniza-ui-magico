@@ -303,15 +303,15 @@ export const EqSuporteDialog = ({ open, onOpenChange }: EqSuporteDialogProps) =>
             <div className="pt-4 border-t border-border/50">
               <div className="flex flex-col items-center justify-between gap-6">
                 <div className="flex items-center gap-3 w-full justify-center">
-                  <div className="flex items-center p-1.5 bg-muted rounded-xl border border-border/40 shadow-sm w-full md:w-auto justify-between md:justify-start">
-                    <Button size="icon" variant="ghost" onClick={goToFirst} disabled={currentIndex === 0 || isLoading} className="h-9 w-9 hover:bg-white rounded-lg">
+                  <div className="flex items-center p-1 bg-muted rounded-xl border border-border/40 shadow-sm w-full md:w-auto justify-center md:justify-start gap-1 md:gap-0">
+                    <Button size="icon" variant="ghost" onClick={goToFirst} disabled={currentIndex === 0 || isLoading} className="h-9 w-9 shrink-0 hover:bg-white rounded-lg">
                       <ChevronsLeft className="h-4 w-4 text-pmpa-navy" />
                     </Button>
-                    <Button size="icon" variant="ghost" onClick={goToPrevious} disabled={currentIndex === 0 || isLoading} className="h-9 w-9 hover:bg-white rounded-lg">
+                    <Button size="icon" variant="ghost" onClick={goToPrevious} disabled={currentIndex === 0 || isLoading} className="h-9 w-9 shrink-0 hover:bg-white rounded-lg">
                       <ChevronLeft className="h-4 w-4 text-pmpa-navy" />
                     </Button>
 
-                    <div className="px-6 flex items-center gap-2 border-x border-border/30 mx-1">
+                    <div className="px-3 md:px-6 flex items-center gap-2 border-x border-border/30 mx-0.5 md:mx-1">
                       <span className="text-sm font-black text-pmpa-navy">{currentDisplayRecord}</span>
                       <span className="text-[10px] font-bold text-muted-foreground uppercase opacity-60">de</span>
                       <span className="text-sm font-black text-pmpa-navy opacity-70">{totalRecords}</span>
