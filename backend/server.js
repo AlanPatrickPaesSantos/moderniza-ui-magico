@@ -1,5 +1,4 @@
 const express = require('express');
-const { GoogleGenerativeAI } = require("@google/generative-ai");
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
@@ -698,6 +697,9 @@ app.post('/api/ai/analyze', verificarToken, async (req, res) => {
       });
     }
 
+    // Carregamento dinâmico para suportar bibliotecas ESM em ambiente CommonJS
+    const { GoogleGenerativeAI } = await import("@google/generative-ai");
+    
     const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
