@@ -684,6 +684,81 @@ app.put('/api/missoes/:id', async (req, res) => {
   }
 });
 
+// ====== ROTA DE INTELIGÊNCIA ARTIFICIAL: PARSE DE MISSÃO (VOZ) ======
+app.post('/api/ai/parse-mission', verificarToken, async (req, res) => {
+  try {
+    const { text } = req.body;
+    const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+
+    if (!GEMINI_API_KEY) {
+      return res.status(500).json({ 
+        error: 'IA_DESATIVADA', 
+        message: 'A chave de API do Gemini não foi configurada no ambiente Render.' 
+      });
+    }
+
+    const systemPrompt = `Você é um assistente da Diretoria de Telemática da PMPA. 
+Sua tarefa é extrair dados de um relato verbal de uma missão técnica de manutenção.
+Transfira as informações do texto para o seguinte formato JSON rigoroso:
+{
+  "os": (extraia o número da OS ou do ID se houver),
+  "unidade": (identifique a unidade militar mencionada),
+  "def_recla": (resumo técnico do defeito ou problema encontrado),
+  "solucao": (resumo da solução técnica aplicada),
+  "observacao": (notas adicionais ou materiais usados)
+}
+IMPORTANTE: Se uma informação não for dita, preencha o campo com null. 
+Retorne APENAS o JSON puro, sem explicações, sem blocos de código Markdown.`;
+
+    const payload = JSON.stringify({
+      contents: [{ parts: [{ text: `${systemPrompt}\n\nTEXTO PARA ANALISAR: "${text}"` }] }]
+    });
+
+    const options = {
+      hostname: 'generativelanguage.googleapis.com',
+      path: `/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(payload)
+      }
+    };
+
+    const googleReq = https.request(options, (googleRes) => {
+      let responseBody = '';
+      googleRes.on('data', (chunk) => { responseBody += chunk; });
+      googleRes.on('end', () => {
+        try {
+          const result = JSON.parse(responseBody);
+          if (result.error) throw new Error(result.error.message);
+          
+          let aiText = result.candidates[0].content.parts[0].text;
+          // Limpeza de possíveis blocos de código gerados pela IA
+          aiText = aiText.replace(/```json/g, '').replace(/```/g, '').trim();
+          
+          const parsedData = JSON.parse(aiText);
+          res.json({ success: true, data: parsedData });
+        } catch (e) {
+          console.error('Parse Error:', e, responseBody);
+          res.status(500).json({ error: 'FALHA_PROCESSAMENTO', message: 'Não foi possível processar o relato.' });
+        }
+      });
+    });
+
+    googleReq.on('error', (e) => {
+      console.error('Google Request Error:', e);
+      res.status(500).json({ error: 'ERRO_CONEXAO_IA', message: e.message });
+    });
+
+    googleReq.write(payload);
+    googleReq.end();
+
+  } catch (err) {
+    console.error('AI Parse Crash:', err);
+    res.status(500).json({ error: 'ERRO_INTERNO' });
+  }
+});
+
 // ====== SERVIR FRONTEND ESTÁTICO (PRODUÇÃO) ======
 if (process.env.NODE_ENV === 'production' || process.env.RENDER) {
   const distPath = path.join(__dirname, '..', 'dist');

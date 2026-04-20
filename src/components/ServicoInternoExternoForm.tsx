@@ -16,7 +16,7 @@ import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { UnidadeCombobox } from "./UnidadeCombobox";
 import { API_BASE } from "../lib/api-config";
-import { Printer, ChevronLeft, ChevronRight, CheckCircle2, Layout, Car, Globe, Package, Zap, Router, Cable, Layers } from "lucide-react";
+import { Printer, ChevronLeft, ChevronRight, CheckCircle2, Layout, Car, Globe, Package, Zap, Router, Cable, Layers, Mic, MicOff, BrainCircuit } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 
@@ -64,6 +64,9 @@ export const ServicoInternoExternoForm = ({
   hasNext,
   isEditMode,
 }: ServicoInternoExternoFormProps) => {
+  const [isListening, setIsListening] = useState(false);
+  const [isProcessingAI, setIsProcessingAI] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -75,6 +78,81 @@ export const ServicoInternoExternoForm = ({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {},
   });
+
+  const handleSmartVoice = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      toast.error("Seu navegador não suporta reconhecimento de voz.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "pt-BR";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+      setIsListening(true);
+      toast.info("Ouvindo... Relate a missão completa (Unidade, Defeito, Solução).");
+    };
+
+    recognition.onresult = async (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setIsListening(false);
+      setIsProcessingAI(true);
+      
+      try {
+        const res = await fetch(`${API_BASE}/ai/parse-mission`, {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem('ditel_token')}`
+          },
+          body: JSON.stringify({ text: transcript })
+        });
+        
+        const result = await res.json();
+        if (result.success && result.data) {
+          const { os, unidade, def_recla, solucao, observacao } = result.data;
+          
+          if (os) setValue("os", String(os));
+          if (unidade) setValue("unidade", unidade);
+          if (def_recla) {
+            const current = watch("def_recla") || "";
+            setValue("def_recla", current ? `${current}\n${def_recla}` : def_recla);
+          }
+          if (solucao) {
+            const current = watch("solucao") || "";
+            setValue("solucao", current ? `${current}\n${solucao}` : solucao);
+          }
+          if (observacao) {
+            const current = watch("observacao") || "";
+            setValue("observacao", current ? `${current}\n${observacao}` : observacao);
+          }
+          
+          toast.success("Relato processado e campos preenchidos!");
+        } else {
+          toast.error(result.message || "A IA não conseguiu identificar os campos.");
+        }
+      } catch (err) {
+        toast.error("Erro na comunicação com a IA.");
+      } finally {
+        setIsProcessingAI(false);
+      }
+    };
+
+    recognition.onerror = (event: any) => {
+      setIsListening(false);
+      console.error("Speech Error:", event.error);
+      toast.error("Erro no reconhecimento: " + event.error);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognition.start();
+  };
 
   useEffect(() => {
     if (initialData) {
@@ -317,9 +395,28 @@ export const ServicoInternoExternoForm = ({
         
         <div className="p-6 bg-slate-50/30 dark:bg-slate-800/20 border border-slate-200/60 dark:border-slate-800 rounded-2xl shadow-sm relative overflow-hidden transition-all focus-within:shadow-[0_8px_30px_rgba(0,78,154,0.06)] focus-within:border-[#004e9a]/30">
           <div className="absolute top-0 left-0 w-1 bottom-0 bg-[#004e9a]/60" />
-          <h3 className="text-[12px] font-black text-[#004e9a] uppercase tracking-[0.2em] border-b border-slate-200/60 dark:border-slate-800 pb-2 mb-5 flex items-center gap-2">
-            Detalhamento Técnico
-          </h3>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200/60 dark:border-slate-800 pb-4 mb-5">
+            <h3 className="text-[12px] font-black text-[#004e9a] uppercase tracking-[0.2em] flex items-center gap-2">
+              Detalhamento Técnico
+            </h3>
+            
+            <Button 
+              type="button"
+              onClick={handleSmartVoice}
+              disabled={isListening || isProcessingAI}
+              className={cn(
+                "h-10 px-6 rounded-full font-black text-[10px] uppercase tracking-widest gap-2 shadow-lg transition-all",
+                isListening 
+                  ? "bg-red-500 hover:bg-red-600 animate-pulse" 
+                  : isProcessingAI 
+                  ? "bg-amber-500" 
+                  : "bg-blue-600 hover:bg-blue-700"
+              )}
+            >
+              {isListening ? <MicOff className="w-4 h-4" /> : isProcessingAI ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mic className="w-4 h-4" />}
+              {isListening ? "Ouvindo..." : isProcessingAI ? "Processando IA..." : "Ditado Inteligente"}
+            </Button>
+          </div>
         {/* Row 4: Descrições Técnicas (Lado a Lado) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1.5">
