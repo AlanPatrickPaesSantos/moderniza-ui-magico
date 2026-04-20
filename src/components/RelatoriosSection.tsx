@@ -19,6 +19,24 @@ interface RelatoriosSectionProps {
   onTriggerClean?: () => void;
 }
 
+// Auxiliares de Formatação fora do componente para evitar re-criação
+const getFormattedDate = (item: any) => {
+  const d = item.Data_Saida || item.saidaEquip || item.data || item.Data_Ent;
+  if (!d) return "---";
+  if (typeof d === 'string' && d.includes('/')) return d.split(' ')[0];
+  const date = new Date(d);
+  return isNaN(date.getTime()) ? "---" : date.toLocaleDateString('pt-BR');
+};
+
+const getStatusStyle = (item: any) => {
+  const val = String(item.servico || item.Serviço || "").toLowerCase();
+  if (val.includes("externo")) return "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400";
+  if (val.includes("interno")) return "bg-blue-500/10 text-blue-600 dark:text-blue-400";
+  if (val.includes("remoto")) return "bg-purple-500/10 text-purple-600 dark:text-purple-400";
+  if (val.includes("pronto")) return "bg-green-500/10 text-green-600 dark:text-green-400";
+  return "bg-amber-500/10 text-amber-600 dark:text-amber-400";
+};
+
 export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: RelatoriosSectionProps) => {
   const [activeReport, setActiveReport] = useState<string | null>(null);
   const [results, setResults] = useState<any[]>([]);
@@ -650,28 +668,14 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
                     <div className="space-y-0.5">
                       <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Data Ref.</p>
                       <p className="font-bold text-foreground">
-                        {(() => {
-                          const d = item.Data_Saida || item.saidaEquip || item.data || item.Data_Ent;
-                          if (!d) return "---";
-                          if (typeof d === 'string' && d.includes('/')) return d.split(' ')[0];
-                          const date = new Date(d);
-                          return isNaN(date.getTime()) ? "---" : date.toLocaleDateString('pt-BR');
-                        })()}
+                        {getFormattedDate(item)}
                       </p>
                     </div>
                     <div className="space-y-0.5">
                       <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">
                         {activeReport === "Rel_Missao_Consolidado" ? "Tipo" : "Status"}
                       </p>
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${(() => {
-                        const val = String(item.servico || item.Serviço || "").toLowerCase();
-                        if (val.includes("externo")) return "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400";
-                        if (val.includes("interno")) return "bg-blue-500/10 text-blue-600 dark:text-blue-400";
-                        if (val.includes("remoto")) return "bg-purple-500/10 text-purple-600 dark:text-purple-400";
-                        if (val.includes("pronto")) return "bg-green-500/10 text-green-600 dark:text-green-400";
-                        return "bg-amber-500/10 text-amber-600 dark:text-amber-400";
-                      })()
-                        }`}>
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${getStatusStyle(item)}`}>
                         {activeReport === "Rel_Missao_Consolidado" ? String(item.servico || "N/A") : String(item.Serviço || "PENDENTE")}
                       </span>
                     </div>

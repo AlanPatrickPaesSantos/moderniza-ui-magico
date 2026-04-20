@@ -59,7 +59,7 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Informe usuário e senha.' });
     }
 
-    const user = await Usuario.findOne({ username: username.toLowerCase() });
+    const user = await Usuario.findOne({ username: username.toLowerCase() }).lean();
     if (!user) {
       return res.status(401).json({ success: false, error: 'Acesso Negado: Usuário incorreto ou inexistente.' });
     }
@@ -146,7 +146,7 @@ const buildServiceQuery = (params) => {
 app.get('/api/servicos', async (req, res) => {
   try {
     const query = buildServiceQuery(req.query);
-    const servicos = await Servico.find(query).limit(50).sort({ Id_cod: -1 });
+    const servicos = await Servico.find(query).limit(50).sort({ Id_cod: -1 }).lean();
     res.json(servicos);
   } catch (err) {
     console.error('Erro ao buscar serviços:', err);
@@ -182,7 +182,7 @@ app.get('/api/servicos/next-os', async (req, res) => {
 app.get('/api/servicos/:id', async (req, res) => {
   try {
     const id_num = parseInt(req.params.id);
-    const record = await Servico.findOne({ Id_cod: id_num });
+    const record = await Servico.findOne({ Id_cod: id_num }).lean();
     if (!record) return res.status(404).json({ error: 'Registro não encontrado' });
 
     const [hasPrev, hasNext] = await Promise.all([
@@ -200,7 +200,7 @@ app.get('/api/servicos/:id', async (req, res) => {
 app.get('/api/servicos/:id/prev', async (req, res) => {
   try {
     const id = parseInt(req.params.id);
-    const record = await Servico.findOne({ Id_cod: { $lt: id } }).sort({ Id_cod: -1 });
+    const record = await Servico.findOne({ Id_cod: { $lt: id } }).sort({ Id_cod: -1 }).lean();
     if (!record) return res.status(404).json({ error: 'Sem registro anterior' });
 
     const [hasPrev, hasNext] = await Promise.all([
@@ -218,7 +218,7 @@ app.get('/api/servicos/:id/prev', async (req, res) => {
 app.get('/api/servicos/:id/next', async (req, res) => {
   try {
     const id = parseInt(req.params.id);
-    const record = await Servico.findOne({ Id_cod: { $gt: id } }).sort({ Id_cod: 1 });
+    const record = await Servico.findOne({ Id_cod: { $gt: id } }).sort({ Id_cod: 1 }).lean();
     if (!record) return res.status(404).json({ error: 'Sem próximo registro' });
 
     const [hasPrev, hasNext] = await Promise.all([
@@ -237,7 +237,7 @@ app.get('/api/servicos/:id/next', async (req, res) => {
 // Lista simples (usada globalmente para Dropdowns)
 app.get('/api/unidades', async (req, res) => {
   try {
-    const unidades = await Unidade.find({}, 'UNIDADE').sort({ UNIDADE: 1 });
+    const unidades = await Unidade.find({}, 'UNIDADE').sort({ UNIDADE: 1 }).lean();
     res.json(unidades.map(u => u.UNIDADE));
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -254,7 +254,7 @@ app.get('/api/unidades/list', async (req, res) => {
       query.UNIDADE = { $regex: q, $options: 'i' };
     }
     
-    const unidades = await Unidade.find(query).sort({ ID_UNID_SEÇÃO: 1 });
+    const unidades = await Unidade.find(query).sort({ ID_UNID_SEÇÃO: 1 }).lean();
     res.json(unidades);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -264,7 +264,7 @@ app.get('/api/unidades/list', async (req, res) => {
 // Obter próximo ID de unidade disponível
 app.get('/api/unidades/next-id', async (req, res) => {
   try {
-    const last = await Unidade.findOne().sort({ ID_UNID_SEÇÃO: -1 });
+    const last = await Unidade.findOne().sort({ ID_UNID_SEÇÃO: -1 }).lean();
     res.json({ nextId: last && last.ID_UNID_SEÇÃO ? last.ID_UNID_SEÇÃO + 1 : 1 });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -288,7 +288,7 @@ app.post('/api/unidades', async (req, res) => {
       return res.status(400).json({ error: 'Já existe uma unidade cadastrada com esta sigla.' });
     }
     
-    const last = await Unidade.findOne().sort({ ID_UNID_SEÇÃO: -1 });
+    const last = await Unidade.findOne().sort({ ID_UNID_SEÇÃO: -1 }).lean();
     const nextId = last && last.ID_UNID_SEÇÃO ? last.ID_UNID_SEÇÃO + 1 : 1;
     
     const novaUnidade = new Unidade({
@@ -357,7 +357,7 @@ app.delete('/api/unidades/:id', async (req, res) => {
 // Lista simples (usada globalmente para Dropdowns)
 app.get('/api/eqsuporte', async (req, res) => {
   try {
-    const equips = await EqSuporte.find({}, 'EQUIPAMENTO').sort({ EQUIPAMENTO: 1 });
+    const equips = await EqSuporte.find({}, 'EQUIPAMENTO').sort({ EQUIPAMENTO: 1 }).lean();
     res.json(equips.map(e => e.EQUIPAMENTO));
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -372,7 +372,7 @@ app.get('/api/eqsuporte/list', async (req, res) => {
     if (q) {
       query.EQUIPAMENTO = { $regex: q, $options: 'i' };
     }
-    const equips = await EqSuporte.find(query).sort({ ID_EQUIP: 1 });
+    const equips = await EqSuporte.find(query).sort({ ID_EQUIP: 1 }).lean();
     res.json(equips);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -382,7 +382,7 @@ app.get('/api/eqsuporte/list', async (req, res) => {
 // Obter próximo ID disponível
 app.get('/api/eqsuporte/next-id', async (req, res) => {
   try {
-    const last = await EqSuporte.findOne().sort({ ID_EQUIP: -1 });
+    const last = await EqSuporte.findOne().sort({ ID_EQUIP: -1 }).lean();
     res.json({ nextId: last && last.ID_EQUIP ? last.ID_EQUIP + 1 : 1 });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -403,7 +403,7 @@ app.post('/api/eqsuporte', async (req, res) => {
       return res.status(400).json({ error: 'Já existe um equipamento cadastrado com este nome.' });
     }
     
-    const last = await EqSuporte.findOne().sort({ ID_EQUIP: -1 });
+    const last = await EqSuporte.findOne().sort({ ID_EQUIP: -1 }).lean();
     const nextId = last && last.ID_EQUIP ? last.ID_EQUIP + 1 : 1;
     
     const novo = new EqSuporte({ ID_EQUIP: nextId, EQUIPAMENTO });
@@ -575,7 +575,7 @@ app.get('/api/missoes', verificarToken, async (req, res) => {
 
     // Usa countDocuments para contagem exata sem limite
     const [missoes, total] = await Promise.all([
-      Missao.find(query).limit(500).sort({ os: -1 }),
+      Missao.find(query).limit(200).sort({ os: -1 }).lean(),
       Missao.countDocuments(query)
     ]);
 
@@ -623,7 +623,7 @@ app.get('/api/missoes/count', async (req, res) => {
 // Obter a próxima OS de Missão disponível
 app.get('/api/missoes/next-os', async (req, res) => {
   try {
-    const last = await Missao.findOne({}, 'os').sort({ os: -1 });
+    const last = await Missao.findOne({}, 'os').sort({ os: -1 }).lean();
     res.json({ nextOs: last ? last.os + 1 : 1 });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -634,7 +634,7 @@ app.get('/api/missoes/next-os', async (req, res) => {
 app.get('/api/missoes/:id', async (req, res) => {
   try {
     const os = parseInt(req.params.id);
-    const missao = await Missao.findOne({ os: os });
+    const missao = await Missao.findOne({ os: os }).lean();
     if (!missao) return res.status(404).json({ error: 'Missão não encontrada' });
     
     // Verifica se existem adjacentes para controle de UI
@@ -661,9 +661,9 @@ app.get('/api/missoes/:id/:direction', async (req, res) => {
     
     let record;
     if (direction === 'prev') {
-      record = await Missao.findOne({ os: { $lt: os } }).sort({ os: -1 });
+      record = await Missao.findOne({ os: { $lt: os } }).sort({ os: -1 }).lean();
     } else {
-      record = await Missao.findOne({ os: { $gt: os } }).sort({ os: 1 });
+      record = await Missao.findOne({ os: { $gt: os } }).sort({ os: 1 }).lean();
     }
 
     if (!record) return res.status(404).json({ error: 'Fim dos registros' });
@@ -685,7 +685,7 @@ app.get('/api/missoes/:id/:direction', async (req, res) => {
 app.post('/api/missoes', async (req, res) => {
   try {
     const data = req.body;
-    const last = await Missao.findOne({}, 'os').sort({ os: -1 });
+    const last = await Missao.findOne({}, 'os').sort({ os: -1 }).lean();
     const nextOs = last ? last.os + 1 : 1;
 
     const novaMissao = new Missao({
@@ -713,7 +713,7 @@ app.put('/api/missoes/:id', async (req, res) => {
     const updated = await Missao.findOneAndUpdate(
       { os: os },
       { $set: data },
-      { new: true }
+      { new: true, lean: true }
     );
 
     if (!updated) return res.status(404).json({ error: 'Missão não encontrada' });
