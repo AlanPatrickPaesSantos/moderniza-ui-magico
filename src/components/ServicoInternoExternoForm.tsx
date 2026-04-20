@@ -356,22 +356,41 @@ export const ServicoInternoExternoForm = ({
         </div>
         
         {/* Barra de Ações Interna ao Formulário */}
-        <div className="mt-6 bg-muted/20 flex flex-col md:flex-row items-center justify-between gap-3 p-2 md:p-3 -mx-2 md:-mx-4 rounded-b-xl">
-          <div className="flex flex-wrap md:flex-nowrap w-full md:w-auto gap-2 justify-center md:justify-start">
+        <div className="mt-6 bg-muted/20 flex flex-col md:flex-row items-center justify-between gap-3 p-2 md:p-3 -mx-2 md:-mx-4 rounded-b-xl border-t border-slate-100 dark:border-slate-800">
+          <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+            {/* Grupo de Navegação Unificado */}
             {onNavigate && (
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => onNavigate('prev')}
-                disabled={!hasPrev}
-                className="h-10 md:h-12 w-10 md:w-auto md:px-4 gap-2 text-pmpa-navy hover:bg-pmpa-navy/10 font-black border border-pmpa-navy/20"
-                title="OS Anterior"
-              >
-                <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
-                <span className="hidden md:inline text-xs uppercase tracking-tighter">Anterior</span>
-              </Button>
+              <div className="flex items-center bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 p-0.5 shadow-sm">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => onNavigate('prev')}
+                  disabled={!hasPrev}
+                  className="h-9 gap-2 text-pmpa-navy hover:bg-pmpa-navy/5 font-bold px-3 transition-all"
+                  title="OS Anterior"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  <span className="text-[10px] uppercase font-bold">Anterior</span>
+                </Button>
+                
+                <div className="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-0.5" />
+
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => onNavigate('next')}
+                  disabled={!hasNext}
+                  className="h-9 gap-2 text-pmpa-navy hover:bg-pmpa-navy/5 font-bold px-3 transition-all"
+                  title="Próxima OS"
+                >
+                  <span className="text-[10px] uppercase font-bold">Próximo</span>
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
             )}
-            
+          </div>
+
+          <div className="flex flex-wrap md:flex-nowrap w-full md:w-auto gap-2 justify-center md:justify-end items-center">
             <Button
               type="button"
               variant="outline"
@@ -380,37 +399,21 @@ export const ServicoInternoExternoForm = ({
               disabled={!initialData}
             >
               <Printer className="h-4 w-4 md:h-5 md:w-5" />
-              <span className="text-[10px] md:text-[13px] uppercase">Saída</span>
+              <span className="text-[10px] md:text-[13px] uppercase">Relatório</span>
             </Button>
-          </div>
-          
-          <div className="flex flex-wrap md:flex-nowrap w-full md:w-auto gap-2 items-center justify-center md:justify-end">
+            
             <Button
               type="submit"
-              className="bg-pmpa-navy hover:bg-pmpa-navy/90 text-white h-10 md:h-12 px-6 md:px-12 font-black shadow-lg uppercase tracking-tight text-xs md:text-lg border-2 border-white/10"
+              className="bg-pmpa-navy hover:bg-pmpa-navy/90 text-white h-10 md:h-12 px-6 md:px-10 font-black shadow-lg shadow-pmpa-navy/20 uppercase tracking-tighter text-xs md:text-base border-b-4 border-pmpa-navy/50 active:border-b-0 active:translate-y-1 transition-all flex-1 md:flex-none mx-1"
             >
               {isEditMode || initialData ? "Atualizar Missão" : "Salvar Missão"}
             </Button>
-
-            {onNavigate && (
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => onNavigate('next')}
-                disabled={!hasNext}
-                className="h-10 md:h-12 w-10 md:w-auto md:px-4 gap-2 text-pmpa-navy hover:bg-pmpa-navy/10 font-black border border-pmpa-navy/20"
-                title="Próxima OS"
-              >
-                <span className="hidden md:inline text-xs uppercase tracking-tighter">Próximo</span>
-                <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
-              </Button>
-            )}
             
             <Button 
               type="button" 
               variant="ghost" 
               onClick={onCancel} 
-              className="h-10 md:h-12 px-3 md:px-4 font-bold text-muted-foreground hover:text-foreground uppercase text-xs"
+              className="h-10 md:h-12 px-3 md:px-4 font-bold text-muted-foreground hover:text-foreground uppercase text-[10px] md:text-xs"
             >
               Voltar
             </Button>
