@@ -683,12 +683,6 @@ app.put('/api/missoes/:id', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
 // ====== SERVIR FRONTEND ESTÁTICO (PRODUÇÃO) ======
 if (process.env.NODE_ENV === 'production' || process.env.RENDER) {
   const distPath = path.join(__dirname, '..', 'dist');
