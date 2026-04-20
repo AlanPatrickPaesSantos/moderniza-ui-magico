@@ -643,82 +643,91 @@ export const CadastroForm = ({ onSubmit, onCancel, onPrint, onNavigate, hasPrev,
 
         {/* Barra de Ações Interna ao Formulário */}
         <div className="mt-6 bg-muted/20 flex flex-col md:flex-row items-center justify-between gap-3 p-2 md:p-3 -mx-2 md:-mx-4 rounded-b-xl border-t border-slate-100 dark:border-slate-800">
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
             {lastSaved && (
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-500 uppercase tracking-widest shrink-0">
                 <Save className="w-3 h-3 text-emerald-500" /> Rascunho Salvo {lastSaved.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </div>
             )}
-          </div>
-          <div className="flex flex-wrap md:flex-nowrap w-full md:w-auto gap-2 justify-center md:justify-end items-center">
+
+            {/* Grupo de Navegação Unificado */}
             {onNavigate && (
+              <div className="flex items-center bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 p-0.5 shadow-sm">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => onNavigate('prev')}
+                  disabled={!hasPrev}
+                  className="h-9 gap-2 text-pmpa-navy hover:bg-pmpa-navy/5 font-bold px-3 transition-all"
+                  title="OS Anterior"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  <span className="text-[10px] uppercase">Anterior</span>
+                </Button>
+                
+                <div className="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-0.5" />
+
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => onNavigate('next')}
+                  disabled={!hasNext}
+                  className="h-9 gap-2 text-pmpa-navy hover:bg-pmpa-navy/5 font-bold px-3 transition-all"
+                  title="Próxima OS"
+                >
+                  <span className="text-[10px] uppercase">Próximo</span>
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-wrap md:flex-nowrap w-full md:w-auto gap-2 justify-center md:justify-end items-center">
+            <div className="flex items-center gap-1 bg-slate-100/50 dark:bg-slate-800/50 p-1 rounded-xl border border-slate-200/50 dark:border-slate-700/50 mr-1">
               <Button
                 type="button"
                 variant="ghost"
-                onClick={() => onNavigate('prev')}
-                disabled={!hasPrev}
-                className="h-10 md:h-12 w-10 md:w-auto md:px-4 gap-2 text-pmpa-navy hover:bg-pmpa-navy/10 font-black border border-pmpa-navy/20"
-                title="OS Anterior"
+                onClick={() => onPrint?.('entrada')}
+                className="h-10 gap-1 md:gap-2 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 font-bold px-2 md:px-3 rounded-lg transition-all"
+                disabled={!initialData}
+                title="Imprimir Guia de Entrada"
               >
-                <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
-                <span className="hidden md:inline text-xs uppercase tracking-tighter">Anterior</span>
+                <Printer className="h-4 w-4" />
+                <span className="text-[10px] uppercase">Entrada</span>
               </Button>
-            )}
+              
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => onPrint?.('laudo')}
+                className="h-10 gap-1 md:gap-2 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 font-bold px-2 md:px-3 rounded-lg transition-all"
+                disabled={!initialData}
+                title="Imprimir Laudo Técnico"
+              >
+                <Printer className="h-4 w-4" />
+                <span className="text-[10px] uppercase">Laudo</span>
+              </Button>
+
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => onPrint?.('saida')}
+                className="h-10 gap-1 md:gap-2 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 font-bold px-2 md:px-3 rounded-lg transition-all"
+                disabled={!initialData}
+                title="Imprimir Guia de Saída"
+              >
+                <Printer className="h-4 w-4" />
+                <span className="text-[10px] uppercase">Saída</span>
+              </Button>
+            </div>
             
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onPrint?.('entrada')}
-              className="h-10 md:h-12 gap-1 md:gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold px-2 md:px-4 flex-1 sm:flex-none"
-              disabled={!initialData}
-            >
-              <Printer className="h-4 w-4 md:h-5 md:w-5" />
-              <span className="text-[10px] md:text-[13px] uppercase">Entrada</span>
-            </Button>
-            
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onPrint?.('laudo')}
-              className="h-10 md:h-12 gap-1 md:gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold px-2 md:px-4 flex-1 sm:flex-none"
-              disabled={!initialData}
-            >
-              <Printer className="h-4 w-4 md:h-5 md:w-5" />
-              <span className="text-[10px] md:text-[13px] uppercase">Laudo</span>
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onPrint?.('saida')}
-              className="h-10 md:h-12 gap-1 md:gap-2 text-pmpa-navy border-pmpa-navy/30 hover:bg-pmpa-navy/5 font-bold px-2 md:px-4 flex-1 sm:flex-none"
-              disabled={!initialData}
-            >
-              <Printer className="h-4 w-4 md:h-5 md:w-5" />
-              <span className="text-[10px] md:text-[13px] uppercase">Saída</span>
-            </Button>
-          </div>
-          
-          <div className="flex flex-wrap md:flex-nowrap w-full md:w-auto gap-2 items-center justify-center md:justify-end">
             <Button
               type="submit"
-              className="bg-pmpa-navy hover:bg-pmpa-navy/90 text-white h-10 md:h-12 px-6 md:px-12 font-black shadow-lg uppercase tracking-tight text-xs md:text-lg border-2 border-white/10"
+              className="bg-pmpa-navy hover:bg-pmpa-navy/90 text-white h-10 md:h-12 px-6 md:px-10 font-black shadow-lg shadow-pmpa-navy/20 uppercase tracking-tighter text-xs md:text-base border-b-4 border-pmpa-navy/50 active:border-b-0 active:translate-y-1 transition-all flex-1 md:flex-none"
             >
-              {isEditMode || initialData ? "Atualizar" : "Finalizar Cadastro"}
+              {isEditMode || initialData ? <Save className="w-4 h-4 mr-2" /> : null}
+              {isEditMode || initialData ? "Atualizar Registro" : "Finalizar Cadastro"}
             </Button>
-
-            {onNavigate && (
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => onNavigate('next')}
-                disabled={!hasNext}
-                className="h-10 md:h-12 w-10 md:w-auto md:px-4 gap-2 text-pmpa-navy hover:bg-pmpa-navy/10 font-black border border-pmpa-navy/20"
-                title="Próxima OS"
-              >
-                <span className="hidden md:inline text-xs uppercase tracking-tighter">Próximo</span>
-                <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
-              </Button>
-            )}
           </div>
         </div>
       </form>
