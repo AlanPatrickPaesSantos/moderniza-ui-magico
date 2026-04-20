@@ -630,13 +630,52 @@ app.get('/api/missoes/next-os', async (req, res) => {
   }
 });
 
-// Buscar uma Missão específica pela OS
+// Buscar uma Missão específica pela OS (com adjacentes)
 app.get('/api/missoes/:id', async (req, res) => {
   try {
     const os = parseInt(req.params.id);
     const missao = await Missao.findOne({ os: os });
     if (!missao) return res.status(404).json({ error: 'Missão não encontrada' });
-    res.json(missao);
+    
+    // Verifica se existem adjacentes para controle de UI
+    const [prev, next] = await Promise.all([
+      Missao.findOne({ os: { $lt: os } }, 'os').sort({ os: -1 }),
+      Missao.findOne({ os: { $gt: os } }, 'os').sort({ os: 1 })
+    ]);
+
+    res.json({ 
+      record: missao, 
+      hasPrev: !!prev, 
+      hasNext: !!next 
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Navegar para o próximo ou anterior (Missões)
+app.get('/api/missoes/:id/:direction', async (req, res) => {
+  try {
+    const os = parseInt(req.params.id);
+    const { direction } = req.params;
+    
+    let record;
+    if (direction === 'prev') {
+      record = await Missao.findOne({ os: { $lt: os } }).sort({ os: -1 });
+    } else {
+      record = await Missao.findOne({ os: { $gt: os } }).sort({ os: 1 });
+    }
+
+    if (!record) return res.status(404).json({ error: 'Fim dos registros' });
+
+    // Re-checar adjacentes para o novo record
+    const newOs = record.os;
+    const [prev, next] = await Promise.all([
+      Missao.findOne({ os: { $lt: newOs } }, 'os').sort({ os: -1 }),
+      Missao.findOne({ os: { $gt: newOs } }, 'os').sort({ os: 1 })
+    ]);
+
+    res.json({ record, hasPrev: !!prev, hasNext: !!next });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
