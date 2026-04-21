@@ -254,14 +254,14 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
             color: #1a1a1a; 
             line-height: 1.4; 
             background: white; 
-            font-size: 10pt;
+            font-size: 12pt;
           }
           
           .header { 
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
-            border-bottom: 2px solid #004e9a; 
+            border-bottom: 2px solid #000; 
             padding-bottom: 12px; 
             margin-bottom: 15px; 
             margin-top: 0;
@@ -272,22 +272,20 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
             flex: 1; 
             font-weight: bold; 
             text-transform: uppercase; 
-            font-size: 8.5pt; 
+            font-size: 9pt; 
             line-height: 1.4; 
           }
-          .header-text .ditel { font-size: 13pt; color: #004e9a; margin-top: 4px; }
+          .header-text .ditel { font-size: 14pt; color: #000; margin-top: 4px; }
 
           .doc-title-box {
-            background: #f1f5f9;
-            border: 1px solid #cbd5e1;
-            padding: 8px;
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 25px;
+            margin-top: 25px;
           }
           .doc-title { 
             font-weight: 900; 
             text-transform: uppercase; 
-            font-size: 11pt; 
+            font-size: 13pt; 
             margin: 0;
             letter-spacing: 1px;
             color: #0f172a;
@@ -410,7 +408,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
         </div>
 
         <div class="doc-title-box">
-          <p class="doc-title">Relatório de Desempenho Institucional (Consolidado)</p>
+          <p class="doc-title">Relatório de Desempenho Institucional</p>
         </div>
 
         <div class="meta-info">
