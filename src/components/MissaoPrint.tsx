@@ -55,9 +55,9 @@ export const MissaoPrint = ({ data }: { data: MissaoData }) => {
           #print-portal-container { position: absolute; left: 0; top: 0; width: 100%; }
         }
         .premium-border { border: 1px solid #cbd5e1; }
-        .section-header { border-bottom: 1px solid #004e9a; padding: 4px 12px; }
-        .label-box { padding: 4px 8px; border-right: 1px solid #cbd5e1; }
-        .content-box { padding: 4px 12px; }
+        .section-header { border-bottom: 1px solid #004e9a; padding: 4px 12px; display: flex; align-items: center; }
+        .label-box { padding: 4px 8px; border-right: 1px solid #cbd5e1; display: flex; align-items: center; }
+        .content-box { padding: 4px 12px; display: flex; align-items: center; }
       `}</style>
 
       <div className="mx-auto w-full max-w-[210mm]">
