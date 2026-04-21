@@ -92,6 +92,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
       const currentStatus = statusText !== undefined ? statusText : filters.status;
       const statusParam = currentStatus ? `&status=${currentStatus}` : (isMissions || isEquipments ? "" : "&status=PENDENTE");
 
+      const currentQ = queryText !== undefined ? queryText : filters.q;
       const searchQuery = currentQ ? `&q=${encodeURIComponent(currentQ)}` : "";
 
       const currentUnidade = filters.unidade;
