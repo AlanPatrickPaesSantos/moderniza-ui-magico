@@ -93,10 +93,10 @@ export const MissaoPrint = ({ data }: { data: MissaoData }) => {
               <span className="text-[14px] font-black tracking-tighter">#{data.os}</span>
             </div>
             <div className="col-span-3 label-box">
-              <span className="text-[12px] font-black uppercase text-slate-500">Data / Horário</span>
+              <span className="text-[12px] font-black uppercase text-slate-500">Data de Registro</span>
             </div>
             <div className="col-span-3 content-box">
-              <span className="text-[12px] font-bold">{formatDateBR(data.data)} — {data.horario || "--:--"}</span>
+              <span className="text-[12px] font-bold">{formatDateBR(data.data)}</span>
             </div>
           </div>
           <div className="grid grid-cols-12">
