@@ -90,6 +90,7 @@ export const ConsultasSection = () => {
   return (
     <div className="space-y-6">
       <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl rounded-2xl p-4 md:p-6 border border-slate-200/50 dark:border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.06)] mb-8 transition-all group">
+        <div className="flex flex-col md:flex-row gap-4 relative">
           <div className="md:w-72 space-y-2">
             <div className="flex justify-between items-center px-1">
               <label className="text-[11px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Filtrar por Unidade</label>
