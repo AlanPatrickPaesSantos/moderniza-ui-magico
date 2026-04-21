@@ -261,12 +261,12 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
-            border-bottom: 2px solid #000; 
+            border-bottom: 2.5pt solid black; 
             padding-bottom: 12px; 
             margin-bottom: 15px; 
             margin-top: 0;
           }
-          .logo { height: 70px; width: auto; object-fit: contain; }
+          .logo { height: 75px; width: auto; object-fit: contain; }
           .header-text { 
             text-align: center; 
             flex: 1; 
@@ -275,12 +275,14 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
             font-size: 9pt; 
             line-height: 1.4; 
           }
-          .header-text .ditel { font-size: 14pt; color: #000; margin-top: 4px; }
+          .header-text .ditel { font-size: 14pt; color: black; margin-top: 4px; }
 
           .doc-title-box {
+            background: transparent;
+            border: none;
+            padding: 5px;
             text-align: center;
-            margin-bottom: 25px;
-            margin-top: 25px;
+            margin-bottom: 15px;
           }
           .doc-title { 
             font-weight: 900; 
@@ -288,7 +290,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
             font-size: 13pt; 
             margin: 0;
             letter-spacing: 1px;
-            color: #0f172a;
+            color: black;
           }
 
           .meta-info {
