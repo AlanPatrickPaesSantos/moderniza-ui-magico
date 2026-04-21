@@ -564,7 +564,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
                   setResults([]);
                 }}
                 variant="outline"
-                className="w-full justify-start gap-4 h-auto py-4 px-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-[#004e9a]/50 transition-all duration-300 group/btn shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_20px_rgba(0,78,154,0.08)] hover:-translate-y-0.5"
+                className="w-full justify-start gap-4 h-auto py-4 px-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-[#004e9a]/50 transition-all duration-300 group/btn shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:-translate-y-0.5"
               >
                 <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800 group-hover/btn:bg-white dark:group-hover/btn:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700 transition-colors flex-shrink-0">
                   <item.icon className="h-5 w-5 text-slate-500 group-hover/btn:text-[#004e9a]" strokeWidth={2.5} />

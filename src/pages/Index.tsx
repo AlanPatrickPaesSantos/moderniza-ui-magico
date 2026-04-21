@@ -72,7 +72,7 @@ const Index = () => {
             {/* [BENTO 1] Destaque: Cadastro (Ocupa 2 Colunas) */}
             <div 
               onClick={() => navigate("/cadastro")} 
-              className="lg:col-span-2 group relative bg-gradient-to-br from-[#004e9a] to-[#002f5c] rounded-[2rem] p-8 overflow-hidden cursor-pointer shadow-lg hover:shadow-[0_20px_50px_rgba(0,78,154,0.3)] transition-all duration-500 hover:-translate-y-1"
+              className="lg:col-span-2 group relative bg-gradient-to-br from-[#004e9a] to-[#002f5c] rounded-[2rem] p-8 overflow-hidden cursor-pointer shadow-lg transition-all duration-500 hover:-translate-y-1"
             >
               <div className="absolute right-[-10%] bottom-[-20%] opacity-[0.06] pointer-events-none group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-700">
                 <Database className="w-64 h-64 text-white" />
