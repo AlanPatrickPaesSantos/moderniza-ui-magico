@@ -54,7 +54,7 @@ export const LaudoPrint = ({ data, type = 'laudo' }: { data: LaudoData, type?: '
   const renderHalf = () => (
     <div className="laudo-half px-6 py-4 flex flex-col justify-between h-full font-sans text-[11px] leading-tight text-black bg-white relative overflow-hidden">
       {/* Logos and Header */}
-      <img src="/logo-pmpa.png" alt="Watermark" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', opacity: 0.12, width: '380px', zIndex: 0, pointerEvents: 'none' }} />
+      <img src="/logo-pmpa.png" alt="Watermark" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', opacity: 0.13, width: '380px', zIndex: 0, pointerEvents: 'none' }} />
       <div className="flex justify-between items-start mb-2 relative border-b-2 border-black pb-2">
         <div className="w-32 flex justify-start">
           <img src="/logo-pmpa.png" alt="Logo PMPA" style={{ height: '85px', width: 'auto', objectFit: 'contain' }} />
