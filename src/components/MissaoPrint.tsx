@@ -86,7 +86,7 @@ export const MissaoPrint = ({ data }: { data: MissaoData }) => {
         </div>
 
         <div className="text-center mb-6">
-          <h1 className="text-lg font-black uppercase tracking-widest pt-4 pb-1 border-t border-slate-900">
+          <h1 className="text-lg font-black uppercase tracking-widest pt-4 pb-1">
             Ordem de Missão Técnica
           </h1>
         </div>
