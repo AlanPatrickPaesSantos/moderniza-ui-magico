@@ -115,7 +115,7 @@ const Cadastro = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-slate-200 dark:bg-slate-950">
       <div className="flex-1 flex flex-col container mx-auto px-4 py-4">
         {/* Cabeçalho */}
         <div className="flex items-center gap-4 mb-3 shrink-0">

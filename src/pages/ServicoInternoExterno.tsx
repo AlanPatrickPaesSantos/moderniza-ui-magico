@@ -107,7 +107,7 @@ const ServicoInternoExterno = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-slate-200 dark:bg-slate-950">
       <div className="flex-1 flex flex-col container mx-auto px-4 py-4 relative">
         
         <div className="flex flex-col md:flex-row items-center gap-4 mb-4 shrink-0">
