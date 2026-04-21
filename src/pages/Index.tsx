@@ -30,21 +30,16 @@ const Index = () => {
         const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
         const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
 
-        // Busca Manutenções (Pendentes desde o início do ano)
-        const [servPentoResp, servProntoResp, missResp] = await Promise.all([
-          fetch(`${API_BASE}/servicos/count?status=PENDENTE&startDate=${yearStart}`),
-          fetch(`${API_BASE}/servicos/count?status=PRONTO&startDate=${yearStart}`),
-          fetch(`${API_BASE}/missoes/count?startDate=${firstDay}&endDate=${lastDay}`)
-        ]);
-
-        if (servPentoResp.ok && servProntoResp.ok && missResp.ok) {
-          const pentoData = await servPentoResp.json();
-          const prontoData = await servProntoResp.json();
-          const missData = await missResp.json();
+        // Busca Estatísticas Consolidadas (v40.11 Restauração Total)
+        const statsUrl = `${API_BASE}/stats/consolidated?startDate=${firstDay}&endDate=${lastDay}`;
+        const resp = await fetch(statsUrl);
+        
+        if (resp.ok) {
+          const allStats = await resp.json();
           setStats({
-            maintenance: pentoData.count || 0,
-            ready: prontoData.count || 0,
-            missions: missData.total || 0
+            maintenance: allStats.servicos.pendente || 0, // Equipamentos em Manutenção
+            ready: allStats.servicos.pronto || 0,        // Pronto para Entrega
+            missions: allStats.missoes.total || 0        // Missões do Mês
           });
         }
       } catch (error) {

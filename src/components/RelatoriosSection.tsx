@@ -250,7 +250,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
-            border-bottom: 1.2pt solid black; 
+            border-bottom: 0.5pt solid #1e293b; 
             padding-bottom: 12px; 
             margin-bottom: 15px; 
             margin-top: 0;
@@ -816,7 +816,9 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
                         {activeReport === "Rel_Missao_Consolidado" ? "Tipo" : "Status"}
                       </p>
                       <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${getStatusStyle(item)}`}>
-                        {activeReport === "Rel_Missao_Consolidado" ? String(item.servico || "N/A") : String(item.Serviço || "PENDENTE")}
+                        {activeReport === "Rel_Missao_Consolidado" 
+                          ? (String(item.servico || "N/A").toUpperCase().includes("COMPARTILHAMENTO") ? "PASTA COMPARTILHADA" : String(item.servico || "N/A"))
+                          : String(item.Serviço || "PENDENTE")}
                       </span>
                     </div>
                   </div>
