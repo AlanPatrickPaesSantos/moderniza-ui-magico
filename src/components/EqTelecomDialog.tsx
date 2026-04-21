@@ -66,7 +66,6 @@ export const EqTelecomDialog = ({ open, onOpenChange }: EqTelecomDialogProps) =>
                   Telecom
                 </DialogTitle>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />
                   <p className="text-[10px] text-blue-100/80 font-black uppercase tracking-[0.2em]">
                     Infraestrutura Ditel
                   </p>
@@ -191,7 +190,6 @@ export const EqTelecomDialog = ({ open, onOpenChange }: EqTelecomDialogProps) =>
           </div>
           <div className="flex items-center gap-2">
              <div className="flex items-center gap-1.5 px-3 py-1 bg-white dark:bg-slate-800 rounded-full border border-slate-200/50 dark:border-slate-700 shadow-sm">
-                <div className="h-2 w-2 rounded-full bg-blue-500 mt-0.5" />
                 <span className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-tight">
                   Rede Ativa
                 </span>
