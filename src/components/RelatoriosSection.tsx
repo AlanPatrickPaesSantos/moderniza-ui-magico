@@ -294,7 +294,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
             border-bottom: 1px solid #eee;
             padding-bottom: 8px;
           }
-          .meta-item b { color: #475569; text-transform: uppercase; font-size: 7.5pt; }
+          .meta-item b { color: #1e293b; text-transform: uppercase; font-size: 7.5pt; }
 
           /* Layout de Seções */
           section { margin-bottom: 22px; page-break-inside: avoid; }
@@ -360,7 +360,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
             background: transparent;
           }
           .card-val { font-size: 14pt; font-weight: 900; color: #004e9a; display: block; }
-          .card-lbl { font-size: 7.5pt; font-weight: bold; text-transform: uppercase; color: #64748b; }
+          .card-lbl { font-size: 7.5pt; font-weight: bold; text-transform: uppercase; color: #334155; }
 
           .signatures {
             margin-top: 50px;
@@ -371,12 +371,12 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
           }
           .signature-box { border-top: 1px solid #000; padding-top: 8px; }
           .sig-title { font-weight: bold; font-size: 8.5pt; text-transform: uppercase; }
-          .sig-rank { font-size: 7.5pt; color: #64748b; }
+          .sig-rank { font-size: 7.5pt; color: #334155; }
 
           .footer-note {
             margin-top: 35px;
             font-size: 7pt;
-            color: #94a3b8;
+            color: #475569;
             text-align: center;
             border-top: 1px solid #f1f5f9;
             padding-top: 8px;
