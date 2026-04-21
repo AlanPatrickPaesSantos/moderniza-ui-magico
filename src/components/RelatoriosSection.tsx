@@ -11,8 +11,6 @@ import { ServicoInternoExternoForm } from "./ServicoInternoExternoForm";
 import { API_BASE } from "../lib/api-config";
 import { LaudoPrint } from "./LaudoPrint";
 import { toast } from "sonner";
-// Removido import de RelatorioMissaoPrint para usar janela isolada
-
 
 interface RelatoriosSectionProps {
   externalTrigger?: { id: string; dateRange?: { start: string; end: string }; q?: string; status?: string } | null;
@@ -53,6 +51,9 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
     laudo: number;
     bateria: number;
     garantia: number;
+    manutencaoTotal?: number;
+    manutencaoProntas?: number;
+    rankings?: any;
   }>({ total: 0, interno: 0, externo: 0, remoto: 0, pendente: 0, pronto: 0, laudo: 0, bateria: 0, garantia: 0 });
 
   const [printType, setPrintType] = useState<'laudo' | 'saida' | 'entrada'>('laudo');
@@ -122,8 +123,6 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
         laudo: allStats.servicos.laudo || 0,
         bateria: allStats.servicos.bateria || 0,
         garantia: allStats.servicos.garantia || 0,
-        manutencaoTotal: allStats.servicos.total,
-        manutencaoProntas: allStats.servicos.pronto,
         // Rankings auditados do servidor (v40.5)
         rankings: allStats.missoes.rankings || { unidades: [], servicos: [], defeitos: [] }
       });
@@ -223,8 +222,8 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
 
     // Coleta dados locais para o relatório de manutenção (v40.2)
     const manutencaoStats = { 
-      total: stats.manutencaoTotal || stats.total, 
-      prontas: stats.manutencaoProntas || stats.pronto 
+      total: stats.total, 
+      prontas: stats.pronto 
     };
 
     const logoBase = window.location.origin;

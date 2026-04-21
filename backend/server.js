@@ -533,7 +533,6 @@ app.put('/api/servicos/:id', async (req, res) => {
           Bateria: data.bateria || '',
           telefone: data.telefone || '',
           Seção_Ditel: data.secaoDitel || '',
-          T_EquipTelecom: '', // Limpa campo legado ao atualizar pela nova UI
           fonteCabo: data.fonteCabo || false,
         }
       },
@@ -645,7 +644,6 @@ app.get('/api/stats/consolidated', async (req, res) => {
       ]),
 
       // Ranking Serviços/Demandas (Unificado v40.8)
-      // ... (no changes to rankings)
       Missao.aggregate([
         { $match: baseMissaoQuery },
         { $addFields: { 

@@ -26,7 +26,6 @@ const Index = () => {
     const fetchDashboardStats = async () => {
       try {
         const now = new Date();
-        const yearStart = `${now.getFullYear()}-01-01`;
         const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
         const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
 
