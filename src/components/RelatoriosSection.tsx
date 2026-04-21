@@ -305,7 +305,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
             margin-bottom: 12px;
             border-left: 4px solid #004e9a;
             padding-left: 10px;
-            background: #f8fafc;
+            background: transparent;
             padding-top: 6px;
             padding-bottom: 6px;
           }
@@ -318,7 +318,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
           }
 
           /* Tabelas Estilizadas */
-          table { width: 100%; border-collapse: collapse; background: white; }
+          table { width: 100%; border-collapse: collapse; background: transparent; }
           th, td { border: 1px solid #e2e8f0; padding: 6px 10px; font-size: 9pt; text-align: left; }
           th { 
             background-color: #004e9a; 
@@ -357,7 +357,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
             border: 1px solid #e2e8f0;
             padding: 10px;
             text-align: center;
-            background: #f8fafc;
+            background: transparent;
           }
           .card-val { font-size: 14pt; font-weight: 900; color: #004e9a; display: block; }
           .card-lbl { font-size: 7.5pt; font-weight: bold; text-transform: uppercase; color: #64748b; }
@@ -391,9 +391,9 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            opacity: 0.08;
+            opacity: 0.15;
             z-index: -100;
-            width: 450px;
+            width: 500px;
             pointer-events: none;
           }
         </style>
