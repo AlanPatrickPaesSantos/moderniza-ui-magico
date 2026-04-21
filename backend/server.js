@@ -636,7 +636,7 @@ app.get('/api/stats/consolidated', async (req, res) => {
         { $limit: 5 }
       ]),
 
-      // Ranking Serviços/Demandas (Unificado v40.6)
+      // Ranking Serviços/Demandas (Unificado v40.8)
       Missao.aggregate([
         { $match: baseMissaoQuery },
         { $addFields: { 
@@ -645,10 +645,7 @@ app.get('/api/stats/consolidated', async (req, res) => {
               vars: { s: { $toUpper: { $trim: { input: "$servico" } } } },
               in: {
                 $cond: [
-                  { $or: [
-                    { $eq: ["$$s", "COMPARTILHAMENTO DE"] },
-                    { $eq: ["$$s", "COMPARTILHAMENTO"] }
-                  ]},
+                  { $regexMatch: { input: "$$s", regex: /COMPARTILHAMENTO/i } },
                   "PASTA COMPARTILHADA",
                   "$$s"
                 ]
@@ -662,10 +659,23 @@ app.get('/api/stats/consolidated', async (req, res) => {
         { $limit: 5 }
       ]),
 
-      // Ranking Defeitos/Reclamações (Normalizado)
+      // Ranking Defeitos/Reclamações (Unificado v40.8)
       Missao.aggregate([
         { $match: baseMissaoQuery },
-        { $addFields: { defeito_norm: { $toUpper: { $trim: { input: "$def_recla" } } } } },
+        { $addFields: { 
+          defeito_norm: { 
+            $let: {
+              vars: { s: { $toUpper: { $trim: { input: "$def_recla" } } } },
+              in: {
+                $cond: [
+                  { $regexMatch: { input: "$$s", regex: /COMPARTILHAMENTO/i } },
+                  "PASTA COMPARTILHADA",
+                  "$$s"
+                ]
+              }
+            }
+          } 
+        }},
         { $match: { defeito_norm: { $ne: "" } } },
         { $group: { _id: "$defeito_norm", count: { $sum: 1 } } },
         { $sort: { count: -1 } },
