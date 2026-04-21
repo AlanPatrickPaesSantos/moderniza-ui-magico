@@ -241,25 +241,24 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
       </html>
     `);
 
-    // Busca contagens exatas
-    let manutencaoStats = { total: 0, prontas: 0 };
-    try {
-      const [prontoResp, totalResp] = await Promise.all([
-        fetch(`${API_BASE}/servicos/count?startDate=${filters.startDate}&endDate=${filters.endDate}&status=PRONTO`),
-        fetch(`${API_BASE}/servicos/count?startDate=${filters.startDate}&endDate=${filters.endDate}`)
-      ]);
-      if (prontoResp.ok) {
-        const prontoData = await prontoResp.json();
-        manutencaoStats.prontas = prontoData.count;
-      }
-      if (totalResp.ok) {
-        const totalData = await totalResp.json();
-        manutencaoStats.total = totalData.count;
-      }
-    } catch (e) {
-      console.error("Erro ao buscar manutenções:", e);
-      printWindow.document.write("<p style='color:red'>Erro ao carregar dados complementares (Manutencao). O relatório pode estar incompleto.</p>");
-    }
+    // --- LÓGICA ANALÍTICA (v40.1) ---
+    // Extrai dados reais do array 'results' para detalhamento inteligente
+    const getTopItems = (field: string, limit = 5) => {
+      const counts: Record<string, number> = {};
+      results.forEach(item => {
+        const val = item[field]?.toString()?.trim()?.toUpperCase() || "NÃO INFORMADO";
+        if (val && val !== "NÃO INFORMADO") {
+          counts[val] = (counts[val] || 0) + 1;
+        }
+      });
+      return Object.entries(counts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, limit);
+    };
+
+    const topUnidades = getTopItems("unidade", 5);
+    const topServicos = getTopItems("servico", 5);
+    const topDefeitos = getTopItems("def_recla", 5);
 
     const logoBase = window.location.origin;
 
@@ -270,7 +269,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
         <title>Relatório de Atividades - DITEL</title>
         <meta charset="UTF-8" />
         <style>
-          @page { margin: 15mm; size: A4; }
+          @page { margin: 12mm; size: A4; }
           body { 
             font-family: "Segoe UI", Roboto, Arial, sans-serif; 
             padding: 0; 
@@ -280,27 +279,16 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
             font-size: 10pt;
           }
           
-          /* Cabeçalho Oficial */
-          .security-header {
-            text-align: right;
-            font-size: 7pt;
-            font-weight: bold;
-            color: #666;
-            text-transform: uppercase;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 5px;
-            margin-bottom: 15px;
-          }
-          
           .header { 
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
-            border-bottom: 3px double #004e9a; 
-            padding-bottom: 15px; 
-            margin-bottom: 20px; 
+            border-bottom: 2px solid #004e9a; 
+            padding-bottom: 12px; 
+            margin-bottom: 15px; 
+            margin-top: 0;
           }
-          .logo { height: 75px; width: auto; object-fit: contain; }
+          .logo { height: 70px; width: auto; object-fit: contain; }
           .header-text { 
             text-align: center; 
             flex: 1; 
@@ -309,126 +297,127 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
             font-size: 8.5pt; 
             line-height: 1.4; 
           }
-          .header-text .ditel { font-size: 13pt; color: #004e9a; margin-top: 5px; }
+          .header-text .ditel { font-size: 13pt; color: #004e9a; margin-top: 4px; }
 
           .doc-title-box {
-            background: #f8f9fa;
-            border: 1px solid #ddd;
-            padding: 10px;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 8px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
           }
           .doc-title { 
             font-weight: 900; 
             text-transform: uppercase; 
-            font-size: 12pt; 
+            font-size: 11pt; 
             margin: 0;
             letter-spacing: 1px;
-            color: #111;
+            color: #0f172a;
           }
 
           .meta-info {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
-            margin-bottom: 25px;
-            font-size: 9pt;
+            margin-bottom: 20px;
+            font-size: 8.5pt;
             border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
+            padding-bottom: 8px;
           }
-          .meta-item b { color: #555; text-transform: uppercase; font-size: 8pt; }
+          .meta-item b { color: #475569; text-transform: uppercase; font-size: 7.5pt; }
 
           /* Layout de Seções */
-          section { margin-bottom: 30px; page-break-inside: avoid; }
+          section { margin-bottom: 22px; page-break-inside: avoid; }
           .section-header {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            border-left: 5px solid #004e9a;
+            gap: 8px;
+            margin-bottom: 12px;
+            border-left: 4px solid #004e9a;
             padding-left: 10px;
-            background: #f1f5f9;
-            padding-top: 8px;
-            padding-bottom: 8px;
+            background: #f8fafc;
+            padding-top: 6px;
+            padding-bottom: 6px;
           }
           .section-title { 
-            font-size: 10pt; 
+            font-size: 9.5pt; 
             font-weight: 900; 
             text-transform: uppercase; 
             margin: 0;
+            color: #1e293b;
           }
 
           /* Tabelas Estilizadas */
           table { width: 100%; border-collapse: collapse; background: white; }
-          th, td { border: 1px solid #ccc; padding: 8px 12px; font-size: 9.5pt; text-align: left; }
+          th, td { border: 1px solid #e2e8f0; padding: 6px 10px; font-size: 9pt; text-align: left; }
           th { 
             background-color: #004e9a; 
             color: white; 
             font-weight: bold; 
             text-transform: uppercase; 
-            font-size: 8.5pt; 
+            font-size: 8pt; 
             text-align: center;
           }
-          td.label { font-weight: 600; width: 60%; color: #333; }
-          td.value { font-weight: 900; text-align: center; font-size: 11pt; border-left: 2px solid #ccc; }
+          td.label { font-weight: 600; width: 65%; color: #334155; }
+          td.value { font-weight: 800; text-align: center; font-size: 10pt; border-left: 1px solid #e2e8f0; }
           
+          /* Visual de Barras Analíticas */
+          .analytic-row { margin-bottom: 6px; }
+          .analytic-header { display: flex; justify-content: space-between; font-size: 8pt; font-weight: bold; margin-bottom: 2px; }
           .progression-bar {
-            height: 4px;
-            background: #eee;
+            height: 6px;
+            background: #f1f5f9;
             width: 100%;
-            margin-top: 5px;
-            border-radius: 2px;
+            border-radius: 3px;
             overflow: hidden;
+            border: 1px solid #e2e8f0;
           }
           .progression-fill {
             height: 100%;
-            background: #004e9a;
+            background: linear-gradient(90deg, #004e9a, #3b82f6);
           }
 
-          /* Resumo Geral Estilo Card */
+          /* Cards de Resumo */
           .summary-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 15px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
           }
           .summary-card {
-            border: 1px solid #ddd;
-            padding: 12px;
+            border: 1px solid #e2e8f0;
+            padding: 10px;
             text-align: center;
-            background: #fff;
+            background: #f8fafc;
           }
-          .card-val { font-size: 16pt; font-weight: 900; color: #004e9a; display: block; }
-          .card-lbl { font-size: 8pt; font-weight: bold; text-transform: uppercase; color: #666; }
+          .card-val { font-size: 14pt; font-weight: 900; color: #004e9a; display: block; }
+          .card-lbl { font-size: 7.5pt; font-weight: bold; text-transform: uppercase; color: #64748b; }
 
-          /* Rodapé de Assinatura */
           .signatures {
-            margin-top: 60px;
+            margin-top: 50px;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 50px;
+            gap: 40px;
             text-align: center;
           }
-          .signature-box { border-top: 1px solid black; padding-top: 10px; }
-          .sig-title { font-weight: bold; font-size: 9pt; text-transform: uppercase; }
-          .sig-rank { font-size: 8pt; color: #444; }
+          .signature-box { border-top: 1px solid #000; padding-top: 8px; }
+          .sig-title { font-weight: bold; font-size: 8.5pt; text-transform: uppercase; }
+          .sig-rank { font-size: 7.5pt; color: #64748b; }
 
           .footer-note {
-            margin-top: 40px;
-            font-size: 7.5pt;
-            color: #888;
+            margin-top: 35px;
+            font-size: 7pt;
+            color: #94a3b8;
             text-align: center;
-            border-top: 1px dotted #ccc;
-            padding-top: 10px;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 8px;
           }
           
           @media print {
-            .no-print { display: none; }
             body { -webkit-print-color-adjust: exact; }
           }
         </style>
       </head>
       <body>
-        <div class="security-header">USO INTERNO - DOCUMENTO DE TRABALHO - DITEL/PMPA</div>
 
         <div class="header">
           <img src="${logoBase}/logo-pmpa.png" class="logo" onerror="this.style.display='none'" />
@@ -443,124 +432,140 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
         </div>
 
         <div class="doc-title-box">
-          <p class="doc-title">Relatório Consolidado de Atividades</p>
+          <p class="doc-title">Relatório de Desempenho Institucional (Consolidado)</p>
         </div>
 
         <div class="meta-info">
           <div class="meta-item">
-            <b>Emitido em:</b><br/> ${new Date().toLocaleDateString("pt-BR")} às ${new Date().toLocaleTimeString("pt-BR", { hour: '2-digit', minute: '2-digit' })}
+            <b>Emissão:</b><br/> ${new Date().toLocaleDateString("pt-BR")} às ${new Date().toLocaleTimeString("pt-BR", { hour: '2-digit', minute: '2-digit' })}
           </div>
           <div class="meta-item">
-            <b>Período:</b><br/> ${filters.startDate ? new Date(filters.startDate).toLocaleDateString("pt-BR") : "Início"} — ${filters.endDate ? new Date(filters.endDate).toLocaleDateString("pt-BR") : "Fim"}
+            <b>Período Analisado:</b><br/> ${filters.startDate ? new Date(filters.startDate).toLocaleDateString("pt-BR") : "Início"} — ${filters.endDate ? new Date(filters.endDate).toLocaleDateString("pt-BR") : "Fim"}
           </div>
         </div>
 
-        <!-- SEÇÃO 1 -->
+        <!-- SEÇÃO 1: NÚMEROS GERAIS -->
         <section>
           <div class="section-header">
-            <div class="section-title">1. Desempenho Operacional - Missões</div>
+            <div class="section-title">1. Resumo Operacional de Missões</div>
           </div>
           <table>
             <thead>
               <tr>
-                <th style="text-align:left">Indicador de Atividade</th>
-                <th>Quant.</th>
+                <th style="text-align:left">Indicadores Principais</th>
+                <th>Volume</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td class="label">
-                  Missões Internas<br/>
-                  <div class="progression-bar"><div class="progression-fill" style="width: ${stats.total > 0 ? (stats.interno / stats.total * 100) : 0}%"></div></div>
-                </td>
-                <td class="value">${stats.interno}</td>
-              </tr>
-              <tr>
-                <td class="label">
-                  Missões Externas<br/>
-                  <div class="progression-bar"><div class="progression-fill" style="width: ${stats.total > 0 ? (stats.externo / stats.total * 100) : 0}%"></div></div>
-                </td>
-                <td class="value">${stats.externo}</td>
-              </tr>
-              <tr>
-                <td class="label">
-                  Missões Remotas<br/>
-                  <div class="progression-bar"><div class="progression-fill" style="width: ${stats.total > 0 ? (stats.remoto / stats.total * 100) : 0}%"></div></div>
-                </td>
-                <td class="value">${stats.remoto}</td>
-              </tr>
-              <tr>
-                <td class="label">Serviços Pendentes (Em andamento)</td>
-                <td class="value">${stats.pendente}</td>
-              </tr>
-              <tr style="background: #f8f9fa;">
-                <td class="label" style="font-size: 11pt; color: #004e9a;">TOTAL GERAL DE MISSÕES</td>
-                <td class="value" style="font-size: 14pt; color: #004e9a;">${stats.total}</td>
+              <tr><td class="label">Missões de Caráter Interno (Sede/Ditel)</td><td class="value">${stats.interno}</td></tr>
+              <tr><td class="label">Missões de Caráter Externo (Batalhões/Unidades)</td><td class="value">${stats.externo}</td></tr>
+              <tr><td class="label">Atendimentos de Caráter Remoto (Telefônico/Rede)</td><td class="value">${stats.remoto}</td></tr>
+              <tr><td class="label">Equipamentos/Serviços Aguardando Conclusão</td><td class="value">${stats.pendente}</td></tr>
+              <tr style="background: #f1f5f9;">
+                <td class="label" style="font-size: 10pt; color: #0f172a;">Carga Horária / Produção Total do Período</td>
+                <td class="value" style="font-size: 13pt; color: #004e9a;">${stats.total}</td>
               </tr>
             </tbody>
           </table>
         </section>
 
-        <!-- SEÇÃO 2 -->
+        <!-- SEÇÃO 2: ANALÍTICA POR UNIDADE (NOVO v40.1) -->
         <section>
           <div class="section-header">
-            <div class="section-title">2. Manutenção de Equipamentos</div>
+            <div class="section-title">2. Distribuição de Apoio por Unidades (Top 5)</div>
+          </div>
+          <p style="font-size: 8pt; margin-bottom: 10px; color: #64748b;">Abaixo, as 5 unidades da PMPA que mais demandaram apoio técnico da DITEL no período.</p>
+          ${topUnidades.length > 0 ? topUnidades.map(([unidade, qtd]) => `
+            <div class="analytic-row">
+              <div class="analytic-header">
+                <span>${unidade}</span>
+                <span>${qtd} ATENDIMENTOS (${Math.round((qtd / stats.total) * 100)}%)</span>
+              </div>
+              <div class="progression-bar">
+                <div class="progression-fill" style="width: ${(qtd / topUnidades[0][1]) * 100}%"></div>
+              </div>
+            </div>
+          `).join("") : "<p style='text-align:center; font-style:italic; font-size:9pt;'>Dados de unidade insuficientes para este período.</p>"}
+        </section>
+
+        <!-- SEÇÃO 3: DEMANDAS TÉCNICAS (NOVO v40.1) -->
+        <section>
+          <div class="section-header">
+            <div class="section-title">3. Principais Demandas e Serviços</div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+              <p style="font-size: 8pt; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; color: #004e9a;">Categorias de Missão</p>
+              ${topServicos.length > 0 ? topServicos.map(([serv, qtd]) => `
+                <div style="display:flex; justify-content:space-between; font-size: 8.5pt; border-bottom: 1px solid #f1f5f9; padding: 3px 0;">
+                  <span>${serv}</span>
+                  <b>${qtd}</b>
+                </div>
+              `).join("") : "N/A"}
+            </div>
+            <div>
+              <p style="font-size: 8pt; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; color: #004e9a;">Defeitos/Reclamações Comuns</p>
+              ${topDefeitos.length > 0 ? topDefeitos.map(([def, qtd]) => `
+                <div style="display:flex; justify-content:space-between; font-size: 8.5pt; border-bottom: 1px solid #f1f5f9; padding: 3px 0;">
+                  <span style="font-size: 7.5pt;">${def.length > 25 ? def.substring(0, 25) + '...' : def}</span>
+                  <b>${qtd}</b>
+                </div>
+              `).join("") : "N/A"}
+            </div>
+          </div>
+        </section>
+
+        <!-- SEÇÃO 4: MANUTENÇÃO -->
+        <section>
+          <div class="section-header">
+            <div class="section-title">4. Manutenção de Equipamentos de Suporte</div>
           </div>
           <div class="summary-grid">
             <div class="summary-card">
               <span class="card-val">${manutencaoStats.total}</span>
-              <span class="card-lbl">Total de O.S.</span>
+              <span class="card-lbl">Ordens de Serviço</span>
             </div>
             <div class="summary-card">
               <span class="card-val" style="color: #059669;">${manutencaoStats.prontas}</span>
-              <span class="card-lbl">Concluídas</span>
+              <span class="card-lbl">Equips. Prontos</span>
             </div>
             <div class="summary-card">
-              <span class="card-val" style="color: #6366f1;">${manutencaoStats.total > 0 ? Math.round((manutencaoStats.prontas / manutencaoStats.total) * 100) : 0}%</span>
-              <span class="card-lbl">Eficiência</span>
+              <span class="card-val" style="color: #0369a1;">${manutencaoStats.total > 0 ? Math.round((manutencaoStats.prontas / manutencaoStats.total) * 100) : 0}%</span>
+              <span class="card-lbl">Taxa de Reparo</span>
             </div>
           </div>
         </section>
 
-        <!-- SEÇÃO 3 -->
-        <section style="margin-top: 40px;">
-          <div class="section-header">
-            <div class="section-title">3. Resumo de Atendimentos</div>
-          </div>
-          <p style="margin-bottom: 15px; font-style: italic; color: #444;">Consolidado de todas as atividades realizadas pela Diretoria de Telemática no período selecionado.</p>
-          <table>
-            <thead>
-              <tr>
-                <th style="text-align:left">Categoria de Suporte</th>
-                <th>Volume Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td class="label">Suporte de Campo e Remoto (Missões)</td><td class="value">${(stats.interno || 0) + (stats.externo || 0) + (stats.remoto || 0)}</td></tr>
-              <tr><td class="label">Reparos Técnicos Oficiais (Manutenções)</td><td class="value">${manutencaoStats.prontas || 0}</td></tr>
-              <tr style="background: #004e9a; color: white;">
-                <td class="label" style="font-size: 11pt; border: none;">TOTAL DE ATENDIMENTOS REALIZADOS</td>
-                <td class="value" style="font-size: 14pt; border: none; color: white;">${(stats.interno || 0) + (stats.externo || 0) + (stats.remoto || 0) + (manutencaoStats.prontas || 0)}</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-
-        <div class="signatures">
+        <div class="signatures" style="margin-top: 60px;">
           <div class="signature-box">
-            <div class="sig-title">Oficial Responsável</div>
+            <div class="sig-title">Oficial Responsável pela Emissão</div>
             <div class="sig-rank">DITEL - PMPA</div>
           </div>
           <div class="signature-box">
-            <div class="sig-title">Comandante da DITEL</div>
-            <div class="sig-rank">Diretoria de Telemática</div>
+            <div class="sig-title">Visto do Comando / Diretoria</div>
+            <div class="sig-rank">DGA - DIRETORIA DE TELEMÁTICA</div>
           </div>
         </div>
 
         <div class="footer-note">
-          Relatório gerado pelo Sistema de Gestão DITEL às ${new Date().toLocaleString("pt-BR")}.<br/>
-          Copyright © 2026 Diretoria de Telemática - Polícia Militar do Pará.
+          As informações contidas neste relatório são geradas através dos registros oficiais da Diretoria de Telemática.<br/>
+          PMPA | Diretoria de Telemática | ${new Date().getFullYear()}
         </div>
+
+        <script>
+          let impresso = false;
+          function chamarImpressao() {
+            if (impresso) return;
+            impresso = true;
+            window.print();
+          }
+          window.onload = function() { setTimeout(chamarImpressao, 1200); };
+          setTimeout(chamarImpressao, 4000);
+          window.onafterprint = function() { window.close(); };
+        </script>
+      </body>
+      </html>
+    `;
 
         <script>
           let impresso = false;
