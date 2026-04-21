@@ -253,7 +253,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
-            border-bottom: 0.5pt solid #1e293b; 
+            border-bottom: 2pt solid #1e293b; 
             padding-bottom: 12px; 
             margin-bottom: 15px; 
             margin-top: 0;
@@ -385,10 +385,21 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
           @media print {
             body { -webkit-print-color-adjust: exact; }
           }
+
+          .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.08;
+            z-index: -100;
+            width: 450px;
+            pointer-events: none;
+          }
         </style>
       </head>
       <body>
-
+        <img src="${logoBase}/logo-pmpa.png" class="watermark" />
         <div class="header">
           <img src="${logoBase}/logo-pmpa.png" class="logo" onerror="this.style.display='none'" />
           <div class="header-text">
