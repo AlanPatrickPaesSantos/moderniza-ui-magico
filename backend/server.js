@@ -613,22 +613,42 @@ app.get('/api/stats/consolidated', async (req, res) => {
 
     const serviceQuery = buildServiceQuery(req.query);
 
-    // 2. Executa todas as contagens em paralelo no Banco de Dados
-    const counts = await Promise.all([
-      // Missões
-      Missao.countDocuments(baseMissaoQuery),
-      Missao.countDocuments({ ...baseMissaoQuery, $or: [{ servico: /^\s*interno\s*$/i }, { categoria: /^\s*interno\s*$/i }] }),
-      Missao.countDocuments({ ...baseMissaoQuery, $or: [{ servico: /^\s*externo\s*$/i }, { categoria: /^\s*externo\s*$/i }] }),
-      Missao.countDocuments({ ...baseMissaoQuery, $or: [{ servico: /^\s*remoto\s*$/i }, { categoria: /^\s*remoto\s*$/i }] }),
-      Missao.countDocuments({ ...baseMissaoQuery, servico: /^\s*pendente\s*$/i }),
-      
-      // Equipamentos (Ordens de Serviço)
-      Servico.countDocuments(serviceQuery),
-      Servico.countDocuments({ ...serviceQuery, Serviço: /^\s*PRONTO\s*$/i }),
-      Servico.countDocuments({ ...serviceQuery, Serviço: /^\s*PENDENTE\s*$/i }),
-      Servico.countDocuments({ ...serviceQuery, Serviço: /^\s*LAUDO\s*$/i }),
-      Servico.countDocuments({ ...serviceQuery, Bateria: { $ne: "", $exists: true } }),
-      Servico.countDocuments({ ...serviceQuery, Garantia: /^\s*sim\s*$/i })
+    // 2. Executa todas as contagens e rankings em paralelo no Banco de Dados (v40.5 Integridade Total)
+    const [counts, topUnidades, topServicos, topDefeitos] = await Promise.all([
+      // Contagens Simples
+      Promise.all([
+        Missao.countDocuments(baseMissaoQuery),
+        Missao.countDocuments({ ...baseMissaoQuery, $or: [{ servico: /^\s*interno\s*$/i }, { categoria: /^\s*interno\s*$/i }] }),
+        Missao.countDocuments({ ...baseMissaoQuery, $or: [{ servico: /^\s*externo\s*$/i }, { categoria: /^\s*externo\s*$/i }] }),
+        Missao.countDocuments({ ...baseMissaoQuery, $or: [{ servico: /^\s*remoto\s*$/i }, { categoria: /^\s*remoto\s*$/i }] }),
+        Missao.countDocuments({ ...baseMissaoQuery, servico: /^\s*pendente\s*$/i }),
+        Servico.countDocuments(serviceQuery),
+        Servico.countDocuments({ ...serviceQuery, Serviço: /^\s*PRONTO\s*$/i }),
+      ]),
+
+      // Ranking Unidades (Auditado sobre TODOS os registros do período)
+      Missao.aggregate([
+        { $match: baseMissaoQuery },
+        { $group: { _id: "$unidade", count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+        { $limit: 5 }
+      ]),
+
+      // Ranking Serviços/Demandas
+      Missao.aggregate([
+        { $match: baseMissaoQuery },
+        { $group: { _id: "$servico", count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+        { $limit: 5 }
+      ]),
+
+      // Ranking Defeitos/Reclamações
+      Missao.aggregate([
+        { $match: baseMissaoQuery },
+        { $group: { _id: "$def_recla", count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+        { $limit: 5 }
+      ])
     ]);
 
     res.json({
@@ -637,15 +657,16 @@ app.get('/api/stats/consolidated', async (req, res) => {
         interno: counts[1],
         externo: counts[2],
         remoto: counts[3],
-        pendente: counts[4]
+        pendente: counts[4],
+        rankings: {
+          unidades: topUnidades.map(u => [u._id || "NÃO INFORMADO", u.count]),
+          servicos: topServicos.map(s => [s._id || "NÃO INFORMADO", s.count]),
+          defeitos: topDefeitos.map(d => [d._id || "NÃO INFORMADO", d.count])
+        }
       },
       servicos: {
         total: counts[5],
-        pronto: counts[6],
-        pendente: counts[7],
-        laudo: counts[8],
-        bateria: counts[9],
-        garantia: counts[10]
+        pronto: counts[6]
       }
     });
   } catch (err) {

@@ -123,7 +123,9 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
         bateria: allStats.servicos.bateria || 0,
         garantia: allStats.servicos.garantia || 0,
         manutencaoTotal: allStats.servicos.total,
-        manutencaoProntas: allStats.servicos.pronto
+        manutencaoProntas: allStats.servicos.pronto,
+        // Rankings auditados do servidor (v40.5)
+        rankings: allStats.missoes.rankings || { unidades: [], servicos: [], defeitos: [] }
       });
     } catch (error) {
       console.error("Erro ao gerar relatório:", error);
@@ -213,24 +215,11 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
       </html>
     `);
 
-    // --- LÓGICA ANALÍTICA (v40.1) ---
-    // Extrai dados reais do array 'results' para detalhamento inteligente
-    const getTopItems = (field: string, limit = 5) => {
-      const counts: Record<string, number> = {};
-      results.forEach(item => {
-        const val = item[field]?.toString()?.trim()?.toUpperCase() || "NÃO INFORMADO";
-        if (val && val !== "NÃO INFORMADO") {
-          counts[val] = (counts[val] || 0) + 1;
-        }
-      });
-      return Object.entries(counts)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, limit);
-    };
-
-    const topUnidades = getTopItems("unidade", 5);
-    const topServicos = getTopItems("servico", 5);
-    const topDefeitos = getTopItems("def_recla", 5);
+    // --- DADOS ANALÍTICOS AUDITADOS (v40.5) ---
+    // Usamos os rankings calculados diretamente no servidor para precisão de 100%
+    const topUnidades = stats.rankings?.unidades || [];
+    const topServicos = stats.rankings?.servicos || [];
+    const topDefeitos = stats.rankings?.defeitos || [];
 
     // Coleta dados locais para o relatório de manutenção (v40.2)
     const manutencaoStats = { 
@@ -447,10 +436,10 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
           </table>
         </section>
 
-        <!-- SEÇÃO 2: ANALÍTICA POR UNIDADE (NOVO v40.1) -->
+        <!-- SEÇÃO 2: ANALÍTICA POR UNIDADE (v40.5 Auditado) -->
         <section>
           <div class="section-header">
-            <div class="section-title">2. Distribuição de Apoio por Unidades (Top 5)</div>
+            <div class="section-title">2. Distribuição de Apoio por Unidades</div>
           </div>
           <p style="font-size: 8pt; margin-bottom: 10px; color: #64748b;">Abaixo, as 5 unidades da PMPA que mais demandaram apoio técnico da DITEL no período.</p>
           ${topUnidades.length > 0 ? topUnidades.map(([unidade, qtd]) => `
