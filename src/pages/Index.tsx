@@ -37,9 +37,9 @@ const Index = () => {
         if (resp.ok) {
           const allStats = await resp.json();
           setStats({
-            maintenance: allStats.servicos.pendente || 0, // Equipamentos em Manutenção
-            ready: allStats.servicos.pronto || 0,        // Pronto para Entrega
-            missions: allStats.missoes.total || 0        // Missões do Mês
+            maintenance: allStats.dashboard.maintenance || 0, // Manutenção (YTD - Desde Janeiro)
+            ready: allStats.dashboard.ready || 0,             // Pronto para Entrega (YTD)
+            missions: allStats.dashboard.missions || 0       // Missões do Mês (Apenas mês atual)
           });
         }
       } catch (error) {

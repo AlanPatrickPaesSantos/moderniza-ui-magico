@@ -613,9 +613,13 @@ app.get('/api/stats/consolidated', async (req, res) => {
 
     const serviceQuery = buildServiceQuery(req.query);
 
-    // 2. Executa todas as contagens e rankings em paralelo no Banco de Dados (v40.9 Restauração Total)
-    const [counts, topUnidades, topServicos, topDefeitos] = await Promise.all([
-      // Contagens Simples (Pai de todos os Widgets)
+    // 2. Dashboard Specific Queries (v40.12 Year-to-Date & Monthly)
+    const currentYear = new Date().getFullYear();
+    const ytdStart = new Date(`${currentYear}-01-01T00:00:00.000Z`);
+    
+    // 3. Executa todas as contagens e rankings em paralelo no Banco de Dados
+    const [counts, topUnidades, topServicos, topDefeitos, dashboardCounts] = await Promise.all([
+      // Contagens Simples (Para Relatórios Filtrados)
       Promise.all([
         Missao.countDocuments(baseMissaoQuery),                                     // [0]
         Missao.countDocuments({ ...baseMissaoQuery, $or: [{ servico: /^\s*interno\s*$/i }, { categoria: /^\s*interno\s*$/i }] }), // [1]
@@ -641,6 +645,7 @@ app.get('/api/stats/consolidated', async (req, res) => {
       ]),
 
       // Ranking Serviços/Demandas (Unificado v40.8)
+      // ... (no changes to rankings)
       Missao.aggregate([
         { $match: baseMissaoQuery },
         { $addFields: { 
@@ -684,10 +689,22 @@ app.get('/api/stats/consolidated', async (req, res) => {
         { $group: { _id: "$defeito_norm", count: { $sum: 1 } } },
         { $sort: { count: -1 } },
         { $limit: 5 }
+      ]),
+
+      // Widget Dashboard Specific (v40.12 - YTD Maintenance & Monthly Missions)
+      Promise.all([
+        Servico.countDocuments({ Serviço: /^\s*PENDENTE\s*$/i, Data_Ent: { $gte: ytdStart } }), // [0] Maintenance YTD
+        Servico.countDocuments({ Serviço: /^\s*PRONTO\s*$/i, Data_Ent: { $gte: ytdStart } }),   // [1] Ready YTD
+        Missao.countDocuments(baseMissaoQuery)                                                 // [2] Missions in Period (Already Monthly if filtered)
       ])
     ]);
 
     res.json({
+      dashboard: {
+        maintenance: dashboardCounts[0],
+        ready: dashboardCounts[1],
+        missions: dashboardCounts[2]
+      },
       missoes: {
         total: counts[0],
         interno: counts[1],
