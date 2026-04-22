@@ -64,76 +64,91 @@ const Index = () => {
             <h2 className="text-2xl md:text-4xl font-black text-slate-800 dark:text-white tracking-tight drop-shadow-sm">Centro de Comando</h2>
           </div>
 
-          {/* REFINED ACTION CARDS (Clean & Professional) */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-5">
+          {/* EXECUTIVE COMMAND TOOLBAR (High-End Design) */}
+          <div className="flex flex-wrap items-stretch gap-3 md:gap-4 mb-8">
             
             {/* Cadastro */}
             <div 
               onClick={() => navigate("/cadastro")} 
-              className="group relative bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm rounded-3xl p-5 md:p-6 h-32 md:h-44 flex flex-col items-center justify-center gap-3 cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-500 border border-white dark:border-slate-800 active:scale-95 overflow-hidden"
+              className="flex-1 min-w-[140px] group relative bg-white/40 dark:bg-slate-900/40 backdrop-blur-md border-b-2 border-transparent hover:border-[#004e9a] p-4 md:p-5 cursor-pointer transition-all duration-300 flex flex-col items-start gap-3 overflow-hidden rounded-t-xl"
             >
-              <div className="w-12 h-12 md:w-16 md:h-16 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center group-hover:bg-[#004e9a] transition-all duration-500 shadow-inner">
-                <Database className="w-6 h-6 md:w-8 md:h-8 text-[#004e9a] dark:text-blue-400 group-hover:text-white transition-colors" />
+              <div className="p-2 bg-slate-800/5 dark:bg-white/5 rounded-lg group-hover:bg-[#004e9a]/10 transition-colors">
+                <Database className="w-5 h-5 md:w-6 md:h-6 text-[#004e9a] dark:text-blue-400" />
               </div>
-              <div className="text-center relative z-10">
-                <span className="text-[10px] md:text-[11px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest group-hover:text-[#004e9a] transition-colors leading-tight">Cadastro</span>
-                <div className="h-0.5 w-0 bg-[#004e9a] mx-auto mt-1.5 group-hover:w-full transition-all duration-500 rounded-full" />
+              <div>
+                <span className="block text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em] mb-0.5">Operações</span>
+                <span className="block text-sm md:text-base font-bold text-slate-800 dark:text-white tracking-tight">Cadastro</span>
+              </div>
+              <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#004e9a] shadow-[0_0_8px_#004e9a]" />
               </div>
             </div>
 
             {/* Serv_Int_Ext */}
             <div 
               onClick={() => navigate("/servico-interno-externo")} 
-              className="group relative bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm rounded-3xl p-5 md:p-6 h-32 md:h-44 flex flex-col items-center justify-center gap-3 cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-500 border border-white dark:border-slate-800 active:scale-95 overflow-hidden"
+              className="flex-1 min-w-[140px] group relative bg-white/40 dark:bg-slate-900/40 backdrop-blur-md border-b-2 border-transparent hover:border-[#004e9a] p-4 md:p-5 cursor-pointer transition-all duration-300 flex flex-col items-start gap-3 overflow-hidden rounded-t-xl"
             >
-              <div className="w-12 h-12 md:w-16 md:h-16 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center group-hover:bg-[#004e9a] transition-all duration-500 shadow-inner">
-                <Server className="w-6 h-6 md:w-8 md:h-8 text-[#004e9a] dark:text-blue-400 group-hover:text-white transition-colors" />
+              <div className="p-2 bg-slate-800/5 dark:bg-white/5 rounded-lg group-hover:bg-[#004e9a]/10 transition-colors">
+                <Server className="w-5 h-5 md:w-6 md:h-6 text-[#004e9a] dark:text-blue-400" />
               </div>
-              <div className="text-center relative z-10">
-                <span className="text-[10px] md:text-[11px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest group-hover:text-[#004e9a] transition-colors leading-tight">Serv_Int_Ext</span>
-                <div className="h-0.5 w-0 bg-[#004e9a] mx-auto mt-1.5 group-hover:w-full transition-all duration-500 rounded-full" />
+              <div>
+                <span className="block text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em] mb-0.5">Serviços</span>
+                <span className="block text-sm md:text-base font-bold text-slate-800 dark:text-white tracking-tight">Int_Ext</span>
+              </div>
+              <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#004e9a] shadow-[0_0_8px_#004e9a]" />
               </div>
             </div>
 
             {/* Telecom */}
             <div 
               onClick={() => setEqTelecomOpen(true)} 
-              className="group relative bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm rounded-3xl p-5 md:p-6 h-32 md:h-44 flex flex-col items-center justify-center gap-3 cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-500 border border-white dark:border-slate-800 active:scale-95 overflow-hidden"
+              className="flex-1 min-w-[140px] group relative bg-white/40 dark:bg-slate-900/40 backdrop-blur-md border-b-2 border-transparent hover:border-[#004e9a] p-4 md:p-5 cursor-pointer transition-all duration-300 flex flex-col items-start gap-3 overflow-hidden rounded-t-xl"
             >
-              <div className="w-12 h-12 md:w-16 md:h-16 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center group-hover:bg-[#004e9a] transition-all duration-500 shadow-inner">
-                <Phone className="w-6 h-6 md:w-8 md:h-8 text-[#004e9a] dark:text-blue-400 group-hover:text-white transition-colors" />
+              <div className="p-2 bg-slate-800/5 dark:bg-white/5 rounded-lg group-hover:bg-[#004e9a]/10 transition-colors">
+                <Phone className="w-5 h-5 md:w-6 md:h-6 text-[#004e9a] dark:text-blue-400" />
               </div>
-              <div className="text-center relative z-10">
-                <span className="text-[10px] md:text-[11px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest group-hover:text-[#004e9a] transition-colors leading-tight">Telecom</span>
-                <div className="h-0.5 w-0 bg-[#004e9a] mx-auto mt-1.5 group-hover:w-full transition-all duration-500 rounded-full" />
+              <div>
+                <span className="block text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em] mb-0.5">Comunicações</span>
+                <span className="block text-sm md:text-base font-bold text-slate-800 dark:text-white tracking-tight">Telecom</span>
+              </div>
+              <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#004e9a] shadow-[0_0_8px_#004e9a]" />
               </div>
             </div>
 
             {/* Unidade */}
             <div 
               onClick={() => setEqUnidadeOpen(true)} 
-              className="group relative bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm rounded-3xl p-5 md:p-6 h-32 md:h-44 flex flex-col items-center justify-center gap-3 cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-500 border border-white dark:border-slate-800 active:scale-95 overflow-hidden"
+              className="flex-1 min-w-[140px] group relative bg-white/40 dark:bg-slate-900/40 backdrop-blur-md border-b-2 border-transparent hover:border-[#004e9a] p-4 md:p-5 cursor-pointer transition-all duration-300 flex flex-col items-start gap-3 overflow-hidden rounded-t-xl"
             >
-              <div className="w-12 h-12 md:w-16 md:h-16 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center group-hover:bg-[#004e9a] transition-all duration-500 shadow-inner">
-                <Building className="w-6 h-6 md:w-8 md:h-8 text-[#004e9a] dark:text-blue-400 group-hover:text-white transition-colors" />
+              <div className="p-2 bg-slate-800/5 dark:bg-white/5 rounded-lg group-hover:bg-[#004e9a]/10 transition-colors">
+                <Building className="w-5 h-5 md:w-6 md:h-6 text-[#004e9a] dark:text-blue-400" />
               </div>
-              <div className="text-center relative z-10">
-                <span className="text-[10px] md:text-[11px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest group-hover:text-[#004e9a] transition-colors leading-tight">Unidade</span>
-                <div className="h-0.5 w-0 bg-[#004e9a] mx-auto mt-1.5 group-hover:w-full transition-all duration-500 rounded-full" />
+              <div>
+                <span className="block text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em] mb-0.5">Logística</span>
+                <span className="block text-sm md:text-base font-bold text-slate-800 dark:text-white tracking-tight">Unidade</span>
+              </div>
+              <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#004e9a] shadow-[0_0_8px_#004e9a]" />
               </div>
             </div>
 
             {/* Suporte */}
             <div 
               onClick={() => setEqSuporteOpen(true)} 
-              className="group relative bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm rounded-3xl p-5 md:p-6 h-32 md:h-44 flex flex-col items-center justify-center gap-3 cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-500 border border-white dark:border-slate-800 active:scale-95 overflow-hidden"
+              className="flex-1 min-w-[140px] group relative bg-white/40 dark:bg-slate-900/40 backdrop-blur-md border-b-2 border-transparent hover:border-[#004e9a] p-4 md:p-5 cursor-pointer transition-all duration-300 flex flex-col items-start gap-3 overflow-hidden rounded-t-xl"
             >
-              <div className="w-12 h-12 md:w-16 md:h-16 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center group-hover:bg-[#004e9a] transition-all duration-500 shadow-inner">
-                <Headphones className="w-6 h-6 md:w-8 md:h-8 text-[#004e9a] dark:text-blue-400 group-hover:text-white transition-colors" />
+              <div className="p-2 bg-slate-800/5 dark:bg-white/5 rounded-lg group-hover:bg-[#004e9a]/10 transition-colors">
+                <Headphones className="w-5 h-5 md:w-6 md:h-6 text-[#004e9a] dark:text-blue-400" />
               </div>
-              <div className="text-center relative z-10">
-                <span className="text-[10px] md:text-[11px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest group-hover:text-[#004e9a] transition-colors leading-tight">Suporte</span>
-                <div className="h-0.5 w-0 bg-[#004e9a] mx-auto mt-1.5 group-hover:w-full transition-all duration-500 rounded-full" />
+              <div>
+                <span className="block text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em] mb-0.5">Assitência</span>
+                <span className="block text-sm md:text-base font-bold text-slate-800 dark:text-white tracking-tight">Suporte</span>
+              </div>
+              <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#004e9a] shadow-[0_0_8px_#004e9a]" />
               </div>
             </div>
 
