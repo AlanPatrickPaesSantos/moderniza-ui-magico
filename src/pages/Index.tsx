@@ -57,77 +57,77 @@ const Index = () => {
       <Header />
 
 
-      <main className="w-full max-w-screen-xl mx-auto flex-1 px-4 md:px-6 pt-6 md:pt-8 pb-12">
+      <main className="w-full max-w-screen-xl mx-auto flex-1 px-3 md:px-6 pt-4 md:pt-8 pb-10">
 
-        <div className="relative z-10 w-full mb-10">
-          <div className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4 px-1 md:px-0">
+        <div className="relative z-10 w-full mb-8 md:mb-10">
+          <div className="mb-5 md:mb-6 flex flex-col md:flex-row md:items-end justify-between gap-3 px-1 md:px-0">
             <div>
-              <h2 className="text-3xl md:text-4xl font-black text-slate-800 dark:text-white tracking-tight drop-shadow-sm">Centro de Comando</h2>
+              <h2 className="text-2xl md:text-4xl font-black text-slate-800 dark:text-white tracking-tight drop-shadow-sm">Centro de Comando</h2>
             </div>
           </div>
 
           {/* REFINED ACTION CARDS (Top Row - 5 Compact Buttons) */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-5">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-5">
             
             {/* Cadastro */}
             <div 
               onClick={() => navigate("/cadastro")} 
-              className="group relative bg-white dark:bg-slate-900 rounded-3xl p-5 flex flex-col items-center justify-center gap-3 cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 dark:border-slate-800"
+              className="group relative bg-white dark:bg-slate-900 rounded-2xl md:rounded-3xl p-4 md:p-5 flex flex-col items-center justify-center gap-2 md:gap-3 cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 dark:border-slate-800"
             >
-              <div className="w-14 h-14 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center group-hover:bg-[#004e9a] transition-all duration-300 shadow-inner">
-                <Database className="w-7 h-7 text-[#004e9a] dark:text-blue-400 group-hover:text-white transition-colors" />
+              <div className="w-12 h-12 md:w-14 md:h-14 bg-slate-50 dark:bg-slate-800 rounded-xl md:rounded-2xl flex items-center justify-center group-hover:bg-[#004e9a] transition-all duration-300 shadow-inner">
+                <Database className="w-6 h-6 md:w-7 md:h-7 text-[#004e9a] dark:text-blue-400 group-hover:text-white transition-colors" />
               </div>
-              <span className="text-[11px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-wider">Cadastro</span>
+              <span className="text-[10px] md:text-[11px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-wider">Cadastro</span>
             </div>
 
             {/* Serv_Int_Ext */}
             <div 
               onClick={() => navigate("/servico-interno-externo")} 
-              className="group relative bg-white dark:bg-slate-900 rounded-3xl p-5 flex flex-col items-center justify-center gap-3 cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 dark:border-slate-800"
+              className="group relative bg-white dark:bg-slate-900 rounded-2xl md:rounded-3xl p-4 md:p-5 flex flex-col items-center justify-center gap-2 md:gap-3 cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 dark:border-slate-800"
             >
-              <div className="w-14 h-14 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center group-hover:bg-[#004e9a] transition-all duration-300 shadow-inner">
-                <Server className="w-7 h-7 text-[#004e9a] dark:text-blue-400 group-hover:text-white transition-colors" />
+              <div className="w-12 h-12 md:w-14 md:h-14 bg-slate-50 dark:bg-slate-800 rounded-xl md:rounded-2xl flex items-center justify-center group-hover:bg-[#004e9a] transition-all duration-300 shadow-inner">
+                <Server className="w-6 h-6 md:w-7 md:h-7 text-[#004e9a] dark:text-blue-400 group-hover:text-white transition-colors" />
               </div>
-              <span className="text-[11px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-wider">Serv_Int_Ext</span>
+              <span className="text-[10px] md:text-[11px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-wider">Serv_Int_Ext</span>
             </div>
 
             {/* Telecom */}
             <div 
               onClick={() => setEqTelecomOpen(true)} 
-              className="group relative bg-white dark:bg-slate-900 rounded-3xl p-5 flex flex-col items-center justify-center gap-3 cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 dark:border-slate-800"
+              className="group relative bg-white dark:bg-slate-900 rounded-2xl md:rounded-3xl p-4 md:p-5 flex flex-col items-center justify-center gap-2 md:gap-3 cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 dark:border-slate-800"
             >
-              <div className="w-14 h-14 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center group-hover:bg-[#004e9a] transition-all duration-300 shadow-inner">
-                <Phone className="w-7 h-7 text-[#004e9a] dark:text-blue-400 group-hover:text-white transition-colors" />
+              <div className="w-12 h-12 md:w-14 md:h-14 bg-slate-50 dark:bg-slate-800 rounded-xl md:rounded-2xl flex items-center justify-center group-hover:bg-[#004e9a] transition-all duration-300 shadow-inner">
+                <Phone className="w-6 h-6 md:w-7 md:h-7 text-[#004e9a] dark:text-blue-400 group-hover:text-white transition-colors" />
               </div>
-              <span className="text-[11px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-wider">Telecom</span>
+              <span className="text-[10px] md:text-[11px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-wider">Telecom</span>
             </div>
 
             {/* Unidade */}
             <div 
               onClick={() => setEqUnidadeOpen(true)} 
-              className="group relative bg-white dark:bg-slate-900 rounded-3xl p-5 flex flex-col items-center justify-center gap-3 cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 dark:border-slate-800"
+              className="group relative bg-white dark:bg-slate-900 rounded-2xl md:rounded-3xl p-4 md:p-5 flex flex-col items-center justify-center gap-2 md:gap-3 cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 dark:border-slate-800"
             >
-              <div className="w-14 h-14 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center group-hover:bg-[#004e9a] transition-all duration-300 shadow-inner">
-                <Building className="w-7 h-7 text-[#004e9a] dark:text-blue-400 group-hover:text-white transition-colors" />
+              <div className="w-12 h-12 md:w-14 md:h-14 bg-slate-50 dark:bg-slate-800 rounded-xl md:rounded-2xl flex items-center justify-center group-hover:bg-[#004e9a] transition-all duration-300 shadow-inner">
+                <Building className="w-6 h-6 md:w-7 md:h-7 text-[#004e9a] dark:text-blue-400 group-hover:text-white transition-colors" />
               </div>
-              <span className="text-[11px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-wider">Unidade</span>
+              <span className="text-[10px] md:text-[11px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-wider">Unidade</span>
             </div>
 
             {/* Suporte */}
             <div 
               onClick={() => setEqSuporteOpen(true)} 
-              className="group relative bg-white dark:bg-slate-900 rounded-3xl p-5 flex flex-col items-center justify-center gap-3 cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 dark:border-slate-800"
+              className="group relative bg-white dark:bg-slate-900 rounded-2xl md:rounded-3xl p-4 md:p-5 flex flex-col items-center justify-center gap-2 md:gap-3 cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 dark:border-slate-800"
             >
-              <div className="w-14 h-14 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center group-hover:bg-[#004e9a] transition-all duration-300 shadow-inner">
-                <Headphones className="w-7 h-7 text-[#004e9a] dark:text-blue-400 group-hover:text-white transition-colors" />
+              <div className="w-12 h-12 md:w-14 md:h-14 bg-slate-50 dark:bg-slate-800 rounded-xl md:rounded-2xl flex items-center justify-center group-hover:bg-[#004e9a] transition-all duration-300 shadow-inner">
+                <Headphones className="w-6 h-6 md:w-7 md:h-7 text-[#004e9a] dark:text-blue-400 group-hover:text-white transition-colors" />
               </div>
-              <span className="text-[11px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-wider">Suporte</span>
+              <span className="text-[10px] md:text-[11px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-wider">Suporte</span>
             </div>
 
           </div>
 
           {/* COMPACT STATS WIDGETS (Bottom Row) */}
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+          <div className="mt-5 md:mt-6 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-5">
             
             {/* Widget: Manutenção */}
             <div 
@@ -137,19 +137,19 @@ const Index = () => {
                 const yearEnd = `${now.getFullYear()}-12-31`;
                 setExternalReportTrigger({ id: "Rel_Equipamentos", dateRange: { start: yearStart, end: yearEnd } });
               }}
-              className="group relative bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-6 cursor-pointer shadow-sm transition-all duration-300 hover:shadow-md hover:border-red-200"
+              className="group relative bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl md:rounded-2xl p-4 md:p-6 cursor-pointer shadow-sm transition-all duration-300 hover:shadow-md hover:border-red-200"
             >
-              <div className="flex items-center gap-5">
-                <div className="p-3.5 bg-red-50 dark:bg-red-900/20 rounded-xl">
-                  <Wrench className="w-6 h-6 text-red-500" />
+              <div className="flex items-center gap-4 md:gap-5">
+                <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl">
+                  <Wrench className="w-5 h-5 md:w-6 md:h-6 text-red-500" />
                 </div>
                 <div>
                   <div className="flex items-baseline gap-1">
-                    <p className="text-3xl font-black text-slate-800 dark:text-white tracking-tighter">
-                      {isLoading ? <Loader2 className="h-6 w-6 animate-spin text-red-500/50" /> : stats.maintenance}
+                    <p className="text-2xl md:text-3xl font-black text-slate-800 dark:text-white tracking-tighter">
+                      {isLoading ? <Loader2 className="h-5 w-5 animate-spin text-red-500/50" /> : stats.maintenance}
                     </p>
                   </div>
-                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-0.5">Equipamentos em Manutenção</p>
+                  <p className="text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-0.5">Manutenção</p>
                 </div>
               </div>
             </div>
@@ -162,19 +162,19 @@ const Index = () => {
                 const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
                 setExternalReportTrigger({ id: "Rel_Missao_Consolidado", dateRange: { start: firstDay, end: lastDay } });
               }}
-              className="group relative bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-6 cursor-pointer shadow-sm transition-all duration-300 hover:shadow-md hover:border-blue-200"
+              className="group relative bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl md:rounded-2xl p-4 md:p-6 cursor-pointer shadow-sm transition-all duration-300 hover:shadow-md hover:border-blue-200"
             >
-              <div className="flex items-center gap-5">
-                <div className="p-3.5 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
-                  <Activity className="w-6 h-6 text-[#004e9a]" />
+              <div className="flex items-center gap-4 md:gap-5">
+                <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+                  <Activity className="w-5 h-5 md:w-6 md:h-6 text-[#004e9a]" />
                 </div>
                 <div>
                   <div className="flex items-baseline gap-1">
-                    <p className="text-3xl font-black text-slate-800 dark:text-white tracking-tighter">
-                      {isLoading ? <Loader2 className="h-6 w-6 animate-spin text-blue-500/50" /> : stats.missions}
+                    <p className="text-2xl md:text-3xl font-black text-slate-800 dark:text-white tracking-tighter">
+                      {isLoading ? <Loader2 className="h-5 w-5 animate-spin text-blue-500/50" /> : stats.missions}
                     </p>
                   </div>
-                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-0.5">Missões Registradas (Mês)</p>
+                  <p className="text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-0.5">Missões (Mês)</p>
                 </div>
               </div>
             </div>
