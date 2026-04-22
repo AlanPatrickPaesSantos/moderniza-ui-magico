@@ -160,7 +160,7 @@ const Index = () => {
                   <p className="text-3xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tighter">
                     {isLoading ? <Loader2 className="h-6 w-6 animate-spin text-red-500/50" /> : stats.maintenance}
                   </p>
-                  <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-tight">Manutenção Ativa</span>
+                  <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-tight">Em Manutenção</span>
                 </div>
               </div>
               <div className="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -186,7 +186,7 @@ const Index = () => {
                   <p className="text-3xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tighter">
                     {isLoading ? <Loader2 className="h-6 w-6 animate-spin text-blue-500/50" /> : stats.missions}
                   </p>
-                  <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-tight">Missões Executadas</span>
+                  <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-tight">Missões do Mês</span>
                 </div>
               </div>
               <div className="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
