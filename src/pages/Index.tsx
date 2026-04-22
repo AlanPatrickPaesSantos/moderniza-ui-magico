@@ -183,10 +183,21 @@ const Index = () => {
 
           {/* Main Content Grid */}
           <div className="mt-8 grid lg:grid-cols-2 gap-6 items-stretch">
-            <div className="h-full flex flex-col">
-              <ConsultasSection />
+            
+            {/* Box de Busca */}
+            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 h-full flex flex-col">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 bg-[#004e9a]/10 rounded-lg">
+                  <Search className="w-5 h-5 text-[#004e9a]" />
+                </div>
+                <h3 className="text-base font-black text-slate-800 dark:text-white uppercase tracking-tight">Busca Rápida</h3>
+              </div>
+              <div className="flex-1">
+                <ConsultasSection />
+              </div>
             </div>
             
+            {/* Box de Relatórios */}
             <Suspense fallback={
               <div className="flex items-center justify-center p-12 bg-card border border-border/60 rounded-2xl animate-pulse">
                 <Loader2 className="h-8 w-8 animate-spin text-pmpa-navy/20" />
