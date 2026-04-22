@@ -64,7 +64,7 @@ const Index = () => {
             <div>
               <h2 className="text-3xl md:text-4xl font-black text-slate-800 dark:text-white tracking-tight drop-shadow-sm">Centro de Comando</h2>
             </div>
-          <          {/* REFINED ACTION CARDS (Top Row - 5 Compact Buttons) */}
+          {/* REFINED ACTION CARDS (Top Row - 5 Compact Buttons) */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-5">
             
             {/* Cadastro */}
