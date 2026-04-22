@@ -75,7 +75,10 @@ const Index = () => {
               <div className="w-12 h-12 md:w-16 md:h-16 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center group-hover:bg-[#004e9a] transition-all duration-500 shadow-inner">
                 <Database className="w-6 h-6 md:w-8 md:h-8 text-[#004e9a] dark:text-blue-400 group-hover:text-white transition-colors" />
               </div>
-              <span className="text-[10px] md:text-[11px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest group-hover:text-[#004e9a] transition-colors text-center leading-tight">Cadastro</span>
+              <div className="text-center relative z-10">
+                <span className="text-[10px] md:text-[11px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest group-hover:text-[#004e9a] transition-colors leading-tight">Cadastro</span>
+                <div className="h-0.5 w-0 bg-[#004e9a] mx-auto mt-1.5 group-hover:w-full transition-all duration-500 rounded-full" />
+              </div>
             </div>
 
             {/* Serv_Int_Ext */}
@@ -86,7 +89,10 @@ const Index = () => {
               <div className="w-12 h-12 md:w-16 md:h-16 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center group-hover:bg-[#004e9a] transition-all duration-500 shadow-inner">
                 <Server className="w-6 h-6 md:w-8 md:h-8 text-[#004e9a] dark:text-blue-400 group-hover:text-white transition-colors" />
               </div>
-              <span className="text-[10px] md:text-[11px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest group-hover:text-[#004e9a] transition-colors text-center leading-tight">Serv_Int_Ext</span>
+              <div className="text-center relative z-10">
+                <span className="text-[10px] md:text-[11px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest group-hover:text-[#004e9a] transition-colors leading-tight">Serv_Int_Ext</span>
+                <div className="h-0.5 w-0 bg-[#004e9a] mx-auto mt-1.5 group-hover:w-full transition-all duration-500 rounded-full" />
+              </div>
             </div>
 
             {/* Telecom */}
@@ -97,7 +103,10 @@ const Index = () => {
               <div className="w-12 h-12 md:w-16 md:h-16 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center group-hover:bg-[#004e9a] transition-all duration-500 shadow-inner">
                 <Phone className="w-6 h-6 md:w-8 md:h-8 text-[#004e9a] dark:text-blue-400 group-hover:text-white transition-colors" />
               </div>
-              <span className="text-[10px] md:text-[11px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest group-hover:text-[#004e9a] transition-colors text-center leading-tight">Telecom</span>
+              <div className="text-center relative z-10">
+                <span className="text-[10px] md:text-[11px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest group-hover:text-[#004e9a] transition-colors leading-tight">Telecom</span>
+                <div className="h-0.5 w-0 bg-[#004e9a] mx-auto mt-1.5 group-hover:w-full transition-all duration-500 rounded-full" />
+              </div>
             </div>
 
             {/* Unidade */}
@@ -108,7 +117,10 @@ const Index = () => {
               <div className="w-12 h-12 md:w-16 md:h-16 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center group-hover:bg-[#004e9a] transition-all duration-500 shadow-inner">
                 <Building className="w-6 h-6 md:w-8 md:h-8 text-[#004e9a] dark:text-blue-400 group-hover:text-white transition-colors" />
               </div>
-              <span className="text-[10px] md:text-[11px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest group-hover:text-[#004e9a] transition-colors text-center leading-tight">Unidade</span>
+              <div className="text-center relative z-10">
+                <span className="text-[10px] md:text-[11px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest group-hover:text-[#004e9a] transition-colors leading-tight">Unidade</span>
+                <div className="h-0.5 w-0 bg-[#004e9a] mx-auto mt-1.5 group-hover:w-full transition-all duration-500 rounded-full" />
+              </div>
             </div>
 
             {/* Suporte */}
@@ -119,7 +131,10 @@ const Index = () => {
               <div className="w-12 h-12 md:w-16 md:h-16 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center group-hover:bg-[#004e9a] transition-all duration-500 shadow-inner">
                 <Headphones className="w-6 h-6 md:w-8 md:h-8 text-[#004e9a] dark:text-blue-400 group-hover:text-white transition-colors" />
               </div>
-              <span className="text-[10px] md:text-[11px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest group-hover:text-[#004e9a] transition-colors text-center leading-tight">Suporte</span>
+              <div className="text-center relative z-10">
+                <span className="text-[10px] md:text-[11px] font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest group-hover:text-[#004e9a] transition-colors leading-tight">Suporte</span>
+                <div className="h-0.5 w-0 bg-[#004e9a] mx-auto mt-1.5 group-hover:w-full transition-all duration-500 rounded-full" />
+              </div>
             </div>
 
           </div>
