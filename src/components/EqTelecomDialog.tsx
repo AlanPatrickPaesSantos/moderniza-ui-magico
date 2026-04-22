@@ -44,9 +44,17 @@ export const EqTelecomDialog = ({ open, onOpenChange }: EqTelecomDialogProps) =>
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="p-0 overflow-hidden border-none shadow-2xl bg-white dark:bg-slate-950 sm:max-w-[700px] w-[95vw] rounded-3xl max-h-[95vh] flex flex-col [&>button]:text-white [&>button]:opacity-100 [&>button]:hover:bg-white/10 [&>button]:p-2 [&>button]:rounded-full [&>button]:transition-all">
+      <DialogContent className="p-0 overflow-hidden border-none shadow-2xl bg-white dark:bg-slate-950 sm:max-w-[700px] w-[95vw] rounded-3xl max-h-[95vh] flex flex-col [&>button]:hidden">
         {/* CABEÇALHO PREMIUM */}
         <div className="relative bg-[#004e9a] p-5 md:p-8 overflow-hidden shrink-0">
+          {/* Botão Fechar de Alta Precisão */}
+          <button 
+            onClick={() => onOpenChange(false)}
+            className="absolute top-3 right-3 z-50 h-12 w-12 flex items-center justify-center bg-white/10 hover:bg-white/20 active:bg-white/30 rounded-full text-white transition-all active:scale-90"
+            aria-label="Fechar"
+          >
+            <X className="h-6 w-6" strokeWidth={3} />
+          </button>
 
           {/* Efeitos de Fundo */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-blue-400/20 rounded-full blur-3xl -mr-20 -mt-20" />
