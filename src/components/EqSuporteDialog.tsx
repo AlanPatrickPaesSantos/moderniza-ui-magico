@@ -211,7 +211,8 @@ export const EqSuporteDialog = ({ open, onOpenChange }: EqSuporteDialogProps) =>
   const isNewRecord = !equips.some(e => e.ID_EQUIP === id);
 
   return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="p-0 overflow-hidden border-none shadow-2xl bg-white dark:bg-slate-950 sm:max-w-[700px] w-[95vw] rounded-3xl max-h-[95vh] flex flex-col">
           {/* CABEÇALHO PREMIUM */}
           <div className="relative bg-[#004e9a] p-5 md:p-8 overflow-hidden shrink-0">
@@ -264,7 +265,6 @@ export const EqSuporteDialog = ({ open, onOpenChange }: EqSuporteDialogProps) =>
           <div className="flex-1 overflow-y-auto">
             {/* CORPO DO FORMULÁRIO */}
             <div className="p-5 md:p-8 space-y-6 md:space-y-8 bg-slate-50/50 dark:bg-slate-950/50">
-50/50">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
               <div className="md:col-span-4 space-y-3">
                 <Label className="text-[11px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-[0.1em] ml-1">
@@ -365,6 +365,7 @@ export const EqSuporteDialog = ({ open, onOpenChange }: EqSuporteDialogProps) =>
                     {isLoading ? 'Sincronizando...' : 'Banco Conectado'}
                   </span>
                </div>
+            </div>
             </div>
           </div>
         </DialogContent>

@@ -369,6 +369,7 @@ export const EqUnidadeDialog = ({ open, onOpenChange }: EqUnidadeDialogProps) =>
                 </span>
              </div>
           </div>
+           </div>
         </div>
       </DialogContent>
     </Dialog>

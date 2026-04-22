@@ -197,6 +197,7 @@ export const EqTelecomDialog = ({ open, onOpenChange }: EqTelecomDialogProps) =>
                 </span>
              </div>
           </div>
+           </div>
         </div>
       </DialogContent>
     </Dialog>
