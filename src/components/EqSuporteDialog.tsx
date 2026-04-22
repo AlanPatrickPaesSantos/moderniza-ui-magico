@@ -213,16 +213,9 @@ export const EqSuporteDialog = ({ open, onOpenChange }: EqSuporteDialogProps) =>
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="p-0 overflow-hidden border-none shadow-2xl bg-white dark:bg-slate-950 sm:max-w-[700px] w-[95vw] rounded-3xl max-h-[95vh] flex flex-col">
+        <DialogContent className="p-0 overflow-hidden border-none shadow-2xl bg-white dark:bg-slate-950 sm:max-w-[700px] w-[95vw] rounded-3xl max-h-[95vh] flex flex-col [&>button]:text-white [&>button]:opacity-100 [&>button]:hover:bg-white/10 [&>button]:p-2 [&>button]:rounded-full [&>button]:transition-all">
           {/* CABEÇALHO PREMIUM */}
           <div className="relative bg-[#004e9a] p-5 md:p-8 overflow-hidden shrink-0">
-            {/* Botão Fechar Customizado */}
-            <button 
-              onClick={() => onOpenChange(false)}
-              className="absolute top-4 right-4 z-50 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-all active:scale-90"
-            >
-              <X className="h-5 w-5" />
-            </button>
 
             {/* Efeitos de Fundo */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-blue-400/20 rounded-full blur-3xl -mr-20 -mt-20" />
