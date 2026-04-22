@@ -60,11 +60,11 @@ const Index = () => {
       <main className="w-full max-w-screen-xl mx-auto flex-1 px-3 md:px-6 pt-4 md:pt-8 pb-10">
 
         <div className="relative z-10 w-full mb-8 md:mb-10">
-          <div className="mb-5 md:mb-6 flex flex-col md:flex-row md:items-end justify-between gap-3 px-1 md:px-0">
-            <div>
-              <h2 className="text-2xl md:text-4xl font-black text-slate-800 dark:text-white tracking-tight drop-shadow-sm">Centro de Comando</h2>
-            </div>
-                    {/* REFINED ACTION CARDS (Top Row - 5 Compact Buttons) */}
+          <div className="mb-5 md:mb-6 px-1 md:px-0">
+            <h2 className="text-2xl md:text-4xl font-black text-slate-800 dark:text-white tracking-tight drop-shadow-sm">Centro de Comando</h2>
+          </div>
+
+          {/* REFINED ACTION CARDS (Top Row - 5 Compact Buttons) */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
             
             {/* Cadastro */}
