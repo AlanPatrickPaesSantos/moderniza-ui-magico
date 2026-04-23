@@ -316,7 +316,6 @@ export const ServicoInternoExternoForm = ({
           ))}
         </div>
         </div>
-      </fieldset>
         
         <div className="p-6 bg-slate-50/30 dark:bg-slate-800/20 border border-slate-200/60 dark:border-slate-800 rounded-2xl shadow-sm relative overflow-hidden transition-all focus-within:shadow-[0_8px_30px_rgba(0,78,154,0.06)] focus-within:border-[#004e9a]/30">
           <div className="absolute top-0 left-0 w-1 bottom-0 bg-[#004e9a]/60" />
@@ -424,7 +423,7 @@ export const ServicoInternoExternoForm = ({
             </Button>
           </div>
         </div>
-      </div>
+      </fieldset>
     </form>
   );
 };
