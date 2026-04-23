@@ -21,7 +21,8 @@ import {
   User,
   Settings,
   Loader2,
-  Headphones
+  Headphones,
+  Shield
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
