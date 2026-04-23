@@ -105,13 +105,18 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
       const garantiaParam = currentGarantia ? "&garantia=true" : "";
 
       // 1. Busca Contagens Consolidadas (Missões e Equipamentos) em um ÚNICO pacote (v40.2 Turbo)
+      const token = localStorage.getItem("ditel_token");
       const statsUrl = `${API_BASE}/stats/consolidated?startDate=${start}&endDate=${end}${searchQuery}${bateriaParam}${garantiaParam}${unidadeParam}`;
-      const statsResp = await fetch(statsUrl);
+      const statsResp = await fetch(statsUrl, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
       const allStats = await statsResp.json();
 
       // 2. Busca Registros para a Lista
       const listUrl = `${API_BASE}/${endpoint}?startDate=${start}&endDate=${end}${statusParam}${searchQuery}${bateriaParam}${garantiaParam}${unidadeParam}`;
-      const listResp = await fetch(listUrl);
+      const listResp = await fetch(listUrl, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
       const data = await listResp.json();
 
       setResults(Array.isArray(data) ? data : []);
@@ -153,10 +158,14 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
       const isMissions = activeReport === "Rel_Missao_Consolidado";
       const endpoint = isMissions ? "missoes" : "servicos";
       const id = isMissions ? selectedRecord.os : selectedRecord.Id_cod;
+      const token = localStorage.getItem("ditel_token");
 
       const res = await fetch(`${API_BASE}/${endpoint}/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify(data),
       });
 
@@ -180,7 +189,10 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
       const isMissions = activeReport === "Rel_Missao_Consolidado";
       const endpoint = isMissions ? "missoes" : "servicos";
       const id = isMissions ? item.os : item.Id_cod;
-      const res = await fetch(`${API_BASE}/${endpoint}/${id}`);
+      const token = localStorage.getItem("ditel_token");
+      const res = await fetch(`${API_BASE}/${endpoint}/${id}`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
       if (res.ok) {
         const fullData = await res.json();
         // A API de serviços retorna um envelope { record, hasPrev, hasNext },

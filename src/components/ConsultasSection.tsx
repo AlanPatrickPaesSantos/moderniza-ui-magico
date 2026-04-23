@@ -36,9 +36,12 @@ export const ConsultasSection = () => {
 
       setIsLoading(true);
       try {
-        const response = await fetch(`${API_BASE}/servicos?q=${encodeURIComponent(query)}&filterType=${filterType}&unidade=${encodeURIComponent(selectedUnidade)}`);
+        const token = localStorage.getItem("ditel_token");
+        const response = await fetch(`${API_BASE}/servicos?q=${encodeURIComponent(query)}&filterType=${filterType}&unidade=${encodeURIComponent(selectedUnidade)}`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
         const data = await response.json();
-        setResults(data);
+        setResults(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Erro ao buscar dados:", error);
       } finally {
@@ -52,7 +55,10 @@ export const ConsultasSection = () => {
 
   const loadRecord = async (record: any) => {
     try {
-      const res = await fetch(`${API_BASE}/servicos/${record.Id_cod}`);
+      const token = localStorage.getItem("ditel_token");
+      const res = await fetch(`${API_BASE}/servicos/${record.Id_cod}`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
       if (!res.ok) throw new Error("Erro ao carregar");
       
       const data = await res.json();
@@ -74,7 +80,10 @@ export const ConsultasSection = () => {
     if (!selectedRecord || isNavLoading) return;
     setIsNavLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/servicos/${selectedRecord.Id_cod}/${direction}`);
+      const token = localStorage.getItem("ditel_token");
+      const res = await fetch(`${API_BASE}/servicos/${selectedRecord.Id_cod}/${direction}`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
       if (!res.ok) throw new Error('Registro não encontrado');
       
       const data = await res.json();
@@ -194,9 +203,13 @@ export const ConsultasSection = () => {
                 initialData={selectedRecord}
                 onSubmit={async (data) => {
                   try {
+                    const token = localStorage.getItem("ditel_token");
                     const res = await fetch(`${API_BASE}/servicos/${selectedRecord.Id_cod}`, {
                       method: "PUT",
-                      headers: { "Content-Type": "application/json" },
+                      headers: { 
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                      },
                       body: JSON.stringify(data),
                     });
                     const result = await res.json();

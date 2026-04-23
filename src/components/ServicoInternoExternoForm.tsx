@@ -16,7 +16,7 @@ import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { UnidadeCombobox } from "./UnidadeCombobox";
 import { API_BASE } from "../lib/api-config";
-import { Printer, ChevronLeft, ChevronRight, CheckCircle2, Layout, Car, Globe, Package, Zap, Router, Cable, Layers } from "lucide-react";
+import { Printer, ChevronLeft, ChevronRight, CheckCircle2, Layout, Car, Globe, Package, Zap, Router, Cable, Layers, Lock } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 
@@ -51,6 +51,7 @@ interface ServicoInternoExternoFormProps {
   hasPrev?: boolean;
   hasNext?: boolean;
   isEditMode?: boolean;
+  readOnly?: boolean;
 }
 
 export const ServicoInternoExternoForm = ({
@@ -63,6 +64,7 @@ export const ServicoInternoExternoForm = ({
   hasPrev,
   hasNext,
   isEditMode,
+  readOnly,
 }: ServicoInternoExternoFormProps) => {
   const {
     register,
@@ -133,7 +135,10 @@ export const ServicoInternoExternoForm = ({
       
       const fetchNextOs = async () => {
         try {
-          const res = await fetch(`${API_BASE}/missoes/next-os`);
+          const token = localStorage.getItem("ditel_token");
+          const res = await fetch(`${API_BASE}/missoes/next-os`, {
+            headers: { "Authorization": `Bearer ${token}` }
+          });
           const data = await res.json();
           if (data.nextOs) setValue("os", data.nextOs.toString());
         } catch (err) {
@@ -147,12 +152,11 @@ export const ServicoInternoExternoForm = ({
 
   return (
     <form id={id} onSubmit={handleSubmit(onSubmit)} className="space-y-4 px-1 py-1">
-      <div className="space-y-4">
-        
-                <div className="p-6 bg-slate-50/30 dark:bg-slate-800/20 border border-slate-200/60 dark:border-slate-800 rounded-2xl shadow-sm relative overflow-hidden transition-all focus-within:shadow-[0_8px_30px_rgba(0,78,154,0.06)] focus-within:border-[#004e9a]/30">
+      <fieldset disabled={readOnly} className="space-y-4">
+        <div className="p-6 bg-slate-50/30 dark:bg-slate-800/20 border border-slate-200/60 dark:border-slate-800 rounded-2xl shadow-sm relative overflow-hidden transition-all focus-within:shadow-[0_8px_30px_rgba(0,78,154,0.06)] focus-within:border-[#004e9a]/30">
           <div className="absolute top-0 left-0 w-1 bottom-0 bg-[#004e9a]/80" />
           <h3 className="text-[12px] font-black text-[#004e9a] uppercase tracking-[0.2em] border-b border-slate-200/60 dark:border-slate-800 pb-2 mb-5 flex items-center gap-2">
-            Identificação Principal
+            Identificação Principal {readOnly && <Lock className="h-3 w-3 ml-auto text-amber-500" />}
           </h3>
         {/* Row 1: OS, Seção, Unidade */}
         <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-3 pt-1">
@@ -311,9 +315,8 @@ export const ServicoInternoExternoForm = ({
             </div>
           ))}
         </div>
-
-        
         </div>
+      </fieldset>
         
         <div className="p-6 bg-slate-50/30 dark:bg-slate-800/20 border border-slate-200/60 dark:border-slate-800 rounded-2xl shadow-sm relative overflow-hidden transition-all focus-within:shadow-[0_8px_30px_rgba(0,78,154,0.06)] focus-within:border-[#004e9a]/30">
           <div className="absolute top-0 left-0 w-1 bottom-0 bg-[#004e9a]/60" />
@@ -402,12 +405,14 @@ export const ServicoInternoExternoForm = ({
               <span className="text-[10px] md:text-[13px] uppercase">Relatório</span>
             </Button>
             
-            <Button
-              type="submit"
-              className="bg-pmpa-navy hover:bg-pmpa-navy/90 text-white h-10 md:h-12 px-6 md:px-10 font-black shadow-lg shadow-pmpa-navy/20 uppercase tracking-tighter text-xs md:text-base border-b-4 border-pmpa-navy/50 active:border-b-0 active:translate-y-1 transition-all flex-1 md:flex-none mx-1"
-            >
-              {isEditMode || initialData ? "Atualizar Missão" : "Salvar Missão"}
-            </Button>
+            {!readOnly && (
+              <Button
+                type="submit"
+                className="bg-pmpa-navy hover:bg-pmpa-navy/90 text-white h-10 md:h-12 px-6 md:px-10 font-black shadow-lg shadow-pmpa-navy/20 uppercase tracking-tighter text-xs md:text-base border-b-4 border-pmpa-navy/50 active:border-b-0 active:translate-y-1 transition-all flex-1 md:flex-none mx-1"
+              >
+                {isEditMode || initialData ? "Atualizar Missão" : "Salvar Missão"}
+              </Button>
+            )}
             
             <Button 
               type="button" 

@@ -29,7 +29,7 @@ export const EqUnidadeDialog = ({ open, onOpenChange, readOnly }: EqUnidadeDialo
   const fetchUnidades = useCallback(async (query = "") => {
     setIsLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('ditel_token');
       const authHeaders: any = {};
       if (token) {
         authHeaders['Authorization'] = `Bearer ${token}`;
@@ -72,7 +72,7 @@ export const EqUnidadeDialog = ({ open, onOpenChange, readOnly }: EqUnidadeDialo
     setSigla("");
     if (!keepLoadingNextId) {
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('ditel_token');
         const authHeaders: any = {};
         if (token) authHeaders['Authorization'] = `Bearer ${token}`;
         

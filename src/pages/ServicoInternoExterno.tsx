@@ -7,9 +7,12 @@ import { ArrowLeft, Search, Loader2, Printer, ChevronLeft, ChevronRight } from "
 import { MissaoPrint } from "@/components/MissaoPrint";
 import { toast } from "sonner";
 import { API_BASE } from "@/lib/api-config";
+import { useAuth } from "@/contexts/AuthContext";
 
 const ServicoInternoExterno = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const isViewer = user?.papel === 'visualizador';
   const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
@@ -23,7 +26,10 @@ const ServicoInternoExterno = () => {
     if (!query.trim() || isLoading) return;
     setIsLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/missoes/${query.trim()}`);
+      const token = localStorage.getItem("ditel_token");
+      const res = await fetch(`${API_BASE}/missoes/${query.trim()}`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
       if (!res.ok) {
         toast.error(`Missão OS ${query} não encontrada.`);
         setSelectedRecord(null);
@@ -49,7 +55,10 @@ const ServicoInternoExterno = () => {
     setIsNavLoading(true);
     try {
       const currentOs = selectedRecord.os;
-      const res = await fetch(`${API_BASE}/missoes/${currentOs}/${direction}`);
+      const token = localStorage.getItem("ditel_token");
+      const res = await fetch(`${API_BASE}/missoes/${currentOs}/${direction}`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
       if (!res.ok) throw new Error("Fim dos registros");
       
       const data = await res.json();
@@ -71,16 +80,23 @@ const ServicoInternoExterno = () => {
     try {
       setIsLoading(true);
       let res;
+      const token = localStorage.getItem("ditel_token");
       if (selectedRecord) {
         res = await fetch(`${API_BASE}/missoes/${selectedRecord.os}`, {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
           body: JSON.stringify(data),
         });
       } else {
         res = await fetch(`${API_BASE}/missoes`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
           body: JSON.stringify(data),
         });
       }
@@ -196,6 +212,7 @@ const ServicoInternoExterno = () => {
             hasPrev={hasPrev}
             hasNext={hasNext}
             isEditMode={!!selectedRecord}
+            readOnly={isViewer}
           />
         </div>
 

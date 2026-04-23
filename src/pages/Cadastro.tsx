@@ -7,8 +7,10 @@ import { Input } from "@/components/ui/input";
 import { ArrowLeft, Search, Loader2, FileText, ChevronLeft, ChevronRight, Printer } from "lucide-react";
 import { LaudoPrint } from "@/components/LaudoPrint";
 import { toast } from "sonner";
-
+import { useAuth } from "@/contexts/AuthContext";
 const Cadastro = () => {
+  const { user } = useAuth();
+  const isViewer = user?.papel === 'visualizador';
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
@@ -28,9 +30,12 @@ const Cadastro = () => {
       }
       setIsLoading(true);
       try {
-        const response = await fetch(`${API_BASE}/servicos?q=${encodeURIComponent(query)}`);
+        const token = localStorage.getItem("ditel_token");
+        const response = await fetch(`${API_BASE}/servicos?q=${encodeURIComponent(query)}`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
         const data = await response.json();
-        setResults(data);
+        setResults(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Erro ao buscar:", error);
       } finally {
@@ -44,7 +49,10 @@ const Cadastro = () => {
   // Carrega um registro e verifica adjacentes
   const loadRecord = async (item: any) => {
     try {
-      const res = await fetch(`${API_BASE}/servicos/${item.Id_cod}`);
+      const token = localStorage.getItem("ditel_token");
+      const res = await fetch(`${API_BASE}/servicos/${item.Id_cod}`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
       if (!res.ok) throw new Error("Falha ao carregar registro");
       
       const data = await res.json();
@@ -68,7 +76,10 @@ const Cadastro = () => {
     if (!selectedRecord || isNavLoading) return;
     setIsNavLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/servicos/${selectedRecord.Id_cod}/${direction}`);
+      const token = localStorage.getItem("ditel_token");
+      const res = await fetch(`${API_BASE}/servicos/${selectedRecord.Id_cod}/${direction}`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
       if (!res.ok) throw new Error("Registro não encontrado");
       
       const data = await res.json();
@@ -92,9 +103,13 @@ const Cadastro = () => {
     const method = isEditing ? "PUT" : "POST";
 
     try {
+      const token = localStorage.getItem("ditel_token");
       const res = await fetch(url, {
         method,
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify(data),
       });
       const result = await res.json();
@@ -225,6 +240,7 @@ const Cadastro = () => {
               hasPrev={hasPrev}
               hasNext={hasNext}
               isEditMode={!!selectedRecord}
+              readOnly={isViewer}
             />
           </div>
         </div>

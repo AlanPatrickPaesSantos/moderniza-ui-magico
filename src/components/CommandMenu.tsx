@@ -49,8 +49,9 @@ export function CommandMenu() {
   const [isSuporteOpen, setIsSuporteOpen] = useState(false);
   const [isUnidadeOpen, setIsUnidadeOpen] = useState(false);
 
-  const navigate = useNavigate();
-  const { logout } = useAuth();
+   const navigate = useNavigate();
+  const { logout, user } = useAuth();
+  const isViewer = user?.papel === 'visualizador';
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -73,13 +74,15 @@ export function CommandMenu() {
     const timer = setTimeout(async () => {
       setIsLoading(true);
       try {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("ditel_token");
         const res = await fetch(`${API_BASE}/servicos?q=${encodeURIComponent(search)}&limit=5`, {
           headers: { "Authorization": `Bearer ${token}` }
         });
         if (res.ok) {
           const data = await res.json();
           setResults(Array.isArray(data) ? data : []);
+        } else {
+          setResults([]);
         }
       } catch (error) {
         console.error("Command Search Error:", error);
@@ -95,7 +98,7 @@ export function CommandMenu() {
     setOpen(false); // Close command menu
     setIsLoadingDetails(true);
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("ditel_token");
       const res = await fetch(`${API_BASE}/servicos/${id}`, {
         headers: { "Authorization": `Bearer ${token}` }
       });
@@ -115,7 +118,7 @@ export function CommandMenu() {
   const handleUpdateRecord = async (data: any) => {
     if (!selectedRecord) return;
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("ditel_token");
       const res = await fetch(`${API_BASE}/servicos/${selectedRecord.Id_cod}`, {
         method: "PUT",
         headers: { 
@@ -253,6 +256,7 @@ export function CommandMenu() {
                   setTimeout(() => window.print(), 100);
                 }}
                 isEditMode={true}
+                readOnly={isViewer}
               />
             )}
           </div>
@@ -277,8 +281,8 @@ export function CommandMenu() {
       )}
 
       {/* Catálogos de Equipamentos e Unidades (Renderização condicional para poupar recursos) */}
-      {isSuporteOpen && <EqSuporteDialog open={isSuporteOpen} onOpenChange={setIsSuporteOpen} />}
-      {isUnidadeOpen && <EqUnidadeDialog open={isUnidadeOpen} onOpenChange={setIsUnidadeOpen} />}
+      {isSuporteOpen && <EqSuporteDialog open={isSuporteOpen} onOpenChange={setIsSuporteOpen} readOnly={isViewer} />}
+      {isUnidadeOpen && <EqUnidadeDialog open={isUnidadeOpen} onOpenChange={setIsUnidadeOpen} readOnly={isViewer} />}
     </>
   );
 }

@@ -107,7 +107,10 @@ export const CadastroForm = ({ onSubmit, onCancel, onPrint, onNavigate, hasPrev,
 
   useEffect(() => {
     if (!initialData) {
-      fetch(`${API_BASE}/servicos/next-os`)
+      const token = localStorage.getItem("ditel_token");
+      fetch(`${API_BASE}/servicos/next-os`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      })
         .then(r => r.json())
         .then(d => {
           const osVal = String(d.nextOs);

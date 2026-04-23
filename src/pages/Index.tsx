@@ -1,7 +1,18 @@
 import { useEffect, useState, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
-
+import { 
+  Database, 
+  Server, 
+  Phone, 
+  Building, 
+  Headphones, 
+  Wrench, 
+  Activity, 
+  Search, 
+  Loader2, 
+  Shield 
+} from "lucide-react";
 import { ConsultasSection } from "@/components/ConsultasSection";
 // Lazy load components that are not needed immediately
 const RelatoriosSection = lazy(() => import("@/components/RelatoriosSection").then(m => ({ default: m.RelatoriosSection })));
@@ -33,8 +44,11 @@ const Index = () => {
         const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
 
         // Busca Estatísticas Consolidadas (v40.11 Restauração Total)
+        const token = localStorage.getItem("ditel_token");
         const statsUrl = `${API_BASE}/stats/consolidated?startDate=${firstDay}&endDate=${lastDay}`;
-        const resp = await fetch(statsUrl);
+        const resp = await fetch(statsUrl, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
         
         if (resp.ok) {
           const allStats = await resp.json();

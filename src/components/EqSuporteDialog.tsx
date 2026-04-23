@@ -29,7 +29,7 @@ export const EqSuporteDialog = ({ open, onOpenChange, readOnly }: EqSuporteDialo
   const fetchEquips = useCallback(async (query = "") => {
     setIsLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('ditel_token');
       const authHeaders: any = {};
       if (token) authHeaders['Authorization'] = `Bearer ${token}`;
 
@@ -70,7 +70,7 @@ export const EqSuporteDialog = ({ open, onOpenChange, readOnly }: EqSuporteDialo
     setEquipamento("");
     if (!keepLoadingNextId) {
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('ditel_token');
         const authHeaders: any = {};
         if (token) authHeaders['Authorization'] = `Bearer ${token}`;
 
