@@ -65,8 +65,8 @@ export const OnboardingTour = () => {
       if (element) {
         const rect = element.getBoundingClientRect();
         setCoords({
-          top: rect.top + window.scrollY,
-          left: rect.left + window.scrollX,
+          top: rect.top,
+          left: rect.left,
           width: rect.width,
           height: rect.height
         });
