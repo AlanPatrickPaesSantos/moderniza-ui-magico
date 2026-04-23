@@ -9,10 +9,10 @@ const EqSuporteDialog = lazy(() => import("@/components/EqSuporteDialog").then(m
 const EqTelecomDialog = lazy(() => import("@/components/EqTelecomDialog").then(m => ({ default: m.EqTelecomDialog })));
 const EqUnidadeDialog = lazy(() => import("@/components/EqUnidadeDialog").then(m => ({ default: m.EqUnidadeDialog })));
 
-import { Database, Headphones, Phone, Building, Server, Shield, Wrench, Activity, Loader2, Search } from "lucide-react";
 import { API_BASE } from "@/lib/api-config";
 import { toast } from "sonner";
 import { OnboardingTour } from "@/components/OnboardingTour";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -22,6 +22,8 @@ const Index = () => {
   const [stats, setStats] = useState({ maintenance: 0, ready: 0, missions: 0 });
   const [isLoading, setIsLoading] = useState(true);
   const [externalReportTrigger, setExternalReportTrigger] = useState<{ id: string; dateRange?: { start: string; end: string }; q?: string } | null>(null);
+  const { user } = useAuth();
+  const isViewer = user?.papel === 'visualizador';
 
   useEffect(() => {
     const fetchDashboardStats = async () => {
@@ -68,19 +70,21 @@ const Index = () => {
           {/* EXECUTIVE COMMAND TOOLBAR (High-End Design) */}
           <div id="executive-toolbar" className="flex flex-wrap items-stretch gap-3 md:gap-4 mb-8">
             
-            {/* Cadastro */}
-            <div 
-              onClick={() => navigate("/cadastro")} 
-              className="flex-1 min-w-[140px] group relative bg-white dark:bg-slate-900 backdrop-blur-md p-4 md:p-5 cursor-pointer transition-all duration-300 flex flex-col items-start gap-3 overflow-hidden rounded-t-xl shadow-sm hover:shadow-md"
-            >
-              <div className="p-2 bg-slate-800/5 dark:bg-white/5 rounded-lg group-hover:bg-[#004e9a]/10 transition-colors">
-                <Database className="w-5 h-5 md:w-6 md:h-6 text-[#004e9a] dark:text-blue-400" />
+            {/* Cadastro - Escondido para Visualizador */}
+            {!isViewer && (
+              <div 
+                onClick={() => navigate("/cadastro")} 
+                className="flex-1 min-w-[140px] group relative bg-white dark:bg-slate-900 backdrop-blur-md p-4 md:p-5 cursor-pointer transition-all duration-300 flex flex-col items-start gap-3 overflow-hidden rounded-t-xl shadow-sm hover:shadow-md"
+              >
+                <div className="p-2 bg-slate-800/5 dark:bg-white/5 rounded-lg group-hover:bg-[#004e9a]/10 transition-colors">
+                  <Database className="w-5 h-5 md:w-6 md:h-6 text-[#004e9a] dark:text-blue-400" />
+                </div>
+                <span className="block text-sm md:text-base font-black text-slate-900 dark:text-white tracking-tight uppercase">Cadastro</span>
+                <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#004e9a] shadow-[0_0_8px_#004e9a]" />
+                </div>
               </div>
-              <span className="block text-sm md:text-base font-black text-slate-900 dark:text-white tracking-tight uppercase">Cadastro</span>
-              <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#004e9a] shadow-[0_0_8px_#004e9a]" />
-              </div>
-            </div>
+            )}
 
             {/* Serv_Int_Ext */}
             <div 
@@ -266,9 +270,9 @@ const Index = () => {
       </footer>
 
       <Suspense fallback={null}>
-        <EqSuporteDialog open={eqSuporteOpen} onOpenChange={setEqSuporteOpen} />
-        <EqTelecomDialog open={eqTelecomOpen} onOpenChange={setEqTelecomOpen} />
-        <EqUnidadeDialog open={eqUnidadeOpen} onOpenChange={setEqUnidadeOpen} />
+        <EqSuporteDialog open={eqSuporteOpen} onOpenChange={setEqSuporteOpen} readOnly={isViewer} />
+        <EqTelecomDialog open={eqTelecomOpen} onOpenChange={setEqTelecomOpen} readOnly={isViewer} />
+        <EqUnidadeDialog open={eqUnidadeOpen} onOpenChange={setEqUnidadeOpen} readOnly={isViewer} />
       </Suspense>
 
       <OnboardingTour />

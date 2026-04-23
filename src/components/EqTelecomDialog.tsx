@@ -9,9 +9,10 @@ import { toast } from "sonner";
 interface EqTelecomDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  readOnly?: boolean;
 }
 
-export const EqTelecomDialog = ({ open, onOpenChange }: EqTelecomDialogProps) => {
+export const EqTelecomDialog = ({ open, onOpenChange, readOnly }: EqTelecomDialogProps) => {
   const [currentRecord, setCurrentRecord] = useState(1);
   const [totalRecords] = useState(28);
   const [id, setId] = useState("1");
@@ -66,8 +67,9 @@ export const EqTelecomDialog = ({ open, onOpenChange }: EqTelecomDialogProps) =>
                 <Phone className="h-6 w-6 md:h-7 md:h-7 text-white" strokeWidth={2.5} />
               </div>
               <div>
+              <div>
                 <DialogTitle className="text-xl md:text-2xl font-black text-white uppercase tracking-tight leading-tight">
-                  Telecom
+                  Telecom {readOnly && " (Visualização)"}
                 </DialogTitle>
                 <p className="text-[9px] text-blue-100/80 font-black uppercase tracking-[0.2em] mt-0.5">
                   Infraestrutura Ditel
@@ -75,15 +77,17 @@ export const EqTelecomDialog = ({ open, onOpenChange }: EqTelecomDialogProps) =>
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              <Button
-                onClick={handleSave}
-                className="h-10 md:h-11 px-6 flex-1 bg-blue-500 hover:bg-blue-400 text-white font-black uppercase text-[9px] md:text-[10px] tracking-widest rounded-xl shadow-lg transition-all active:scale-95"
-              >
-                <Save className="h-4 w-4 mr-2" strokeWidth={3} />
-                Salvar
-              </Button>
-            </div>
+            {!readOnly && (
+              <div className="flex items-center gap-2">
+                <Button
+                  onClick={handleSave}
+                  className="h-10 md:h-11 px-6 flex-1 bg-blue-500 hover:bg-blue-400 text-white font-black uppercase text-[9px] md:text-[10px] tracking-widest rounded-xl shadow-lg transition-all active:scale-95"
+                >
+                  <Save className="h-4 w-4 mr-2" strokeWidth={3} />
+                  Salvar
+                </Button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -107,10 +111,11 @@ export const EqTelecomDialog = ({ open, onOpenChange }: EqTelecomDialogProps) =>
               <div className="relative group">
                 <Input
                   autoFocus
+                  disabled={readOnly}
                   value={municipalRu}
                   onChange={(e) => setMunicipalRu(e.target.value)}
                   placeholder="IDENTIFICAÇÃO MUNICIPAL"
-                  className="h-14 pl-12 pr-4 bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 focus:border-[#004e9a] dark:focus:border-blue-500 rounded-2xl text-lg font-black text-slate-800 dark:text-white transition-all shadow-sm group-hover:shadow-md uppercase"
+                  className="h-14 pl-12 pr-4 bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 focus:border-[#004e9a] dark:focus:border-blue-500 rounded-2xl text-lg font-black text-slate-800 dark:text-white transition-all shadow-sm group-hover:shadow-md uppercase disabled:opacity-70"
                 />
                 <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300 group-focus-within:text-[#004e9a] transition-colors" />
               </div>
@@ -182,14 +187,16 @@ export const EqTelecomDialog = ({ open, onOpenChange }: EqTelecomDialogProps) =>
         {/* RODAPÉ STATUS */}
         <div className="bg-slate-100/50 dark:bg-slate-900/50 px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleDelete}
-              className="text-red-500 hover:text-red-600 hover:bg-red-50 text-[10px] font-black uppercase tracking-widest rounded-lg h-8"
-            >
-              <Trash2 className="h-3.5 w-3.5 mr-1.5" /> Excluir Registro
-            </Button>
+            {!readOnly && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleDelete}
+                className="text-red-500 hover:text-red-600 hover:bg-red-50 text-[10px] font-black uppercase tracking-widest rounded-lg h-8"
+              >
+                <Trash2 className="h-3.5 w-3.5 mr-1.5" /> Excluir Registro
+              </Button>
+            )}
           </div>
           <div className="flex items-center gap-2">
              <div className="flex items-center gap-1.5 px-3 py-1 bg-white dark:bg-slate-800 rounded-full border border-slate-200/50 dark:border-slate-700 shadow-sm">

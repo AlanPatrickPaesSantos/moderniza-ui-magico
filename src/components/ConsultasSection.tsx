@@ -10,6 +10,7 @@ import { LaudoPrint } from "./LaudoPrint";
 import { UnidadeCombobox } from "./UnidadeCombobox";
 import { toast } from "sonner";
 import { API_BASE } from "../lib/api-config";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const ConsultasSection = () => {
   const [query, setQuery] = useState("");
@@ -23,6 +24,8 @@ export const ConsultasSection = () => {
   const [isNavLoading, setIsNavLoading] = useState(false);
   const [printType, setPrintType] = useState<'laudo' | 'saida' | 'entrada'>('laudo');
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const { user } = useAuth();
+  const isViewer = user?.papel === 'visualizador';
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -216,6 +219,7 @@ export const ConsultasSection = () => {
                 hasPrev={hasPrev}
                 hasNext={hasNext}
                 isEditMode={true}
+                readOnly={isViewer}
               />
             )}
           </div>

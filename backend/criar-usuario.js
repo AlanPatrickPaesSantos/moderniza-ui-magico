@@ -5,13 +5,19 @@ const Usuario = require('./models/Usuario');
 
 const args = process.argv.slice(2);
 
-if (args.length < 2) {
-  console.log('🚨 Uso incorreto. Para rodar, digite: node criar-usuario.js <nome_do_usuario> <senha>');
-  console.log('Exemplo: node criar-usuario.js admin senha123');
+if (args.length < 3) {
+  console.log('🚨 Uso incorreto. Para rodar, digite: node criar-usuario.js <nome_do_usuario> <senha> <papel>');
+  console.log('Papéis disponíveis: admin, operador, visualizador');
+  console.log('Exemplo: node criar-usuario.js joao senha123 operador');
   process.exit(1);
 }
 
-const [username, plainPassword] = args;
+const [username, plainPassword, papel] = args;
+
+if (!['admin', 'operador', 'visualizador'].includes(papel)) {
+  console.log('❌ Erro: O papel deve ser admin, operador ou visualizador.');
+  process.exit(1);
+}
 
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/ditel-v2')
   .then(async () => {
@@ -32,11 +38,11 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/ditel-v2'
     const novoUsuario = new Usuario({
       username,
       password: hashedPassword,
-      papel: 'admin'
+      papel: papel
     });
 
     await novoUsuario.save();
-    console.log(`🎉 Sucesso! Usuário "${username}" foi criado com a senha criptografada militarmente!`);
+    console.log(`🎉 Sucesso! Usuário "${username}" foi criado como "${papel}"!`);
     
     process.exit(0);
   })

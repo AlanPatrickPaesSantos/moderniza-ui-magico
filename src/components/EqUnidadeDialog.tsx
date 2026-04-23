@@ -11,9 +11,10 @@ import { API_BASE } from "../lib/api-config";
 interface EqUnidadeDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  readOnly?: boolean;
 }
 
-export const EqUnidadeDialog = ({ open, onOpenChange }: EqUnidadeDialogProps) => {
+export const EqUnidadeDialog = ({ open, onOpenChange, readOnly }: EqUnidadeDialogProps) => {
   const [unidades, setUnidades] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -239,7 +240,7 @@ export const EqUnidadeDialog = ({ open, onOpenChange }: EqUnidadeDialogProps) =>
               </div>
               <div>
                 <DialogTitle className="text-lg md:text-xl font-black text-white uppercase tracking-tight leading-tight">
-                  Unidade
+                  Unidade {readOnly && " (Visualização)"}
                 </DialogTitle>
                 <p className="text-[8px] text-blue-100/80 font-black uppercase tracking-[0.2em] mt-0.5">
                   Gestão Institucional PMPA
@@ -247,22 +248,24 @@ export const EqUnidadeDialog = ({ open, onOpenChange }: EqUnidadeDialogProps) =>
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              <Button
-                onClick={handleNovo}
-                className="h-9 md:h-10 px-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold uppercase text-[8px] md:text-[9px] tracking-widest rounded-xl backdrop-blur-md transition-all"
-              >
-                <Plus className="h-3 w-3 mr-1.5 md:mr-2" strokeWidth={3} /> Novo
-              </Button>
-              <Button
-                onClick={handleSave}
-                disabled={isSaving}
-                className="h-9 md:h-10 px-5 flex-1 md:flex-none bg-blue-500 hover:bg-blue-400 text-white font-black uppercase text-[8px] md:text-[9px] tracking-widest rounded-xl shadow-lg transition-all"
-              >
-                {isSaving ? <Loader2 className="h-3 w-3 animate-spin mr-2" /> : <Save className="h-3 w-3 mr-2" strokeWidth={3} />}
-                Salvar
-              </Button>
-            </div>
+            {!readOnly && (
+              <div className="flex items-center gap-2">
+                <Button
+                  onClick={handleNovo}
+                  className="h-9 md:h-10 px-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold uppercase text-[8px] md:text-[9px] tracking-widest rounded-xl backdrop-blur-md transition-all"
+                >
+                  <Plus className="h-3 w-3 mr-1.5 md:mr-2" strokeWidth={3} /> Novo
+                </Button>
+                <Button
+                  onClick={handleSave}
+                  disabled={isSaving}
+                  className="h-9 md:h-10 px-5 flex-1 md:flex-none bg-blue-500 hover:bg-blue-400 text-white font-black uppercase text-[8px] md:text-[9px] tracking-widest rounded-xl shadow-lg transition-all"
+                >
+                  {isSaving ? <Loader2 className="h-3 w-3 animate-spin mr-2" /> : <Save className="h-3 w-3 mr-2" strokeWidth={3} />}
+                  Salvar
+                </Button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -286,10 +289,11 @@ export const EqUnidadeDialog = ({ open, onOpenChange }: EqUnidadeDialogProps) =>
               <div className="relative group">
                 <Input
                   autoFocus
+                  disabled={readOnly}
                   value={sigla}
                   onChange={(e) => setSigla(e.target.value.toUpperCase())}
                   placeholder="EX: BPCHOQUE"
-                  className="h-14 pl-12 pr-4 bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 focus:border-[#004e9a] dark:focus:border-blue-500 rounded-2xl text-lg font-black text-slate-800 dark:text-white transition-all shadow-sm group-hover:shadow-md uppercase"
+                  className="h-14 pl-12 pr-4 bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 focus:border-[#004e9a] dark:focus:border-blue-500 rounded-2xl text-lg font-black text-slate-800 dark:text-white transition-all shadow-sm group-hover:shadow-md uppercase disabled:opacity-70"
                 />
                 <Building className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300 group-focus-within:text-[#004e9a] transition-colors" />
               </div>
@@ -353,15 +357,17 @@ export const EqUnidadeDialog = ({ open, onOpenChange }: EqUnidadeDialogProps) =>
         {/* RODAPÉ STATUS */}
         <div className="bg-slate-100/50 dark:bg-slate-900/50 px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleDelete}
-              disabled={isDeleting || isNewRecord}
-              className="text-red-500 hover:text-red-600 hover:bg-red-50 text-[10px] font-black uppercase tracking-widest rounded-lg h-8"
-            >
-              <Trash2 className="h-3.5 w-3.5 mr-1.5" /> Excluir Unidade
-            </Button>
+            {!readOnly && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleDelete}
+                disabled={isDeleting || isNewRecord}
+                className="text-red-500 hover:text-red-600 hover:bg-red-50 text-[10px] font-black uppercase tracking-widest rounded-lg h-8"
+              >
+                <Trash2 className="h-3.5 w-3.5 mr-1.5" /> Excluir Unidade
+              </Button>
+            )}
           </div>
           <div className="flex items-center gap-2">
              <div className="flex items-center gap-1.5 px-3 py-1 bg-white dark:bg-slate-800 rounded-full border border-slate-200/50 dark:border-slate-700 shadow-sm">

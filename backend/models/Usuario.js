@@ -18,7 +18,7 @@ const usuarioSchema = new mongoose.Schema({
   },
   papel: {
     type: String,
-    enum: ['admin', 'operador'],
+    enum: ['admin', 'operador', 'visualizador'],
     default: 'operador'
   },
   dataCriacao: {
