@@ -278,8 +278,6 @@ const Index = () => {
           </div>
           <div className="text-[9px] md:text-[11px] text-muted-foreground leading-relaxed flex flex-col md:flex-row items-center gap-1 md:gap-2">
             <span>Ditel - Diretoria de Informática e Telecomunicações</span>
-            <span className="hidden md:inline opacity-30">|</span>
-            <span className="font-black uppercase tracking-[0.2em] text-[8px] md:text-[9px] opacity-40">Suporte Técnico Ditel</span>
           </div>
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-1 bg-pmpa-navy" />
