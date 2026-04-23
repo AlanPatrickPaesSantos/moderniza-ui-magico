@@ -9,7 +9,8 @@ import {
   AlertCircle,
   Loader2,
   Lock,
-  ArrowLeft
+  ArrowLeft,
+  Pencil
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -47,16 +48,23 @@ interface Usuario {
   _id: string;
   username: string;
   papel: string;
+  nomeCompleto?: string;
 }
 
 const Admin = () => {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isAdding, setIsAdding] = useState(false);
-  const [newUsername, setNewUsername] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [newRole, setNewRole] = useState("operador");
-  const [isCreating, setIsCreating] = useState(false);
+  
+  // States para Criar/Editar
+  const [isOpen, setIsOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    username: "",
+    nomeCompleto: "",
+    password: "",
+    papel: "operador"
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -90,43 +98,59 @@ const Admin = () => {
     fetchUsuarios();
   }, [user, navigate]);
 
-  const handleCreateUser = async (e: React.FormEvent) => {
+  const handleOpenCreate = () => {
+    setEditingId(null);
+    setFormData({ username: "", nomeCompleto: "", password: "", papel: "operador" });
+    setIsOpen(true);
+  };
+
+  const handleOpenEdit = (u: Usuario) => {
+    setEditingId(u._id);
+    setFormData({ 
+      username: u.username, 
+      nomeCompleto: u.nomeCompleto || "", 
+      password: "", // Senha em branco na edição
+      papel: u.papel
+    });
+    setIsOpen(true);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newUsername || !newPassword || !newRole) {
-      toast.warning("Preencha todos os campos.");
+    const isEditing = !!editingId;
+
+    if (!isEditing && (!formData.username || !formData.password || !formData.papel)) {
+      toast.warning("Preencha os campos obrigatórios.");
       return;
     }
 
-    setIsCreating(true);
+    setIsSubmitting(true);
     try {
       const token = localStorage.getItem("ditel_token");
-      const res = await fetch(`${API_BASE}/usuarios`, {
-        method: "POST",
+      const url = isEditing ? `${API_BASE}/usuarios/${editingId}` : `${API_BASE}/usuarios`;
+      const method = isEditing ? "PUT" : "POST";
+      
+      const res = await fetch(url, {
+        method,
         headers: { 
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify({
-          username: newUsername,
-          password: newPassword,
-          papel: newRole
-        })
+        body: JSON.stringify(formData)
       });
 
       if (res.ok) {
-        toast.success("✅ Usuário criado com sucesso!");
-        setIsAdding(false);
-        setNewUsername("");
-        setNewPassword("");
+        toast.success(isEditing ? "✅ Usuário atualizado!" : "✅ Usuário criado!");
+        setIsOpen(false);
         fetchUsuarios();
       } else {
         const error = await res.json();
-        toast.error(error.error || "Erro ao criar usuário.");
+        toast.error(error.error || "Erro ao processar solicitação.");
       }
     } catch (err) {
       toast.error("Erro de conexão.");
     } finally {
-      setIsCreating(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -173,46 +197,60 @@ const Admin = () => {
             </p>
           </div>
 
-          <Dialog open={isAdding} onOpenChange={setIsAdding}>
-            <DialogTrigger asChild>
-              <Button className="bg-pmpa-navy hover:bg-pmpa-navy/90 text-white font-black uppercase tracking-tighter shadow-lg shadow-pmpa-navy/20 gap-2 h-12 px-6">
-                <UserPlus className="h-5 w-5" />
-                Novo Usuário
-              </Button>
-            </DialogTrigger>
+          <Button 
+            onClick={handleOpenCreate}
+            className="bg-pmpa-navy hover:bg-pmpa-navy/90 text-white font-black uppercase tracking-tighter shadow-lg shadow-pmpa-navy/20 gap-2 h-12 px-6"
+          >
+            <UserPlus className="h-5 w-5" />
+            Novo Usuário
+          </Button>
+
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogContent className="sm:max-w-[425px]">
-              <form onSubmit={handleCreateUser}>
+              <form onSubmit={handleSubmit}>
                 <DialogHeader>
-                  <DialogTitle className="text-xl font-black uppercase tracking-tight text-pmpa-navy">Criar Novo Acesso</DialogTitle>
+                  <DialogTitle className="text-xl font-black uppercase tracking-tight text-pmpa-navy">
+                    {editingId ? "Editar Usuário" : "Criar Novo Acesso"}
+                  </DialogTitle>
                   <DialogDescription className="font-medium">
-                    Preencha as credenciais para o novo colaborador do sistema.
+                    {editingId ? "Atualize as informações do colaborador." : "Preencha as credenciais para o novo colaborador do sistema."}
                   </DialogDescription>
                 </DialogHeader>
-                <div className="grid gap-6 py-6">
+                <div className="grid gap-4 py-6">
                   <div className="space-y-2">
-                    <Label htmlFor="username" className="text-xs font-bold uppercase tracking-widest text-slate-500">Nome de Usuário</Label>
+                    <Label className="text-xs font-bold uppercase tracking-widest text-slate-500">Nome Completo</Label>
                     <Input 
-                      id="username" 
-                      placeholder="Ex: joao.silva" 
-                      value={newUsername}
-                      onChange={(e) => setNewUsername(e.target.value)}
+                      placeholder="Ex: João da Silva Santos" 
+                      value={formData.nomeCompleto}
+                      onChange={(e) => setFormData({...formData, nomeCompleto: e.target.value})}
                       className="h-11 rounded-xl"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="pass" className="text-xs font-bold uppercase tracking-widest text-slate-500">Senha</Label>
+                    <Label className="text-xs font-bold uppercase tracking-widest text-slate-500">Login / Usuário</Label>
                     <Input 
-                      id="pass" 
+                      disabled={!!editingId}
+                      placeholder="Ex: joao.silva" 
+                      value={formData.username}
+                      onChange={(e) => setFormData({...formData, username: e.target.value})}
+                      className="h-11 rounded-xl"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs font-bold uppercase tracking-widest text-slate-500">
+                      {editingId ? "Nova Senha (Deixe em branco para manter)" : "Senha"}
+                    </Label>
+                    <Input 
                       type="password" 
                       placeholder="••••••••"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
+                      value={formData.password}
+                      onChange={(e) => setFormData({...formData, password: e.target.value})}
                       className="h-11 rounded-xl"
                     />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-xs font-bold uppercase tracking-widest text-slate-500">Papel / Nível de Acesso</Label>
-                    <Select value={newRole} onValueChange={setNewRole}>
+                    <Select value={formData.papel} onValueChange={(val) => setFormData({...formData, papel: val as any})}>
                       <SelectTrigger className="h-11 rounded-xl">
                         <SelectValue placeholder="Selecione o papel" />
                       </SelectTrigger>
@@ -243,9 +281,9 @@ const Admin = () => {
                   <Button 
                     type="submit" 
                     className="w-full bg-pmpa-navy text-white font-black h-12 uppercase tracking-widest"
-                    disabled={isCreating}
+                    disabled={isSubmitting}
                   >
-                    {isCreating ? <Loader2 className="h-5 w-5 animate-spin" /> : "Confirmar Cadastro"}
+                    {isSubmitting ? <Loader2 className="h-5 w-5 animate-spin" /> : editingId ? "Salvar Alterações" : "Confirmar Cadastro"}
                   </Button>
                 </DialogFooter>
               </form>
@@ -257,7 +295,7 @@ const Admin = () => {
           <Table>
             <TableHeader className="bg-slate-50/50 dark:bg-slate-800/50">
               <TableRow className="hover:bg-transparent border-slate-200/60 dark:border-slate-800">
-                <TableHead className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 py-5 pl-8">Login / Usuário</TableHead>
+                <TableHead className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 py-5 pl-8">Login / Nome</TableHead>
                 <TableHead className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 py-5">Nível de Acesso</TableHead>
                 <TableHead className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 py-5 text-right pr-8">Ações</TableHead>
               </TableRow>
@@ -289,9 +327,14 @@ const Admin = () => {
                         <div className="h-10 w-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
                           <Users className="h-5 w-5 text-slate-400" />
                         </div>
-                        <span className="font-bold text-slate-700 dark:text-slate-200 text-lg tracking-tight">
-                          {u.username}
-                        </span>
+                        <div className="flex flex-col">
+                          <span className="font-bold text-slate-700 dark:text-slate-200 text-lg tracking-tight leading-none mb-1">
+                            {u.username}
+                          </span>
+                          <span className="text-xs text-slate-400 font-medium uppercase tracking-wider">
+                            {u.nomeCompleto || "Nome não informado"}
+                          </span>
+                        </div>
                       </div>
                     </TableCell>
                     <TableCell className="py-5">
@@ -307,16 +350,27 @@ const Admin = () => {
                       </span>
                     </TableCell>
                     <TableCell className="py-5 text-right pr-8">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all rounded-xl"
-                        onClick={() => handleDeleteUser(u._id)}
-                        disabled={u.username === user?.username} // Don't allow self-deletion
-                        title={u.username === user?.username ? "Você não pode se excluir" : "Excluir Usuário"}
-                      >
-                        <Trash2 className="h-5 w-5" />
-                      </Button>
+                      <div className="flex items-center justify-end gap-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-slate-400 hover:text-pmpa-navy hover:bg-slate-100 dark:hover:bg-slate-800 transition-all rounded-xl"
+                          onClick={() => handleOpenEdit(u)}
+                          title="Editar Usuário"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all rounded-xl"
+                          onClick={() => handleDeleteUser(u._id)}
+                          disabled={u.username === user?.username}
+                          title={u.username === user?.username ? "Você não pode se excluir" : "Excluir Usuário"}
+                        >
+                          <Trash2 className="h-5 w-5" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))

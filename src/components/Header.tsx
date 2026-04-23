@@ -34,7 +34,7 @@ export const Header = () => {
         <div className="flex items-center gap-2 md:gap-4">
           <div className="hidden lg:flex flex-col items-end mr-2">
             <span className="text-[11px] font-black text-white uppercase tracking-wider leading-none">
-              {user?.nome || 'Usuário'}
+              {user?.nomeCompleto || user?.username || 'Usuário'}
             </span>
             <span className="text-[9px] font-bold text-blue-200 uppercase tracking-widest mt-1">
               {user?.papel || 'Membro'}

@@ -75,9 +75,9 @@ app.post('/api/auth/login', async (req, res) => {
       console.warn('⚠️ AVISO DE SEGURANÇA: JWT_SECRET não definida. Usando chave padrão (NÃO RECOMENDADO EM PRODUÇÃO)!');
     }
     const finalSecret = SECRET || 'DitelPMPA-Seguranca-Fixa-2026';
-    const token = jwt.sign({ id: user._id, username: user.username, papel: user.papel }, finalSecret, { expiresIn: '24h' });
-
-    res.json({ success: true, token, username: user.username, papel: user.papel });
+    const token = jwt.sign({ id: user._id, username: user.username, papel: user.papel, nomeCompleto: user.nomeCompleto }, finalSecret, { expiresIn: '24h' });
+    
+    res.json({ success: true, token, username: user.username, papel: user.papel, nomeCompleto: user.nomeCompleto });
   } catch (err) {
     console.error('Erro no login:', err);
     res.status(500).json({ success: false, error: 'Erro de Autenticação no Servidor.' });
@@ -111,7 +111,7 @@ app.get('/api/usuarios', verificarToken, verificarAdmin, async (req, res) => {
 
 app.post('/api/usuarios', verificarToken, verificarAdmin, async (req, res) => {
   try {
-    const { username, password, papel } = req.body;
+    const { username, password, papel, nomeCompleto } = req.body;
     if (!username || !password || !papel) {
       return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
     }
@@ -127,7 +127,8 @@ app.post('/api/usuarios', verificarToken, verificarAdmin, async (req, res) => {
     const novo = new Usuario({
       username: username.toLowerCase(),
       password: hashedPassword,
-      papel: papel
+      papel: papel,
+      nomeCompleto: nomeCompleto
     });
 
     await novo.save();
@@ -139,10 +140,11 @@ app.post('/api/usuarios', verificarToken, verificarAdmin, async (req, res) => {
 
 app.put('/api/usuarios/:id', verificarToken, verificarAdmin, async (req, res) => {
   try {
-    const { password, papel } = req.body;
+    const { password, papel, nomeCompleto } = req.body;
     let updateData = {};
     
     if (papel) updateData.papel = papel;
+    if (nomeCompleto !== undefined) updateData.nomeCompleto = nomeCompleto;
     if (password) {
       const salt = await bcrypt.genSalt(10);
       updateData.password = await bcrypt.hash(password, salt);
