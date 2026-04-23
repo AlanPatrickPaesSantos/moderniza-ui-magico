@@ -158,6 +158,24 @@ const Index = () => {
 
           </div>
 
+          {/* Admin (Somente para Administradores) */}
+          {user?.papel === 'admin' && (
+            <div className="flex gap-4 md:gap-6 mb-8 mt-[-1rem]">
+              <div 
+                onClick={() => navigate("/admin")} 
+                className="flex-1 max-w-[200px] group relative bg-white dark:bg-slate-900 backdrop-blur-md p-4 md:p-5 cursor-pointer transition-all duration-300 flex flex-col items-start gap-3 overflow-hidden rounded-xl shadow-sm hover:shadow-md border border-red-100 dark:border-red-900/20"
+              >
+                <div className="p-2 bg-red-800/5 dark:bg-red-400/5 rounded-lg group-hover:bg-red-500/10 transition-colors">
+                  <Shield className="w-5 h-5 md:w-6 md:h-6 text-red-600 dark:text-red-400" />
+                </div>
+                <span className="block text-sm md:text-base font-black text-slate-900 dark:text-white tracking-tight uppercase">Usuários</span>
+                <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="w-1.5 h-1.5 rounded-full bg-red-600 shadow-[0_0_8px_#dc2626]" />
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* EXECUTIVE STATS WIDGETS */}
           <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             

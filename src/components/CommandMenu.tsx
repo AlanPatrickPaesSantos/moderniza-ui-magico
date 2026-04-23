@@ -198,6 +198,13 @@ export function CommandMenu() {
               <span>Gestão de Missões</span>
               <span className="ml-auto text-[10px] text-muted-foreground">⌘M</span>
             </CommandItem>
+            {user?.papel === 'admin' && (
+              <CommandItem onSelect={() => runCommand(() => navigate("/admin"))}>
+                <Shield className="mr-2 h-4 w-4 text-red-500" />
+                <span>Administração de Usuários</span>
+                <span className="ml-auto text-[10px] text-muted-foreground">⌘A</span>
+              </CommandItem>
+            )}
             <CommandItem onSelect={() => runCommand(() => setIsSuporteOpen(true))}>
               <Headphones className="mr-2 h-4 w-4" />
               <span>Gerenciar Itens de Suporte</span>

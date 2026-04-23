@@ -90,6 +90,89 @@ app.use('/api/missoes', verificarToken);
 app.use('/api/unidades', verificarToken);
 app.use('/api/eqsuporte', verificarToken);
 
+// Middleware adicional para verificar se é ADMIN
+const verificarAdmin = (req, res, next) => {
+  if (req.user && req.user.papel === 'admin') {
+    next();
+  } else {
+    res.status(403).json({ error: 'Acesso negado: Requer privilégios de administrador.' });
+  }
+};
+
+// ====== ROTAS DE USUÁRIOS (ADMIN ONLY) ======
+app.get('/api/usuarios', verificarToken, verificarAdmin, async (req, res) => {
+  try {
+    const usuarios = await Usuario.find({}, '-password').sort({ username: 1 }).lean();
+    res.json(usuarios);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/usuarios', verificarToken, verificarAdmin, async (req, res) => {
+  try {
+    const { username, password, papel } = req.body;
+    if (!username || !password || !papel) {
+      return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
+    }
+
+    const existe = await Usuario.findOne({ username: username.toLowerCase() });
+    if (existe) {
+      return res.status(400).json({ error: 'Este usuário já existe.' });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const novo = new Usuario({
+      username: username.toLowerCase(),
+      password: hashedPassword,
+      papel: papel
+    });
+
+    await novo.save();
+    res.status(201).json({ success: true, user: { _id: novo._id, username: novo.username, papel: novo.papel } });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.put('/api/usuarios/:id', verificarToken, verificarAdmin, async (req, res) => {
+  try {
+    const { password, papel } = req.body;
+    let updateData = {};
+    
+    if (papel) updateData.papel = papel;
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      updateData.password = await bcrypt.hash(password, salt);
+    }
+
+    const updated = await Usuario.findByIdAndUpdate(req.params.id, { $set: updateData }, { new: true }).select('-password');
+    if (!updated) return res.status(404).json({ error: 'Usuário não encontrado' });
+    
+    res.json({ success: true, user: updated });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/usuarios/:id', verificarToken, verificarAdmin, async (req, res) => {
+  try {
+    // Evitar que o admin se delete (opcional, mas recomendado)
+    if (req.params.id === req.user.id) {
+      return res.status(400).json({ error: 'Você não pode excluir seu próprio usuário.' });
+    }
+
+    const deleted = await Usuario.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ error: 'Usuário não encontrado' });
+    
+    res.json({ success: true, message: 'Usuário removido com sucesso.' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Helper para construir queries de serviços de suporte de forma unificada
 const buildServiceQuery = (params) => {
   const { q, startDate, endDate, status, bateria, garantia, bateria_vazia, filterType, unidade } = params;
