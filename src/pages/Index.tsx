@@ -1,17 +1,17 @@
 import { useEffect, useState, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
-import { 
-  Database, 
-  Server, 
-  Phone, 
-  Building, 
-  Headphones, 
-  Wrench, 
-  Activity, 
-  Search, 
-  Loader2, 
-  Shield 
+import {
+  Database,
+  Server,
+  Phone,
+  Building,
+  Headphones,
+  Wrench,
+  Activity,
+  Search,
+  Loader2,
+  Shield
 } from "lucide-react";
 import { ConsultasSection } from "@/components/ConsultasSection";
 // Lazy load components that are not needed immediately
@@ -49,7 +49,7 @@ const Index = () => {
         const resp = await fetch(statsUrl, {
           headers: { "Authorization": `Bearer ${token}` }
         });
-        
+
         if (resp.ok) {
           const allStats = await resp.json();
           setStats({
@@ -83,11 +83,11 @@ const Index = () => {
 
           {/* EXECUTIVE COMMAND TOOLBAR (High-End Design) */}
           <div id="executive-toolbar" className="flex flex-wrap items-stretch gap-3 md:gap-4 mb-8">
-            
+
             {/* Cadastro - Escondido para Visualizador */}
             {!isViewer && (
-              <div 
-                onClick={() => navigate("/cadastro")} 
+              <div
+                onClick={() => navigate("/cadastro")}
                 className="flex-1 min-w-[140px] group relative bg-white dark:bg-slate-900 backdrop-blur-md p-4 md:p-5 cursor-pointer transition-all duration-300 flex flex-col items-start gap-3 overflow-hidden rounded-t-xl shadow-sm hover:shadow-md"
               >
                 <div className="p-2 bg-slate-800/5 dark:bg-white/5 rounded-lg group-hover:bg-[#004e9a]/10 transition-colors">
@@ -101,8 +101,8 @@ const Index = () => {
             )}
 
             {/* Serv_Int_Ext */}
-            <div 
-              onClick={() => navigate("/servico-interno-externo")} 
+            <div
+              onClick={() => navigate("/servico-interno-externo")}
               className="flex-1 min-w-[140px] group relative bg-white dark:bg-slate-900 backdrop-blur-md p-4 md:p-5 cursor-pointer transition-all duration-300 flex flex-col items-start gap-3 overflow-hidden rounded-t-xl shadow-sm hover:shadow-md"
             >
               <div className="p-2 bg-slate-800/5 dark:bg-white/5 rounded-lg group-hover:bg-[#004e9a]/10 transition-colors">
@@ -115,8 +115,8 @@ const Index = () => {
             </div>
 
             {/* Telecom */}
-            <div 
-              onClick={() => setEqTelecomOpen(true)} 
+            <div
+              onClick={() => setEqTelecomOpen(true)}
               className="flex-1 min-w-[140px] group relative bg-white dark:bg-slate-900 backdrop-blur-md p-4 md:p-5 cursor-pointer transition-all duration-300 flex flex-col items-start gap-3 overflow-hidden rounded-t-xl shadow-sm hover:shadow-md"
             >
               <div className="p-2 bg-slate-800/5 dark:bg-white/5 rounded-lg group-hover:bg-[#004e9a]/10 transition-colors">
@@ -129,8 +129,8 @@ const Index = () => {
             </div>
 
             {/* Unidade */}
-            <div 
-              onClick={() => setEqUnidadeOpen(true)} 
+            <div
+              onClick={() => setEqUnidadeOpen(true)}
               className="flex-1 min-w-[140px] group relative bg-white dark:bg-slate-900 backdrop-blur-md p-4 md:p-5 cursor-pointer transition-all duration-300 flex flex-col items-start gap-3 overflow-hidden rounded-t-xl shadow-sm hover:shadow-md"
             >
               <div className="p-2 bg-slate-800/5 dark:bg-white/5 rounded-lg group-hover:bg-[#004e9a]/10 transition-colors">
@@ -143,8 +143,8 @@ const Index = () => {
             </div>
 
             {/* Suporte */}
-            <div 
-              onClick={() => setEqSuporteOpen(true)} 
+            <div
+              onClick={() => setEqSuporteOpen(true)}
               className="flex-1 min-w-[140px] group relative bg-white dark:bg-slate-900 backdrop-blur-md p-4 md:p-5 cursor-pointer transition-all duration-300 flex flex-col items-start gap-3 overflow-hidden rounded-t-xl shadow-sm hover:shadow-md"
             >
               <div className="p-2 bg-slate-800/5 dark:bg-white/5 rounded-lg group-hover:bg-[#004e9a]/10 transition-colors">
@@ -162,9 +162,9 @@ const Index = () => {
 
           {/* EXECUTIVE STATS WIDGETS */}
           <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-            
+
             {/* Widget: Manutenção */}
-            <div 
+            <div
               id="widget-manutencao"
               onClick={() => {
                 const now = new Date();
@@ -174,10 +174,10 @@ const Index = () => {
               }}
               className="group relative bg-white dark:bg-slate-900 backdrop-blur-md p-5 md:p-6 cursor-pointer transition-all duration-300 flex items-center gap-5 overflow-hidden rounded-xl shadow-sm hover:shadow-md"
             >
-              <img 
-                src="/images/maintenance_bg.png" 
-                alt="" 
-                className="absolute inset-0 w-full h-full object-cover opacity-[0.08] group-hover:opacity-[0.15] transition-opacity duration-700" 
+              <img
+                src="/images/maintenance_bg.png"
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover opacity-[0.08] group-hover:opacity-[0.15] transition-opacity duration-700"
               />
               <div className="relative z-10 p-3.5 bg-red-50 dark:bg-red-900/20 rounded-lg group-hover:bg-red-500 transition-colors duration-500">
                 <Wrench className="w-6 h-6 text-red-500 group-hover:text-white transition-colors" />
@@ -196,7 +196,7 @@ const Index = () => {
             </div>
 
             {/* Widget: Missões */}
-            <div 
+            <div
               id="widget-missoes"
               onClick={() => {
                 const now = new Date();
@@ -206,10 +206,10 @@ const Index = () => {
               }}
               className="group relative bg-white dark:bg-slate-900 backdrop-blur-md p-5 md:p-6 cursor-pointer transition-all duration-300 flex items-center gap-5 overflow-hidden rounded-xl shadow-sm hover:shadow-md"
             >
-              <img 
-                src="/images/missions_bg.png" 
-                alt="" 
-                className="absolute inset-0 w-full h-full object-cover opacity-[0.08] group-hover:opacity-[0.15] transition-opacity duration-700" 
+              <img
+                src="/images/missions_bg.png"
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover opacity-[0.08] group-hover:opacity-[0.15] transition-opacity duration-700"
               />
               <div className="relative z-10 p-3.5 bg-blue-50 dark:bg-blue-900/20 rounded-lg group-hover:bg-[#004e9a] transition-colors duration-500">
                 <Activity className="w-6 h-6 text-[#004e9a] group-hover:text-white transition-colors" />
@@ -227,10 +227,10 @@ const Index = () => {
               </div>
             </div>
           </div>
- 
+
           {/* Main Content Grid */}
           <div className="mt-8 grid lg:grid-cols-2 gap-4 md:gap-6 items-stretch w-full max-w-full">
-            
+
             {/* Box de Busca */}
             <div id="box-busca-rapida" className="bg-white dark:bg-slate-900 backdrop-blur-md rounded-b-2xl rounded-t-none p-4 md:p-6 shadow-sm transition-all duration-300 h-full flex flex-col w-full max-w-full overflow-hidden">
               <div className="flex items-center gap-3 mb-5 md:mb-6">
@@ -243,7 +243,7 @@ const Index = () => {
                 <ConsultasSection />
               </div>
             </div>
-            
+
             {/* Box de Relatórios */}
             <Suspense fallback={
               <div className="flex items-center justify-center p-8 md:p-12 bg-card border border-border/60 rounded-2xl animate-pulse">
@@ -279,7 +279,7 @@ const Index = () => {
           <div className="text-[9px] md:text-[11px] text-muted-foreground leading-relaxed flex flex-col md:flex-row items-center gap-1 md:gap-2">
             <span>Ditel - Diretoria de Informática e Telecomunicações</span>
             <span className="hidden md:inline opacity-30">|</span>
-            <span className="font-black uppercase tracking-[0.2em] text-[8px] md:text-[9px] opacity-40">System Design by Alan Santos</span>
+            <span className="font-black uppercase tracking-[0.2em] text-[8px] md:text-[9px] opacity-40">Suporte Técnico Ditel</span>
           </div>
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-1 bg-pmpa-navy" />
