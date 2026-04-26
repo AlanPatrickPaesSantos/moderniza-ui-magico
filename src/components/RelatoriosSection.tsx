@@ -615,7 +615,7 @@ export const RelatoriosSection = ({ externalTrigger, onTriggerClean }: Relatorio
           setActiveReport(null);
           setResults([]);
           setStats({ total: 0, interno: 0, externo: 0, remoto: 0, pendente: 0, pronto: 0, laudo: 0, bateria: 0, garantia: 0 });
-          setFilters({ startDate: "", endDate: "", q: "", status: "", bateria: false, garantia: false });
+          setFilters({ startDate: "", endDate: "", q: "", status: "", unidade: "", bateria: false, garantia: false });
         }
       }}>
         <DialogContent className="max-w-5xl w-[95vw] sm:w-full max-h-[92vh] overflow-hidden flex flex-col p-4 md:p-6 border-border/50 shadow-2xl bg-white dark:bg-slate-900">
