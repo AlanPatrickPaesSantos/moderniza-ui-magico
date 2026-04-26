@@ -223,7 +223,7 @@ export const MissaoPrint = ({ data }: { data: MissaoData }) => {
             Ditel - Diretoria de Telemática | {new Date().getFullYear()}
           </p>
           <p className="text-[8px] text-slate-600 font-medium mt-1">
-            Este documento é de uso institucional. Sistema de Gestão Ditel (v40)
+          Este documento é de uso institucional. Sistema de Gestão Ditel
           </p>
         </div>
       </div>
