@@ -183,6 +183,11 @@ const Admin = () => {
       <Header />
       
       <main className="flex-1 container max-w-6xl mx-auto p-4 md:p-8 animate-in fade-in duration-500">
+        <div className="mb-6 flex justify-between items-center">
+          <Button variant="ghost" onClick={() => navigate("/")} className="gap-2 text-slate-500 hover:text-pmpa-navy">
+            <ArrowLeft className="h-4 w-4" /> Voltar ao Início
+          </Button>
+        </div>
         <Tabs defaultValue="demandas" className="space-y-6">
           <TabsList className="bg-white dark:bg-slate-900 shadow-sm border border-slate-200 dark:border-slate-800 p-1 rounded-xl w-full justify-start overflow-x-auto h-auto">
             <TabsTrigger value="demandas" className="py-3 px-6 rounded-lg font-bold data-[state=active]:bg-[#004e9a] data-[state=active]:text-white">
