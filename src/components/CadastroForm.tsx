@@ -104,21 +104,12 @@ export const CadastroForm = ({ onSubmit, onCancel, onPrint, onNavigate, hasPrev,
     toast.error("⚠️ Existem campos inválidos ou obrigatórios não preenchidos.");
   };
 
-  const [nextOs, setNextOs] = useState<string>("");
+  const [nextOs, setNextOs] = useState<string>("GERADO AO SALVAR");
 
   useEffect(() => {
     if (!initialData) {
-      const token = localStorage.getItem("ditel_token");
-      fetch(`${API_BASE}/servicos/next-os`, {
-        headers: { "Authorization": `Bearer ${token}` }
-      })
-        .then(r => r.json())
-        .then(d => {
-          const osVal = String(d.nextOs);
-          setNextOs(osVal);
-          form.setValue("os", osVal);
-        })
-        .catch(() => {});
+      setNextOs("GERADO AO SALVAR");
+      form.setValue("os", "GERADO AO SALVAR");
     }
   }, [initialData, form]);
 

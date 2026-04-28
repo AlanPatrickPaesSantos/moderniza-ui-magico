@@ -73,7 +73,31 @@ const Cadastro = () => {
 
   // Navega para OS anterior ou próxima
   const navigateTo = async (direction: "prev" | "next") => {
-    if (!selectedRecord || isNavLoading) return;
+    if (isNavLoading) return;
+
+    if (!selectedRecord && direction === "prev") {
+      setIsNavLoading(true);
+      try {
+        const token = localStorage.getItem("ditel_token");
+        const res = await fetch(`${API_BASE}/servicos?limit=1`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data && data.length > 0) {
+          await loadRecord(data[0]);
+        } else {
+          toast.info("Não há registros no sistema.");
+        }
+      } catch (err) {
+        console.error("Erro ao buscar mais recente:", err);
+      } finally {
+        setIsNavLoading(false);
+      }
+      return;
+    }
+
+    if (!selectedRecord) return;
+
     setIsNavLoading(true);
     try {
       const token = localStorage.getItem("ditel_token");
@@ -115,11 +139,10 @@ const Cadastro = () => {
       const result = await res.json();
       if (result.success) {
         toast.success(isEditing ? `✅ OS nº ${selectedRecord.Id_cod} atualizada!` : `✅ Equipamento cadastrado! OS nº ${result.os}`);
+        setSelectedRecord(result.record);
         if (!isEditing) {
-          setNovoFormKey(prev => prev + 1);
-          setSelectedRecord(null);
-        } else {
-          setSelectedRecord(result.record);
+          setHasPrev(true);
+          setHasNext(false);
         }
       } else {
         toast.error("Erro ao salvar: " + (result.error || "Tente novamente."));
@@ -148,7 +171,7 @@ const Cadastro = () => {
               variant="ghost"
               size="sm"
               onClick={() => navigateTo('prev')}
-              disabled={!hasPrev || isNavLoading}
+              disabled={(!hasPrev && selectedRecord !== null) || isNavLoading}
               className="h-8 gap-1 text-pmpa-navy hover:bg-pmpa-navy/10 px-2"
               title="Registro Anterior"
             >
@@ -237,7 +260,7 @@ const Cadastro = () => {
               onCancel={() => navigate("/")}
               onPrint={(type) => { setPrintType(type); setTimeout(() => window.print(), 100); }}
               onNavigate={navigateTo}
-              hasPrev={hasPrev}
+              hasPrev={!selectedRecord ? true : hasPrev}
               hasNext={hasNext}
               isEditMode={!!selectedRecord}
               readOnly={isViewer}

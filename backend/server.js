@@ -557,36 +557,61 @@ app.delete('/api/eqsuporte/:id', async (req, res) => {
 app.post('/api/servicos', async (req, res) => {
   try {
     const data = req.body;
-    const last = await Servico.findOne({}, 'Id_cod').sort({ Id_cod: -1 });
-    const nextId = last ? last.Id_cod + 1 : 1;
+    let saved = false;
+    let retries = 0;
+    let novoRecord = null;
+    let finalId = null;
 
-    const novo = new Servico({
-      Id_cod: nextId,
-      Data_Ent: data.dataEnt ? new Date(data.dataEnt) : new Date(),
-      Tecnico: data.tecnico || '',
-      T_EquipSuporte: data.tEquipSuporte || '',
-      Solicitante: data.solicitante || '',
-      Unidade: data.unidade || '',
-      'Nº_PAE': data.nPae || '',
-      RP: data.rp || '',
-      'Nº_Serie': data.nSerie || '',
-      Defeito_Recl: data.defeitoRecl || '',
-      Analise_Tecnica: data.analiseTecnica || '',
-      'Serviço': data.servico || '',
-      Garantia: data.garantia || '',
-      Laudo_Tecnico: data.laudoTecnico || '',
-      Data_Envio: data.dataEnvio ? new Date(data.dataEnvio) : null,
-      Data_Retorno: data.dataRetorno ? new Date(data.dataRetorno) : null,
-      Data_Saida: data.dataSaida ? new Date(data.dataSaida) : null,
-      saidaEquip: data.saidaEquip || '',
-      Bateria: data.bateria || '',
-      telefone: data.telefone || '',
-      Seção_Ditel: data.secaoDitel || '',
-      fonteCabo: data.fonteCabo || false,
-    });
+    while (!saved && retries < 5) {
+      try {
+        const last = await Servico.findOne({}, 'Id_cod').sort({ Id_cod: -1 });
+        const nextId = last ? last.Id_cod + 1 : 1;
 
-    await novo.save();
-    res.status(201).json({ success: true, os: nextId, record: novo });
+        const novo = new Servico({
+          Id_cod: nextId,
+          Data_Ent: data.dataEnt ? new Date(data.dataEnt) : new Date(),
+          Tecnico: data.tecnico || '',
+          T_EquipSuporte: data.tEquipSuporte || '',
+          Solicitante: data.solicitante || '',
+          Unidade: data.unidade || '',
+          'Nº_PAE': data.nPae || '',
+          RP: data.rp || '',
+          'Nº_Serie': data.nSerie || '',
+          Defeito_Recl: data.defeitoRecl || '',
+          Analise_Tecnica: data.analiseTecnica || '',
+          'Serviço': data.servico || '',
+          Garantia: data.garantia || '',
+          Laudo_Tecnico: data.laudoTecnico || '',
+          Data_Envio: data.dataEnvio ? new Date(data.dataEnvio) : null,
+          Data_Retorno: data.dataRetorno ? new Date(data.dataRetorno) : null,
+          Data_Saida: data.dataSaida ? new Date(data.dataSaida) : null,
+          saidaEquip: data.saidaEquip || '',
+          Bateria: data.bateria || '',
+          telefone: data.telefone || '',
+          Seção_Ditel: data.secaoDitel || '',
+          fonteCabo: data.fonteCabo || false,
+        });
+
+        await novo.save();
+        saved = true;
+        novoRecord = novo;
+        finalId = nextId;
+      } catch (saveErr) {
+        if (saveErr.code === 11000) {
+          retries++;
+          // Pequeno atraso para dar tempo de atualizar
+          await new Promise(resolve => setTimeout(resolve, Math.random() * 50));
+        } else {
+          throw saveErr;
+        }
+      }
+    }
+
+    if (!saved) {
+      throw new Error('Falha de concorrência: Não foi possível gerar uma OS única. Tente novamente.');
+    }
+
+    res.status(201).json({ success: true, os: finalId, record: novoRecord });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
