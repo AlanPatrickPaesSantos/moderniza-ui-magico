@@ -663,6 +663,18 @@ app.put('/api/servicos/:id', async (req, res) => {
   }
 });
 
+// Excluir registro (OS)
+app.delete('/api/servicos/:id', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const deleted = await Servico.findOneAndDelete({ Id_cod: id });
+    if (!deleted) return res.status(404).json({ error: 'Registro não encontrado' });
+    res.json({ success: true, message: 'Registro excluído com sucesso.' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ====== ROTAS DE MISSÕES (SERVIÇOS INTERNOS/EXTERNOS) ======
 
 // Busca e filtros de Missões (Relatórios) - listagem

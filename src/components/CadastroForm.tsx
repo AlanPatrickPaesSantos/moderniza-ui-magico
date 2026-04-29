@@ -21,6 +21,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { EquipCombobox } from "./EquipCombobox";
 import { UnidadeCombobox } from "./UnidadeCombobox";
@@ -45,7 +56,8 @@ import {
   History, 
   Sparkles,
   Save,
-  Lock
+  Lock,
+  Trash2
 } from "lucide-react";
 
 const cadastroSchema = z.object({
@@ -80,6 +92,7 @@ interface CadastroFormProps {
   onCancel: () => void;
   onPrint?: (type: 'laudo' | 'saida' | 'entrada') => void;
   onNavigate?: (dir: 'prev' | 'next') => void;
+  onDelete?: (os: number) => void;
   hasPrev?: boolean;
   hasNext?: boolean;
   initialData?: any;
@@ -89,7 +102,7 @@ interface CadastroFormProps {
 }
 
 
-export const CadastroForm = ({ onSubmit, onCancel, onPrint, onNavigate, hasPrev, hasNext, initialData, id = "cadastro-form", isEditMode, readOnly }: CadastroFormProps) => {
+export const CadastroForm = ({ onSubmit, onCancel, onPrint, onNavigate, onDelete, hasPrev, hasNext, initialData, id = "cadastro-form", isEditMode, readOnly }: CadastroFormProps) => {
   const form = useForm<CadastroFormValues>({
     resolver: zodResolver(cadastroSchema),
     defaultValues: {
@@ -726,13 +739,44 @@ export const CadastroForm = ({ onSubmit, onCancel, onPrint, onNavigate, hasPrev,
             </div>
             
             {!readOnly && (
-              <Button
-                type="submit"
-                className="bg-pmpa-navy hover:bg-pmpa-navy/90 text-white h-10 md:h-12 px-6 md:px-10 font-black shadow-lg shadow-pmpa-navy/20 uppercase tracking-tighter text-xs md:text-base border-b-4 border-pmpa-navy/50 active:border-b-0 active:translate-y-1 transition-all flex-1 md:flex-none"
-              >
-                {isEditMode || initialData ? <Save className="w-4 h-4 mr-2" /> : null}
-                {isEditMode || initialData ? "Atualizar Registro" : "Finalizar Cadastro"}
-              </Button>
+              <>
+                {isEditMode && initialData && onDelete && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        className="h-10 md:h-12 px-4 md:px-6 font-bold shadow-sm uppercase tracking-tighter text-xs"
+                        title="Excluir OS"
+                      >
+                        <Trash2 className="w-4 h-4 md:mr-2" />
+                        <span className="hidden md:inline">Excluir</span>
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Tem certeza absoluta?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Esta ação não pode ser desfeita. Isso excluirá permanentemente a OS {initialData.Id_cod} do banco de dados.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => onDelete(initialData.Id_cod)} className="bg-red-600 hover:bg-red-700">
+                          Sim, excluir OS
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
+                <Button
+                  type="submit"
+                  className="bg-pmpa-navy hover:bg-pmpa-navy/90 text-white h-10 md:h-12 px-6 md:px-10 font-black shadow-lg shadow-pmpa-navy/20 uppercase tracking-tighter text-xs md:text-base border-b-4 border-pmpa-navy/50 active:border-b-0 active:translate-y-1 transition-all flex-1 md:flex-none"
+                >
+                  {isEditMode || initialData ? <Save className="w-4 h-4 mr-2" /> : null}
+                  {isEditMode || initialData ? "Atualizar Registro" : "Finalizar Cadastro"}
+                </Button>
+              </>
             )}
           </div>
         </div>

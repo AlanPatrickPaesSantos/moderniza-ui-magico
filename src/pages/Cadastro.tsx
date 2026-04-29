@@ -152,6 +152,30 @@ const Cadastro = () => {
     }
   };
 
+  const handleDelete = async (os: number) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`/api/servicos/${os}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const data = await response.json();
+      if (data.success) {
+        toast.success(`OS ${os} excluída com sucesso!`);
+        setSelectedRecord(null);
+        setNovoFormKey(prev => prev + 1);
+        setHasPrev(false);
+        setHasNext(false);
+      } else {
+        toast.error(data.error || "Erro ao excluir registro.");
+      }
+    } catch (err) {
+      toast.error("Erro de conexão ao excluir registro.");
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-200 dark:bg-slate-950">
       <div className="flex-1 flex flex-col container mx-auto px-4 py-4">
@@ -258,6 +282,7 @@ const Cadastro = () => {
               initialData={selectedRecord}
               onSubmit={handleSubmit}
               onCancel={() => navigate("/")}
+              onDelete={handleDelete}
               onPrint={(type) => { setPrintType(type); setTimeout(() => window.print(), 100); }}
               onNavigate={navigateTo}
               hasPrev={!selectedRecord ? true : hasPrev}
