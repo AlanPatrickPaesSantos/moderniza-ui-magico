@@ -82,13 +82,6 @@ const Index = () => {
         <div className="relative z-10 w-full mb-8 md:mb-10">
           <div className="mb-5 md:mb-6 px-1 md:px-0 flex flex-col md:flex-row justify-between md:items-center gap-4">
             <h2 id="command-center-title" className="text-2xl md:text-3xl font-black text-slate-800 dark:text-white tracking-tight drop-shadow-sm inline-block">Centro de Comando</h2>
-            
-            {isAdmin && (
-              <div className="w-full md:w-72">
-                <UnidadeCombobox value={globalUnidade} onChange={setGlobalUnidade} />
-                <p className="text-[10px] text-slate-500 mt-1 uppercase font-bold tracking-widest px-1">Filtro Global de OPM</p>
-              </div>
-            )}
           </div>
 
           {/* EXECUTIVE COMMAND TOOLBAR (High-End Design) */}
