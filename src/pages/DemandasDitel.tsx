@@ -145,7 +145,7 @@ export default function DemandasDitel() {
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm bg-white dark:bg-slate-950 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
                             <div>
                               <p className="text-slate-500 text-xs font-bold uppercase mb-1">Tipo de Demanda</p>
-                              <p className="font-medium flex items-center gap-2"><Wrench className="w-4 h-4 text-slate-400"/> {chamado.tipoDemanda.replace(/_/g, ' ').toUpperCase()}</p>
+                              <p className="font-medium flex items-center gap-2"><Wrench className="w-4 h-4 text-slate-400"/> {(chamado.tipoDemanda || 'outro').replace(/_/g, ' ').toUpperCase()}</p>
                             </div>
                             <div>
                               <p className="text-slate-500 text-xs font-bold uppercase mb-1">Solicitante</p>
@@ -157,7 +157,7 @@ export default function DemandasDitel() {
                             </div>
                             <div>
                               <p className="text-slate-500 text-xs font-bold uppercase mb-1">Data</p>
-                              <p className="font-medium">{format(new Date(chamado.createdAt), "dd/MM/yyyy HH:mm")}</p>
+                              <p className="font-medium">{format(new Date(chamado.dataAbertura || new Date()), "dd/MM/yyyy HH:mm")}</p>
                             </div>
                           </div>
 
@@ -180,7 +180,7 @@ export default function DemandasDitel() {
                               <SelectItem value="Finalizado">Finalizado</SelectItem>
                             </SelectContent>
                           </Select>
-                          <Button variant="outline" className="w-full mt-2 gap-2" onClick={() => window.open(`https://wa.me/55${chamado.contato.replace(/\D/g, '')}`, '_blank')}>
+                          <Button variant="outline" className="w-full mt-2 gap-2" onClick={() => window.open(`https://wa.me/55${(chamado.contato || '').replace(/\D/g, '')}`, '_blank')}>
                             <MessageSquare className="w-4 h-4" /> Whatsapp
                           </Button>
                         </div>
