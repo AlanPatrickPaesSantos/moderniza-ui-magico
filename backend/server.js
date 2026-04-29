@@ -46,6 +46,8 @@ const Usuario = require('./models/Usuario');
 const bcrypt = require('bcryptjs');
 const verificarToken = require('./middleware/authMiddleware');
 
+const escapeRegex = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 // Status
 app.get('/api/status', (req, res) => {
   res.json({ status: 'Rodando', database: mongoose.connection.readyState === 1 ? 'Conectado' : 'Desconectado' });
@@ -182,22 +184,23 @@ const buildServiceQuery = (params) => {
 
   if (q) {
     const isNum = !isNaN(q);
+    const safeQ = escapeRegex(q);
     if (filterType === 'os' && isNum) {
       query.Id_cod = parseInt(q);
     } else if (filterType === 'serie') {
-      query.Nº_Serie = { $regex: q, $options: 'i' };
+      query.Nº_Serie = { $regex: safeQ, $options: 'i' };
     } else if (filterType === 'rp') {
-      query.RP = { $regex: q, $options: 'i' };
+      query.RP = { $regex: safeQ, $options: 'i' };
     } else if (filterType === 'unidade') {
-      query.Unidade = { $regex: new RegExp(`\\b${q}\\b`, 'i') };
+      query.Unidade = { $regex: new RegExp(`\\b${safeQ}\\b`, 'i') };
     } else {
       query.$or = [
         ...(isNum ? [{ Id_cod: parseInt(q) }] : []),
-        { Nº_Serie: { $regex: q, $options: 'i' } },
-        { RP: { $regex: q, $options: 'i' } },
-        { Solicitante: { $regex: q, $options: 'i' } },
-        { Unidade: { $regex: new RegExp(`\\b${q}\\b`, 'i') } },
-        { Serviço: { $regex: q, $options: 'i' } }
+        { Nº_Serie: { $regex: safeQ, $options: 'i' } },
+        { RP: { $regex: safeQ, $options: 'i' } },
+        { Solicitante: { $regex: safeQ, $options: 'i' } },
+        { Unidade: { $regex: new RegExp(`\\b${safeQ}\\b`, 'i') } },
+        { Serviço: { $regex: safeQ, $options: 'i' } }
       ];
     }
   }
@@ -209,7 +212,7 @@ const buildServiceQuery = (params) => {
   }
 
   if (status) {
-    query.Serviço = { $regex: new RegExp(`^\\s*${status}\\s*$`, 'i') };
+    query.Serviço = { $regex: new RegExp(`^\\s*${escapeRegex(status)}\\s*$`, 'i') };
   }
 
   if (bateria === "true") {
@@ -228,7 +231,7 @@ const buildServiceQuery = (params) => {
   }
 
   if (unidade) {
-    query.Unidade = { $regex: new RegExp(`^\\s*${unidade}\\s*$`, 'i') };
+    query.Unidade = { $regex: new RegExp(`^\\s*${escapeRegex(unidade)}\\s*$`, 'i') };
   }
 
   return query;
@@ -375,7 +378,7 @@ app.post('/api/unidades', async (req, res) => {
     UNIDADE = UNIDADE.trim().toUpperCase();
     
     // Check de duplicação ignorando maiúsculas/minúsculas
-    const existe = await Unidade.findOne({ UNIDADE: { $regex: new RegExp(`^\\s*${UNIDADE}\\s*$`, 'i') } });
+    const existe = await Unidade.findOne({ UNIDADE: { $regex: new RegExp(`^\\s*${escapeRegex(UNIDADE)}\\s*$`, 'i') } });
     
     if (existe) {
       return res.status(400).json({ error: 'Já existe uma unidade cadastrada com esta sigla.' });
@@ -410,7 +413,7 @@ app.put('/api/unidades/:id', async (req, res) => {
     
     // Verifica se a sigla já existe em OUTRA unidade
     const existe = await Unidade.findOne({ 
-      UNIDADE: { $regex: new RegExp(`^\\s*${UNIDADE}\\s*$`, 'i') },
+      UNIDADE: { $regex: new RegExp(`^\\s*${escapeRegex(UNIDADE)}\\s*$`, 'i') },
       ID_UNID_SEÇÃO: { $ne: id }
     });
     
@@ -491,7 +494,7 @@ app.post('/api/eqsuporte', async (req, res) => {
     }
     EQUIPAMENTO = EQUIPAMENTO.trim();
     
-    const existe = await EqSuporte.findOne({ EQUIPAMENTO: { $regex: new RegExp(`^\\s*${EQUIPAMENTO}\\s*$`, 'i') } });
+    const existe = await EqSuporte.findOne({ EQUIPAMENTO: { $regex: new RegExp(`^\\s*${escapeRegex(EQUIPAMENTO)}\\s*$`, 'i') } });
     if (existe) {
       return res.status(400).json({ error: 'Já existe um equipamento cadastrado com este nome.' });
     }
@@ -519,7 +522,7 @@ app.put('/api/eqsuporte/:id', async (req, res) => {
     EQUIPAMENTO = EQUIPAMENTO.trim();
     
     const existe = await EqSuporte.findOne({ 
-      EQUIPAMENTO: { $regex: new RegExp(`^\\s*${EQUIPAMENTO}\\s*$`, 'i') },
+      EQUIPAMENTO: { $regex: new RegExp(`^\\s*${escapeRegex(EQUIPAMENTO)}\\s*$`, 'i') },
       ID_EQUIP: { $ne: id }
     });
     
@@ -670,17 +673,18 @@ app.get('/api/missoes', verificarToken, async (req, res) => {
 
     if (q) {
       const isNum = !isNaN(q);
+      const safeQ = escapeRegex(q);
       query.$or = [
         ...(isNum ? [{ os: parseInt(q) }] : []),
-        { solicitante: { $regex: q, $options: 'i' } },
-        { unidade: { $regex: new RegExp(`\\b${q}\\b`, 'i') } },
-        { tecnicos: { $regex: q, $options: 'i' } },
-        { def_recla: { $regex: q, $options: 'i' } }
+        { solicitante: { $regex: safeQ, $options: 'i' } },
+        { unidade: { $regex: new RegExp(`\\b${safeQ}\\b`, 'i') } },
+        { tecnicos: { $regex: safeQ, $options: 'i' } },
+        { def_recla: { $regex: safeQ, $options: 'i' } }
       ];
     }
 
     if (unidade) {
-      query.unidade = { $regex: new RegExp(`^\\s*${unidade}\\s*$`, 'i') };
+      query.unidade = { $regex: new RegExp(`^\\s*${escapeRegex(unidade)}\\s*$`, 'i') };
     }
 
     if (startDate || endDate) {
@@ -691,7 +695,7 @@ app.get('/api/missoes', verificarToken, async (req, res) => {
 
     if (servico) {
       // Busca exata mas insensível a maiúsculas (ex: interno, INTERNO, Interno)
-      query.servico = { $regex: new RegExp(`^\\s*${servico}\\s*$`, 'i') };
+      query.servico = { $regex: new RegExp(`^\\s*${escapeRegex(servico)}\\s*$`, 'i') };
     }
 
     // Usa countDocuments para contagem exata sem limite
@@ -721,15 +725,16 @@ app.get('/api/stats/consolidated', async (req, res) => {
     const baseMissaoQuery = (startDate || endDate) ? { data: dateQuery } : {};
     if (q) {
       const isNum = !isNaN(q);
+      const safeQ = escapeRegex(q);
       baseMissaoQuery.$or = [
         ...(isNum ? [{ os: parseInt(q) }] : []),
-        { solicitante: { $regex: q, $options: 'i' } },
-        { unidade: { $regex: new RegExp(`\\b${q}\\b`, 'i') } }
+        { solicitante: { $regex: safeQ, $options: 'i' } },
+        { unidade: { $regex: new RegExp(`\\b${safeQ}\\b`, 'i') } }
       ];
     }
 
     if (unidade) {
-      baseMissaoQuery.unidade = { $regex: new RegExp(`^\\s*${unidade}\\s*$`, 'i') };
+      baseMissaoQuery.unidade = { $regex: new RegExp(`^\\s*${escapeRegex(unidade)}\\s*$`, 'i') };
     }
 
     const serviceQuery = buildServiceQuery(req.query);
