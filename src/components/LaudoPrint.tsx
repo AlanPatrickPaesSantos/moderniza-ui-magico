@@ -75,7 +75,7 @@ export const LaudoPrint = ({ data, type = 'laudo' }: { data: LaudoData, type?: '
         </div>
       </div>
 
-      <div className="text-center mb-6">
+      <div className="text-center mb-4">
         <h2 className="text-sm font-black tracking-wide">
           {type === 'saida' ? 'RELATÓRIO DE SAÍDA DE EQUIPAMENTO' : 
            type === 'entrada' ? 'RELATÓRIO DE ENTRADA DE EQUIPAMENTO' : 
@@ -84,7 +84,7 @@ export const LaudoPrint = ({ data, type = 'laudo' }: { data: LaudoData, type?: '
       </div>
 
       {/* Row 1: OS / Suporte / Telecom */}
-      <div className="grid grid-cols-6 gap-2 mb-3 items-center border-b border-black pb-1">
+      <div className="grid grid-cols-6 gap-2 mb-2 items-center border-b border-black pb-1">
         <div className="col-span-1 font-black text-sm">OS: {data.Id_cod}</div>
         <div className="col-span-2">
           <span className="font-bold">Suporte:</span> {data.T_EquipSuporte || ''}
@@ -95,7 +95,7 @@ export const LaudoPrint = ({ data, type = 'laudo' }: { data: LaudoData, type?: '
       </div>
 
       {/* Row 2: Grid Info */}
-      <div className="grid grid-cols-6 gap-4 mb-2 font-bold uppercase text-[9px]">
+      <div className="grid grid-cols-6 gap-4 mb-1 font-bold uppercase text-[8px]">
         <div>Unidade</div>
         <div>Nº PAE</div>
         <div>RP/PM</div>
@@ -103,7 +103,7 @@ export const LaudoPrint = ({ data, type = 'laudo' }: { data: LaudoData, type?: '
         <div className="col-span-1">Solicitante</div>
         <div>Data_Entrada</div>
       </div>
-      <div className="grid grid-cols-6 gap-4 mb-4 text-[10px] min-h-[1.5rem]">
+      <div className="grid grid-cols-6 gap-4 mb-3 text-[9px] min-h-[1.2rem]">
         <div>{data.Unidade || '-'}</div>
         <div>{data.Nº_PAE || '-'}</div>
         <div>{data.RP || '-'}</div>
@@ -113,35 +113,35 @@ export const LaudoPrint = ({ data, type = 'laudo' }: { data: LaudoData, type?: '
       </div>
 
       {/* Defeitos */}
-      <div className="space-y-3 flex-1 mb-2">
+      <div className="space-y-2 flex-1 mb-1">
         <div>
-          <h3 className="font-bold uppercase mb-1">Defeito Reclamado:</h3>
-          <p className="min-h-[2rem]">{data.Defeito_Recl || 'Não informado.'}</p>
+          <h3 className="font-bold uppercase mb-0.5 text-[10px]">Defeito Reclamado:</h3>
+          <p className="min-h-[1.5rem]">{data.Defeito_Recl || 'Não informado.'}</p>
         </div>
         <div>
-          <h3 className="font-bold uppercase mb-1">Defeito Constatado / Análise Técnica:</h3>
-          <p className="min-h-[2rem]">{data.Analise_Tecnica || 'Sob análise.'}</p>
+          <h3 className="font-bold uppercase mb-0.5 text-[10px]">Defeito Constatado / Análise Técnica:</h3>
+          <p className="min-h-[1.5rem]">{data.Analise_Tecnica || 'Sob análise.'}</p>
         </div>
         {type === 'laudo' && (
           <div>
-            <h3 className="font-bold uppercase mb-1">Laudo Técnico:</h3>
-            <p className="min-h-[2rem] font-medium">{data.Laudo_Tecnico}</p>
+            <h3 className="font-bold uppercase mb-0.5 text-[10px]">Laudo Técnico:</h3>
+            <p className="min-h-[1.5rem] font-medium">{data.Laudo_Tecnico}</p>
           </div>
         )}
       </div>
 
       {/* Row Footer: Data Saída / Tecnico */}
-      <div className="grid grid-cols-2 gap-8 mb-3 pb-2 border-b border-black">
+      <div className="grid grid-cols-2 gap-8 mb-2 pb-1 border-b border-black">
         <div><span className="font-bold uppercase">Data de Saída:</span> {formatDateBR(data.Data_Saida) || '___/___/______'}</div>
         <div><span className="font-bold uppercase">Técnico Resp:</span> {data.Tecnico || '____________________'}</div>
       </div>
 
-      <div className="text-center font-bold text-[9px] mb-8 italic">
+      <div className="text-center font-bold text-[8px] mb-4 italic">
         "A Diretoria de Telemática não possui peças de reposição ou suprimento para aquisição destas peças informadas"
       </div>
 
       {/* Assinaturas */}
-      <div className="grid grid-cols-2 gap-12 mt-4 text-center text-[9px]">
+      <div className="grid grid-cols-2 gap-12 mt-2 text-center text-[9px]">
         <div className="border-t border-black pt-1 uppercase">
           <p className="font-bold">MADAKE MARCOS LEAL DO NASCIMENTO - 2º TEN PM RG 44448</p>
           <p>Chefe das Seções de Telecomunicação e Suporte ao Usuário</p>
@@ -176,15 +176,15 @@ export const LaudoPrint = ({ data, type = 'laudo' }: { data: LaudoData, type?: '
           }
         }
       `}</style>
-      <div className="mx-auto w-full max-w-[210mm] h-[296mm] overflow-hidden flex flex-col justify-between">
-        <div className="flex-1 w-full flex flex-col">
+      <div className="mx-auto w-full max-w-[210mm] h-[290mm] overflow-hidden flex flex-col justify-between">
+        <div className="flex-1 w-full flex flex-col overflow-hidden">
           {renderHalf()}
         </div>
 
         {/* Visual divider space / Cutline */}
         <div className="h-0 border-t-2 border-dashed border-gray-400 w-full -my-px no-print z-10"></div>
 
-        <div className="flex-1 w-full flex flex-col">
+        <div className="flex-1 w-full flex flex-col overflow-hidden">
           {renderHalf()}
         </div>
       </div>
