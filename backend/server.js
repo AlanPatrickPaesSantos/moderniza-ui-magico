@@ -43,6 +43,8 @@ const Unidade = require('./models/Unidade');
 const EqSuporte = require('./models/EqSuporte');
 const Missao = require('./models/Missao');
 const Usuario = require('./models/Usuario');
+const Chamado = require('./models/Chamado');
+const RelatorioQualidade = require('./models/RelatorioQualidade');
 const bcrypt = require('bcryptjs');
 const verificarToken = require('./middleware/authMiddleware');
 
@@ -77,9 +79,19 @@ app.post('/api/auth/login', async (req, res) => {
       console.warn('⚠️ AVISO DE SEGURANÇA: JWT_SECRET não definida. Usando chave padrão (NÃO RECOMENDADO EM PRODUÇÃO)!');
     }
     const finalSecret = SECRET || 'DitelPMPA-Seguranca-Fixa-2026';
-    const token = jwt.sign({ id: user._id, username: user.username, papel: user.papel, nomeCompleto: user.nomeCompleto }, finalSecret, { expiresIn: '24h' });
+    const token = jwt.sign(
+      { 
+        id: user._id, 
+        username: user.username, 
+        papel: user.papel, 
+        nomeCompleto: user.nomeCompleto, 
+        unidadeVinculada: user.unidadeVinculada || 'DITEL' 
+      }, 
+      finalSecret, 
+      { expiresIn: '24h' }
+    );
     
-    res.json({ success: true, token, username: user.username, papel: user.papel, nomeCompleto: user.nomeCompleto });
+    res.json({ success: true, token, username: user.username, papel: user.papel, nomeCompleto: user.nomeCompleto, unidadeVinculada: user.unidadeVinculada || 'DITEL' });
   } catch (err) {
     console.error('Erro no login:', err);
     res.status(500).json({ success: false, error: 'Erro de Autenticação no Servidor.' });
@@ -91,6 +103,9 @@ app.use('/api/servicos', verificarToken);
 app.use('/api/missoes', verificarToken);
 app.use('/api/unidades', verificarToken);
 app.use('/api/eqsuporte', verificarToken);
+app.use('/api/stats', verificarToken);
+app.use('/api/chamados', verificarToken);
+app.use('/api/relatorios-qualidade', verificarToken);
 
 // Middleware adicional para verificar se é ADMIN
 const verificarAdmin = (req, res, next) => {
@@ -113,7 +128,7 @@ app.get('/api/usuarios', verificarToken, verificarAdmin, async (req, res) => {
 
 app.post('/api/usuarios', verificarToken, verificarAdmin, async (req, res) => {
   try {
-    const { username, password, papel, nomeCompleto } = req.body;
+    const { username, password, papel, nomeCompleto, unidadeVinculada } = req.body;
     if (!username || !password || !papel) {
       return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
     }
@@ -130,7 +145,8 @@ app.post('/api/usuarios', verificarToken, verificarAdmin, async (req, res) => {
       username: username.toLowerCase(),
       password: hashedPassword,
       papel: papel,
-      nomeCompleto: nomeCompleto
+      nomeCompleto: nomeCompleto,
+      unidadeVinculada: unidadeVinculada || 'DITEL'
     });
 
     await novo.save();
@@ -142,11 +158,12 @@ app.post('/api/usuarios', verificarToken, verificarAdmin, async (req, res) => {
 
 app.put('/api/usuarios/:id', verificarToken, verificarAdmin, async (req, res) => {
   try {
-    const { password, papel, nomeCompleto } = req.body;
+    const { password, papel, nomeCompleto, unidadeVinculada } = req.body;
     let updateData = {};
     
     if (papel) updateData.papel = papel;
     if (nomeCompleto !== undefined) updateData.nomeCompleto = nomeCompleto;
+    if (unidadeVinculada !== undefined) updateData.unidadeVinculada = unidadeVinculada;
     if (password) {
       const salt = await bcrypt.genSalt(10);
       updateData.password = await bcrypt.hash(password, salt);
@@ -178,9 +195,16 @@ app.delete('/api/usuarios/:id', verificarToken, verificarAdmin, async (req, res)
 });
 
 // Helper para construir queries de serviços de suporte de forma unificada
-const buildServiceQuery = (params) => {
+const buildServiceQuery = (params, user) => {
   const { q, startDate, endDate, status, bateria, garantia, bateria_vazia, filterType, unidade } = params;
   let query = {};
+
+  // Força o filtro de unidade se o usuário não for Admin (Scoping de Multi-Tenant)
+  if (user && user.papel !== 'admin' && user.unidadeVinculada && user.unidadeVinculada !== 'DITEL') {
+    query.Unidade = { $regex: new RegExp(`^\\s*${escapeRegex(user.unidadeVinculada)}\\s*$`, 'i') };
+  } else if (unidade) {
+    query.Unidade = { $regex: new RegExp(`^\\s*${escapeRegex(unidade)}\\s*$`, 'i') };
+  }
 
   if (q) {
     const isNum = !isNaN(q);
@@ -230,10 +254,6 @@ const buildServiceQuery = (params) => {
     ];
   }
 
-  if (unidade) {
-    query.Unidade = { $regex: new RegExp(`^\\s*${escapeRegex(unidade)}\\s*$`, 'i') };
-  }
-
   return query;
 };
 
@@ -241,9 +261,18 @@ const buildServiceQuery = (params) => {
 // Busca e filtros de serviços (listagem com limite)
 app.get('/api/servicos', async (req, res) => {
   try {
-    const query = buildServiceQuery(req.query);
-    const servicos = await Servico.find(query).limit(50).sort({ Id_cod: -1 }).lean();
-    res.json(servicos);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 50;
+    const skip = (page - 1) * limit;
+
+    const query = buildServiceQuery(req.query, req.user);
+    const [registros, total] = await Promise.all([
+      Servico.find(query).sort({ Id_cod: -1 }).skip(skip).limit(limit).lean(),
+      Servico.countDocuments(query)
+    ]);
+
+    res.set('X-Total-Count', total);
+    res.json(registros);
   } catch (err) {
     console.error('Erro ao buscar serviços:', err);
     res.status(500).json({ error: 'Erro interno ao buscar serviços.' });
@@ -253,7 +282,7 @@ app.get('/api/servicos', async (req, res) => {
 // Contagem EXATA de serviços para relatórios (sem limite)
 app.get('/api/servicos/count', async (req, res) => {
   try {
-    const query = buildServiceQuery(req.query);
+    const query = buildServiceQuery(req.query, req.user);
     const total = await Servico.countDocuments(query);
     res.json({ count: total });
   } catch (err) {
@@ -620,6 +649,7 @@ app.post('/api/servicos', async (req, res) => {
   }
 });
 
+
 // Atualizar registro existente
 app.put('/api/servicos/:id', async (req, res) => {
   try {
@@ -683,6 +713,12 @@ app.get('/api/missoes', verificarToken, async (req, res) => {
     const { q, startDate, endDate, servico, unidade } = req.query;
     let query = {};
 
+    if (req.user && req.user.papel !== 'admin' && req.user.unidadeVinculada && req.user.unidadeVinculada !== 'DITEL') {
+      query.unidade = { $regex: new RegExp(`^\\s*${escapeRegex(req.user.unidadeVinculada)}\\s*$`, 'i') };
+    } else if (unidade) {
+      query.unidade = { $regex: new RegExp(`^\\s*${escapeRegex(unidade)}\\s*$`, 'i') };
+    }
+
     if (q) {
       const isNum = !isNaN(q);
       const safeQ = escapeRegex(q);
@@ -693,10 +729,6 @@ app.get('/api/missoes', verificarToken, async (req, res) => {
         { tecnicos: { $regex: safeQ, $options: 'i' } },
         { def_recla: { $regex: safeQ, $options: 'i' } }
       ];
-    }
-
-    if (unidade) {
-      query.unidade = { $regex: new RegExp(`^\\s*${escapeRegex(unidade)}\\s*$`, 'i') };
     }
 
     if (startDate || endDate) {
@@ -745,11 +777,13 @@ app.get('/api/stats/consolidated', async (req, res) => {
       ];
     }
 
-    if (unidade) {
+    if (req.user && req.user.papel !== 'admin' && req.user.unidadeVinculada && req.user.unidadeVinculada !== 'DITEL') {
+      baseMissaoQuery.unidade = { $regex: new RegExp(`^\\s*${escapeRegex(req.user.unidadeVinculada)}\\s*$`, 'i') };
+    } else if (unidade) {
       baseMissaoQuery.unidade = { $regex: new RegExp(`^\\s*${escapeRegex(unidade)}\\s*$`, 'i') };
     }
 
-    const serviceQuery = buildServiceQuery(req.query);
+    const serviceQuery = buildServiceQuery(req.query, req.user);
 
     // 2. Dashboard Specific Queries (v40.12 Year-to-Date & Monthly)
     const currentYear = new Date().getFullYear();
@@ -983,6 +1017,85 @@ if (process.env.NODE_ENV === 'production' || process.env.RENDER) {
     res.sendFile(path.join(distPath, 'index.html'));
   });
 }
+
+// ====== ROTAS DE CHAMADOS E RELATÓRIOS (MULTI-TENANT) ======
+
+// Listar Chamados (OPM vê os seus, Admin vê todos)
+app.get('/api/chamados', async (req, res) => {
+  try {
+    let query = {};
+    if (req.user.papel !== 'admin') {
+      query.unidadeSolicitante = req.user.unidadeVinculada;
+    }
+    const chamados = await Chamado.find(query).sort({ dataAbertura: -1 }).lean();
+    res.json(chamados);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Criar Chamado
+app.post('/api/chamados', async (req, res) => {
+  try {
+    const dados = req.body;
+    dados.protocolo = 'DITEL-' + new Date().getFullYear() + '-' + Math.floor(Math.random() * 100000);
+    // Força a unidade do usuário logado se não for admin
+    if (req.user.papel !== 'admin') {
+      dados.unidadeSolicitante = req.user.unidadeVinculada;
+    }
+    const novo = new Chamado(dados);
+    await novo.save();
+    res.status(201).json({ success: true, chamado: novo });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Atualizar Chamado (Aprovar/Recusar pelo Admin)
+app.put('/api/chamados/:id', verificarAdmin, async (req, res) => {
+  try {
+    const updated = await Chamado.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true });
+    if (!updated) return res.status(404).json({ error: 'Chamado não encontrado' });
+    res.json({ success: true, chamado: updated });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Relatórios de Qualidade
+app.get('/api/relatorios-qualidade', async (req, res) => {
+  try {
+    let query = {};
+    if (req.query.mesReferencia) query.mesReferencia = req.query.mesReferencia;
+    if (req.user.papel !== 'admin') {
+      query.unidade = req.user.unidadeVinculada;
+    }
+    const relatorios = await RelatorioQualidade.find(query).sort({ dataEnvio: -1 }).lean();
+    res.json(relatorios);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/relatorios-qualidade', async (req, res) => {
+  try {
+    const dados = req.body;
+    if (req.user.papel !== 'admin') {
+      dados.unidade = req.user.unidadeVinculada;
+    }
+    
+    // Upsert (atualiza se já enviou no mês)
+    const relatorio = await RelatorioQualidade.findOneAndUpdate(
+      { unidade: dados.unidade, mesReferencia: dados.mesReferencia },
+      { $set: dados },
+      { new: true, upsert: true }
+    );
+    res.status(201).json({ success: true, relatorio });
+  } catch (err) {
+    if (err.code === 11000) return res.status(400).json({ error: 'Relatório para este mês já existe.' });
+    res.status(500).json({ error: err.message });
+  }
+});
 
 const server = app.listen(PORT, () => {
   console.log(`🚀 Servidor rodando na porta ${PORT} [MODO: ${process.env.NODE_ENV || 'development'}]`);

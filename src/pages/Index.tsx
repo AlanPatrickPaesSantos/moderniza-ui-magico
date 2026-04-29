@@ -14,6 +14,7 @@ import {
   Shield
 } from "lucide-react";
 import { ConsultasSection } from "@/components/ConsultasSection";
+import { UnidadeCombobox } from "@/components/UnidadeCombobox";
 // Lazy load components that are not needed immediately
 const RelatoriosSection = lazy(() => import("@/components/RelatoriosSection").then(m => ({ default: m.RelatoriosSection })));
 const EqSuporteDialog = lazy(() => import("@/components/EqSuporteDialog").then(m => ({ default: m.EqSuporteDialog })));
@@ -33,8 +34,10 @@ const Index = () => {
   const [stats, setStats] = useState({ maintenance: 0, ready: 0, missions: 0 });
   const [isLoading, setIsLoading] = useState(true);
   const [externalReportTrigger, setExternalReportTrigger] = useState<{ id: string; dateRange?: { start: string; end: string }; q?: string } | null>(null);
+  const [globalUnidade, setGlobalUnidade] = useState("");
   const { user } = useAuth();
   const isViewer = user?.papel === 'visualizador';
+  const isAdmin = user?.papel === 'admin';
 
   useEffect(() => {
     const fetchDashboardStats = async () => {
@@ -45,7 +48,7 @@ const Index = () => {
 
         // Busca Estatísticas Consolidadas (v40.11 Restauração Total)
         const token = localStorage.getItem("ditel_token");
-        const statsUrl = `${API_BASE}/stats/consolidated?startDate=${firstDay}&endDate=${lastDay}`;
+        const statsUrl = `${API_BASE}/stats/consolidated?startDate=${firstDay}&endDate=${lastDay}${globalUnidade ? `&unidade=${encodeURIComponent(globalUnidade)}` : ''}`;
         const resp = await fetch(statsUrl, {
           headers: { "Authorization": `Bearer ${token}` }
         });
@@ -67,7 +70,7 @@ const Index = () => {
     };
 
     fetchDashboardStats();
-  }, []);
+  }, [globalUnidade]);
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-200 dark:bg-slate-950 overflow-x-hidden">
@@ -77,8 +80,15 @@ const Index = () => {
       <main className="w-full max-w-screen-xl mx-auto flex-1 px-3 md:px-6 pt-4 md:pt-8 pb-10">
 
         <div className="relative z-10 w-full mb-8 md:mb-10">
-          <div className="mb-5 md:mb-6 px-1 md:px-0">
+          <div className="mb-5 md:mb-6 px-1 md:px-0 flex flex-col md:flex-row justify-between md:items-center gap-4">
             <h2 id="command-center-title" className="text-2xl md:text-3xl font-black text-slate-800 dark:text-white tracking-tight drop-shadow-sm inline-block">Centro de Comando</h2>
+            
+            {isAdmin && (
+              <div className="w-full md:w-72">
+                <UnidadeCombobox value={globalUnidade} onChange={setGlobalUnidade} />
+                <p className="text-[10px] text-slate-500 mt-1 uppercase font-bold tracking-widest px-1">Filtro Global de OPM</p>
+              </div>
+            )}
           </div>
 
           {/* EXECUTIVE COMMAND TOOLBAR (High-End Design) */}
@@ -155,6 +165,22 @@ const Index = () => {
                 <div className="w-1.5 h-1.5 rounded-full bg-[#004e9a] shadow-[0_0_8px_#004e9a]" />
               </div>
             </div>
+
+            {/* Demandas OPM - Admin */}
+            {!isViewer && user?.papel === 'admin' && (
+              <div
+                onClick={() => navigate("/demandas")}
+                className="flex-1 min-w-[140px] group relative bg-amber-50 dark:bg-amber-900/20 backdrop-blur-md p-4 md:p-5 cursor-pointer transition-all duration-300 flex flex-col items-start gap-3 overflow-hidden rounded-t-xl shadow-sm hover:shadow-md border border-amber-200 dark:border-amber-800"
+              >
+                <div className="p-2 bg-amber-500/10 rounded-lg group-hover:bg-amber-500/20 transition-colors">
+                  <Activity className="w-5 h-5 md:w-6 md:h-6 text-amber-600 dark:text-amber-400" />
+                </div>
+                <span className="block text-sm md:text-base font-black text-amber-900 dark:text-amber-100 tracking-tight uppercase">C.Q. & Demandas</span>
+                <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="w-1.5 h-1.5 rounded-full bg-amber-500 shadow-[0_0_8px_#f59e0b]" />
+                </div>
+              </div>
+            )}
 
           </div>
 
@@ -240,7 +266,7 @@ const Index = () => {
                 <h3 className="text-sm md:text-base font-black text-slate-900 dark:text-white uppercase tracking-tight">Busca Rápida</h3>
               </div>
               <div className="flex-1 w-full">
-                <ConsultasSection />
+                <ConsultasSection globalUnidade={globalUnidade} />
               </div>
             </div>
 

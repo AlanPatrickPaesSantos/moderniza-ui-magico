@@ -38,7 +38,12 @@ const Login = () => {
         throw new Error(data.error || 'Credenciais inválidas');
       }
 
-      login(data.token, { username: data.username, papel: data.papel, nomeCompleto: data.nomeCompleto });
+      login(data.token, { 
+        username: data.username, 
+        papel: data.papel, 
+        nomeCompleto: data.nomeCompleto,
+        unidadeVinculada: data.unidadeVinculada
+      });
 
       const destination = location.state?.from?.pathname || '/';
       navigate(destination, { replace: true });

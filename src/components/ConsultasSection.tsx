@@ -12,10 +12,10 @@ import { toast } from "sonner";
 import { API_BASE } from "../lib/api-config";
 import { useAuth } from "@/contexts/AuthContext";
 
-export const ConsultasSection = () => {
+export const ConsultasSection = ({ globalUnidade }: { globalUnidade?: string }) => {
   const [query, setQuery] = useState("");
   const [filterType, setFilterType] = useState("all");
-  const [selectedUnidade, setSelectedUnidade] = useState("");
+  const selectedUnidade = globalUnidade || "";
   const [results, setResults] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);

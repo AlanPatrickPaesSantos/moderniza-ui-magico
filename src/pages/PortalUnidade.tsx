@@ -9,24 +9,118 @@ import { Badge } from "@/components/ui/badge";
 import { Radio, AlertTriangle, CheckCircle2, Clock, Send, LogOut, ShieldAlert, Monitor, Server, Activity, Wrench, XCircle, UploadCloud, User, Phone } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "../contexts/AuthContext";
 
 const PortalUnidade = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user, logout } = useAuth();
+  
+  const unidadeStr = user?.unidadeVinculada || "Comando de Policiamento Regional I - Santarém";
+  const nomeUsuario = user?.nomeCompleto || "Oficial";
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [tipoDemanda, setTipoDemanda] = useState("manutencao_radio");
+  
+  const [qualidadeData, setQualidadeData] = useState({
+    statusGeral: "Boa",
+    maiorNecessidade: "Radios HT",
+    qtdOperantes: "",
+    qtdInoperantes: "",
+    relatorioLivre: ""
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [chamadoData, setChamadoData] = useState({
+    nomeSolicitante: user?.nomeCompleto || "",
+    contato: "",
+    urgencia: "normal",
+    numeroSerie: "",
+    quantidade: "",
+    boletimOcorrencia: "",
+    unidadeDestino: "",
+    descricao: ""
+  });
+
+  const handleQualidadeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
+    try {
+      const mesAtual = new Date().toISOString().slice(0, 7); // YYYY-MM
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/relatorios-qualidade`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('ditel_token')}`
+        },
+        body: JSON.stringify({
+          unidade: unidadeStr,
+          oficialResponsavel: nomeUsuario,
+          mesReferencia: mesAtual,
+          statusGeral: qualidadeData.statusGeral,
+          maiorNecessidade: qualidadeData.maiorNecessidade,
+          qtdOperantes: parseInt(qualidadeData.qtdOperantes) || 0,
+          qtdInoperantes: parseInt(qualidadeData.qtdInoperantes) || 0,
+          relatorioLivre: qualidadeData.relatorioLivre
+        })
+      });
+
+      if (!res.ok) throw new Error(await res.text());
+
+      toast({
+        title: "Relatório Enviado com Sucesso",
+        description: "Obrigado. Suas informações foram registradas no DITEL para o mês atual.",
+      });
+    } catch (err: any) {
+      toast({
+        variant: "destructive",
+        title: "Erro ao Enviar",
+        description: err.message || "Tente novamente mais tarde.",
+      });
+    } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/chamados`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('ditel_token')}`
+        },
+        body: JSON.stringify({
+          unidadeSolicitante: unidadeStr,
+          tipoDemanda: tipoDemanda,
+          nomeSolicitante: chamadoData.nomeSolicitante,
+          contato: chamadoData.contato,
+          urgencia: chamadoData.urgencia,
+          numeroSerie: chamadoData.numeroSerie,
+          quantidade: parseInt(chamadoData.quantidade) || 0,
+          boletimOcorrencia: chamadoData.boletimOcorrencia,
+          unidadeDestino: chamadoData.unidadeDestino,
+          descricao: chamadoData.descricao
+        })
+      });
+
+      if (!res.ok) throw new Error(await res.text());
+      const resData = await res.json();
+
       toast({
         title: "Chamado Registrado com Sucesso!",
-        description: "O DITEL foi notificado. Protocolo: DITEL-2026-" + Math.floor(Math.random() * 10000),
+        description: `O DITEL foi notificado. Protocolo: ${resData.chamado.protocolo}`,
       });
-      // Reset form could go here
-    }, 1500);
+      // reset optionally
+    } catch (err: any) {
+      toast({
+        variant: "destructive",
+        title: "Erro ao Enviar Chamado",
+        description: err.message || "Tente novamente mais tarde.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -38,10 +132,10 @@ const PortalUnidade = () => {
             <ShieldAlert className="h-8 w-8 text-yellow-400" />
             <div>
               <h1 className="font-black text-xl tracking-wider">PORTAL DA UNIDADE</h1>
-              <p className="text-xs text-blue-200 font-medium">Comando de Policiamento Regional I - Santarém</p>
+              <p className="text-xs text-blue-200 font-medium">{unidadeStr}</p>
             </div>
           </div>
-          <Button variant="ghost" className="text-white hover:bg-white/20 gap-2" onClick={() => navigate("/login")}>
+          <Button variant="ghost" className="text-white hover:bg-white/20 gap-2" onClick={() => { logout(); navigate("/login"); }}>
             <LogOut className="h-4 w-4" />
             Sair
           </Button>
@@ -50,7 +144,7 @@ const PortalUnidade = () => {
 
       <main className="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 lg:p-8">
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Bem-vindo, Oficial.</h2>
+          <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Bem-vindo, {nomeUsuario}.</h2>
           <p className="text-slate-500 dark:text-slate-400">Verifique sua carga ou abra um chamado técnico para o DITEL.</p>
         </div>
 
@@ -67,6 +161,10 @@ const PortalUnidade = () => {
             <TabsTrigger value="historico" className="py-3 px-6 rounded-lg font-bold data-[state=active]:bg-[#004e9a] data-[state=active]:text-white">
               <Clock className="h-4 w-4 mr-2" />
               Meus Chamados
+            </TabsTrigger>
+            <TabsTrigger value="qualidade" className="py-3 px-6 rounded-lg font-bold data-[state=active]:bg-[#004e9a] data-[state=active]:text-white whitespace-nowrap">
+              <CheckCircle2 className="h-4 w-4 mr-2" />
+              Controle de Qualidade (Tenente)
             </TabsTrigger>
           </TabsList>
 
@@ -89,13 +187,13 @@ const PortalUnidade = () => {
                       <label className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
                         <User className="h-4 w-4 text-[#004e9a]" /> Nome do Solicitante
                       </label>
-                      <Input placeholder="Ex: SGT PM Silva" className="h-12 bg-slate-50 dark:bg-slate-950" />
+                      <Input placeholder="Ex: SGT PM Silva" className="h-12 bg-slate-50 dark:bg-slate-950" required value={chamadoData.nomeSolicitante} onChange={e => setChamadoData({...chamadoData, nomeSolicitante: e.target.value})} />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
                         <Phone className="h-4 w-4 text-[#004e9a]" /> WhatsApp / Contato
                       </label>
-                      <Input placeholder="(91) 90000-0000" className="h-12 bg-slate-50 dark:bg-slate-950" />
+                      <Input placeholder="(91) 90000-0000" className="h-12 bg-slate-50 dark:bg-slate-950" required value={chamadoData.contato} onChange={e => setChamadoData({...chamadoData, contato: e.target.value})} />
                     </div>
 
                     <div className="space-y-2">
@@ -116,7 +214,7 @@ const PortalUnidade = () => {
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-bold text-slate-700 dark:text-slate-300">Nível de Urgência</label>
-                      <Select defaultValue="normal">
+                      <Select value={chamadoData.urgencia} onValueChange={val => setChamadoData({...chamadoData, urgencia: val})}>
                         <SelectTrigger className="h-12 bg-slate-50 dark:bg-slate-950">
                           <SelectValue placeholder="Selecione..." />
                         </SelectTrigger>
@@ -130,60 +228,50 @@ const PortalUnidade = () => {
                     </div>
                   </div>
 
-                  {/* Campos Dinâmicos */}
                   {tipoDemanda === "manutencao_radio" && (
                     <div className="p-4 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-900/30 animate-in fade-in zoom-in-95 duration-300">
                       <label className="text-sm font-bold text-blue-800 dark:text-blue-300 mb-2 block">Número de Série (Tombamento)</label>
-                      <Input placeholder="Digite o serial do equipamento com defeito" className="h-12 bg-white dark:bg-slate-950 border-blue-200 dark:border-blue-800" />
+                      <Input placeholder="Digite o serial do equipamento com defeito" className="h-12 bg-white dark:bg-slate-950 border-blue-200 dark:border-blue-800" value={chamadoData.numeroSerie} onChange={e => setChamadoData({...chamadoData, numeroSerie: e.target.value})} />
                     </div>
                   )}
 
                   {tipoDemanda === "solicitacao_novo" && (
                     <div className="p-4 bg-green-50 dark:bg-green-900/10 rounded-xl border border-green-100 dark:border-green-900/30 animate-in fade-in zoom-in-95 duration-300">
                       <label className="text-sm font-bold text-green-800 dark:text-green-300 mb-2 block">Quantidade Desejada</label>
-                      <Input type="number" min="1" placeholder="Ex: 5" className="h-12 bg-white dark:bg-slate-950 border-green-200 dark:border-green-800 w-full sm:w-1/3" />
+                      <Input type="number" min="1" placeholder="Ex: 5" className="h-12 bg-white dark:bg-slate-950 border-green-200 dark:border-green-800 w-full sm:w-1/3" value={chamadoData.quantidade} onChange={e => setChamadoData({...chamadoData, quantidade: e.target.value})} />
                       <p className="text-xs text-green-600 mt-2 font-medium">Justifique a necessidade no campo de descrição abaixo.</p>
                     </div>
                   )}
 
                   {tipoDemanda === "extravio_dano" && (
                     <div className="p-4 bg-red-50 dark:bg-red-900/10 rounded-xl border border-red-100 dark:border-red-900/30 animate-in fade-in zoom-in-95 duration-300">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <label className="text-sm font-bold text-red-800 dark:text-red-300 mb-2 block">Número de Série do Equipamento</label>
-                          <Input placeholder="Serial do equipamento extraviado" className="h-12 bg-white dark:bg-slate-950 border-red-200 dark:border-red-800" />
-                        </div>
-                        <div>
-                          <label className="text-sm font-bold text-red-800 dark:text-red-300 mb-2 block">Número do Boletim de Ocorrência (B.O.)</label>
-                          <Input placeholder="Ex: 00123/2026" className="h-12 bg-white dark:bg-slate-950 border-red-200 dark:border-red-800" />
-                        </div>
-                      </div>
-                      <p className="text-xs text-red-600 mt-3 font-medium flex items-center gap-1">
-                        <AlertTriangle className="h-3 w-3" /> É obrigatório anexar a cópia do B.O. e a Parte (Documento) na área de anexos abaixo.
-                      </p>
+                      <label className="text-sm font-bold text-red-800 dark:text-red-300 mb-2 block">Número do B.O / Sindicância</label>
+                      <Input placeholder="Ex: BO-001/2026" className="h-12 bg-white dark:bg-slate-950 border-red-200 dark:border-red-800" value={chamadoData.boletimOcorrencia} onChange={e => setChamadoData({...chamadoData, boletimOcorrencia: e.target.value})} />
+                      <p className="text-xs text-red-600 mt-2 font-medium">É obrigatório anexar o processo físico posteriormente.</p>
                     </div>
                   )}
 
                   {tipoDemanda === "transferencia" && (
-                    <div className="p-4 bg-purple-50 dark:bg-purple-900/10 rounded-xl border border-purple-100 dark:border-purple-900/30 animate-in fade-in zoom-in-95 duration-300">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <label className="text-sm font-bold text-purple-800 dark:text-purple-300 mb-2 block">Número de Série</label>
-                          <Input placeholder="Serial do equipamento transferido" className="h-12 bg-white dark:bg-slate-950 border-purple-200 dark:border-purple-800" />
-                        </div>
-                        <div>
-                          <label className="text-sm font-bold text-purple-800 dark:text-purple-300 mb-2 block">OPM / Batalhão de Destino</label>
-                          <Input placeholder="Ex: 3º BPM" className="h-12 bg-white dark:bg-slate-950 border-purple-200 dark:border-purple-800" />
-                        </div>
+                    <div className="p-4 bg-purple-50 dark:bg-purple-900/10 rounded-xl border border-purple-100 dark:border-purple-900/30 animate-in fade-in zoom-in-95 duration-300 grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-sm font-bold text-purple-800 dark:text-purple-300 mb-2 block">Série do Equipamento</label>
+                        <Input placeholder="Número de Série" className="h-12 bg-white dark:bg-slate-950 border-purple-200 dark:border-purple-800" value={chamadoData.numeroSerie} onChange={e => setChamadoData({...chamadoData, numeroSerie: e.target.value})} />
+                      </div>
+                      <div>
+                        <label className="text-sm font-bold text-purple-800 dark:text-purple-300 mb-2 block">Unidade de Destino</label>
+                        <Input placeholder="Ex: 2º BPM" className="h-12 bg-white dark:bg-slate-950 border-purple-200 dark:border-purple-800" value={chamadoData.unidadeDestino} onChange={e => setChamadoData({...chamadoData, unidadeDestino: e.target.value})} />
                       </div>
                     </div>
                   )}
 
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700 dark:text-slate-300">Descrição Detalhada</label>
+                    <label className="text-sm font-bold text-slate-700 dark:text-slate-300">Descrição Detalhada do Problema / Solicitação</label>
                     <Textarea 
-                      placeholder="Descreva o problema ou justificativa. Seja o mais claro possível." 
+                      placeholder="Descreva o que está acontecendo. Ex: O rádio não liga, a bateria não segura carga, botão PTT está falhando..." 
                       className="min-h-[120px] bg-slate-50 dark:bg-slate-950 resize-y"
+                      required
+                      value={chamadoData.descricao}
+                      onChange={e => setChamadoData({...chamadoData, descricao: e.target.value})}
                     />
                   </div>
 
@@ -199,14 +287,9 @@ const PortalUnidade = () => {
                     </div>
                   </div>
 
-                  <div className="flex justify-end pt-4 border-t border-slate-100 dark:border-slate-800">
-                    <Button 
-                      type="submit" 
-                      className="h-12 px-8 bg-[#004e9a] hover:bg-[#003870] text-white font-bold rounded-xl gap-2 w-full md:w-auto"
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? "ENVIANDO..." : "ENVIAR SOLICITAÇÃO OFICIAL"}
-                      {!isSubmitting && <Send className="h-4 w-4" />}
+                  <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+                    <Button type="submit" size="lg" disabled={isSubmitting} className="bg-[#004e9a] hover:bg-[#003870] text-white px-8 font-bold gap-2">
+                      <Send className="h-4 w-4" /> {isSubmitting ? "Enviando..." : "Enviar Solicitação ao DITEL"}
                     </Button>
                   </div>
                 </form>
@@ -427,6 +510,83 @@ const PortalUnidade = () => {
             </div>
           </TabsContent>
 
+          {/* ABA 4: CONTROLE DE QUALIDADE */}
+          <TabsContent value="qualidade">
+            <Card className="border-0 shadow-xl shadow-slate-200/50 dark:shadow-none dark:border dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl overflow-hidden">
+              <CardHeader className="bg-slate-50/50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 pb-6">
+                <CardTitle className="text-xl text-[#004e9a] dark:text-blue-400 flex items-center gap-2">
+                  <CheckCircle2 className="h-5 w-5" /> Controle de Qualidade Mensal
+                </CardTitle>
+                <CardDescription>
+                  Preencha o formulário abaixo para enviar o resumo da situação da sua unidade. 
+                  Isso ajuda o DITEL a mapear e priorizar as necessidades do estado.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-6">
+                <form className="space-y-6" onSubmit={handleQualidadeSubmit}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-slate-700 dark:text-slate-300">Status Geral de Comunicação</label>
+                      <Select value={qualidadeData.statusGeral} onValueChange={(val) => setQualidadeData({...qualidadeData, statusGeral: val})}>
+                        <SelectTrigger className="h-12 bg-slate-50 dark:bg-slate-950">
+                          <SelectValue placeholder="Selecione o status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Excelente">Excelente (Sem problemas)</SelectItem>
+                          <SelectItem value="Boa">Boa (Pequenas falhas)</SelectItem>
+                          <SelectItem value="Com falhas">Com Falhas (Requer atenção)</SelectItem>
+                          <SelectItem value="Critica">Crítica (Operação comprometida)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-slate-700 dark:text-slate-300">Maior Necessidade Atual</label>
+                      <Select value={qualidadeData.maiorNecessidade} onValueChange={(val) => setQualidadeData({...qualidadeData, maiorNecessidade: val})}>
+                        <SelectTrigger className="h-12 bg-slate-50 dark:bg-slate-950">
+                          <SelectValue placeholder="Selecione a necessidade" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Radios HT">Rádios Portáteis (HT)</SelectItem>
+                          <SelectItem value="Radios Moveis">Rádios Móveis (Viatura)</SelectItem>
+                          <SelectItem value="Baterias">Baterias</SelectItem>
+                          <SelectItem value="Repetidoras">Sinal / Repetidoras</SelectItem>
+                          <SelectItem value="Manutencao">Manutenção de Equipamentos</SelectItem>
+                          <SelectItem value="Nenhuma">Nenhuma Prioridade</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-slate-700 dark:text-slate-300">Quantidade de HTs Operantes</label>
+                      <Input type="number" min="0" placeholder="Ex: 15" className="h-12 bg-slate-50 dark:bg-slate-950" value={qualidadeData.qtdOperantes} onChange={(e) => setQualidadeData({...qualidadeData, qtdOperantes: e.target.value})} />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-slate-700 dark:text-slate-300">Quantidade de HTs Inoperantes</label>
+                      <Input type="number" min="0" placeholder="Ex: 3" className="h-12 bg-slate-50 dark:bg-slate-950" value={qualidadeData.qtdInoperantes} onChange={(e) => setQualidadeData({...qualidadeData, qtdInoperantes: e.target.value})} />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-slate-700 dark:text-slate-300">Relato Livre (Opcional)</label>
+                    <Textarea 
+                      placeholder="Descreva problemas com sinal em áreas específicas, necessidade de baterias, ou outras observações operacionais..." 
+                      className="min-h-[120px] bg-slate-50 dark:bg-slate-950 resize-y"
+                      value={qualidadeData.relatorioLivre}
+                      onChange={(e) => setQualidadeData({...qualidadeData, relatorioLivre: e.target.value})}
+                    />
+                  </div>
+
+                  <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+                    <Button type="submit" size="lg" disabled={isSubmitting} className="bg-[#004e9a] hover:bg-[#003870] text-white px-8 font-bold gap-2">
+                      <Send className="h-4 w-4" /> {isSubmitting ? "Enviando..." : "Enviar Relatório de Qualidade"}
+                    </Button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
       </main>
     </div>
