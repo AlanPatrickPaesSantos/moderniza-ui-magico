@@ -230,7 +230,7 @@ export default function DemandasDitel() {
                     </div>
                   </Card>
                 </div>
-              </CardContent>
+              </TabsContent>
 
               <TabsContent value="inbox" className="animate-in slide-in-from-bottom-4 duration-500">
                 <Card className="bg-slate-900/50 border border-slate-800 overflow-hidden">
