@@ -152,9 +152,9 @@ export default function DemandasDitel() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
           {/* Lado Esquerdo: MAPA e Seleção */}
-          <div className="lg:col-span-1 space-y-6">
+          <div className="lg:col-span-4 space-y-6">
             <MapaInterativoPara onRegionClick={setSelectedCPR} selectedRegion={selectedCPR} />
             
             {selectedCPR && (
@@ -172,7 +172,7 @@ export default function DemandasDitel() {
           </div>
 
           {/* Lado Direito: Dashboards */}
-          <div className="lg:col-span-3 space-y-6">
+          <div className="lg:col-span-8 space-y-6">
             <Tabs defaultValue="qualidade" className="space-y-6">
               <TabsList className="bg-slate-900/50 border border-slate-800 p-1.5 rounded-2xl backdrop-blur-xl w-fit">
                 <TabsTrigger value="qualidade" className="py-2.5 px-8 rounded-xl font-black data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white transition-all">
