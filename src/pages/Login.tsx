@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '../contexts/AuthContext';
-import { Loader2, Lock, User, Terminal } from 'lucide-react';
+import { Loader2, Lock, User } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
 import { API_BASE } from '../lib/api-config';
 
@@ -142,20 +142,6 @@ const Login = () => {
               </Button>
             </div>
           </form>
-
-          {/* Botão Mock para Protótipo CPR */}
-          <div className="mt-6 pt-6 border-t border-slate-100 flex flex-col items-center gap-2">
-            <p className="text-xs text-slate-400 font-medium uppercase tracking-widest">Acesso Restrito</p>
-            <Button
-              variant="outline"
-              type="button"
-              onClick={() => navigate('/portal-unidade')}
-              className="w-full h-11 border-blue-200 text-blue-700 hover:bg-blue-50 hover:text-blue-800 font-bold text-sm rounded-xl tracking-wide transition-all"
-            >
-              <Terminal className="w-4 h-4 mr-2" />
-              Portal da Unidade (Protótipo)
-            </Button>
-          </div>
         </Card>
         <p className="mt-8 text-center text-xs text-blue-200/60 font-medium uppercase tracking-widest drop-shadow-sm">
           Diretoria de Telemática © 2026
